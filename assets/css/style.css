@@ -251,6 +251,9 @@ h1, h2, h3, h4, h5, h6 {
   #hero {
     padding-left: 160px;
   }
+  #hero:before {
+  background: rgba(255, 255, 255, 0.6);
+  }
 }
 
 #hero:before {
@@ -269,6 +272,12 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 700;
   line-height: 56px;
   color: #45505b;
+}
+
+@media (max-width: 992px) {
+  #hero:before {
+    background: rgba(255, 255, 255, 0.6);
+  }
 }
 
 #hero p {
