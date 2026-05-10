@@ -1,0 +1,977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chintan Agheda — Finance Leader</title>
+  <meta name="description" content="Finance Manager at Zepto with 10+ years of experience in startup finance, process automation, and financial operations.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --ink: #1a1a18;
+      --ink-light: #5a5a56;
+      --ink-faint: #9a9a94;
+      --paper: #f5f4f0;
+      --paper-white: #fefefe;
+      --accent: #1a1a18;
+      --accent-warm: #c8622a;
+      --rule: rgba(26,26,24,0.12);
+      --serif: 'DM Serif Display', Georgia, serif;
+      --sans: 'DM Sans', system-ui, sans-serif;
+      --nav-w: 72px;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--sans);
+      background: var(--paper);
+      color: var(--ink);
+      font-size: 16px;
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      left: 0; top: 0; bottom: 0;
+      width: var(--nav-w);
+      background: var(--ink);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 0;
+      z-index: 100;
+      gap: 0;
+    }
+
+    .nav-logo {
+      font-family: var(--serif);
+      font-size: 11px;
+      color: var(--paper);
+      writing-mode: vertical-rl;
+      text-orientation: mixed;
+      transform: rotate(180deg);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      opacity: 0.5;
+      margin-bottom: auto;
+      padding-top: 1rem;
+    }
+
+    .nav-links {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 2rem;
+      list-style: none;
+      margin-bottom: 2rem;
+    }
+
+    .nav-links a {
+      font-size: 9px;
+      color: rgba(245,244,240,0.4);
+      text-decoration: none;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      writing-mode: vertical-rl;
+      transform: rotate(180deg);
+      transition: color 0.2s;
+    }
+    .nav-links a:hover { color: var(--paper); }
+
+    /* ── MAIN LAYOUT ── */
+    main {
+      margin-left: var(--nav-w);
+      min-height: 100vh;
+    }
+
+    section {
+      padding: 6rem 5rem 6rem 5rem;
+      border-bottom: 1px solid var(--rule);
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    section.visible {
+      opacity: 1;
+      transform: none;
+    }
+
+    .section-label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--ink-faint);
+      margin-bottom: 3rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--rule);
+    }
+
+    /* ── HERO ── */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-bottom: 5rem;
+      position: relative;
+      background: var(--paper-white);
+      border-bottom: 1px solid var(--rule);
+    }
+
+    .hero-tag {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--ink-faint);
+      margin-bottom: 2rem;
+    }
+
+    .hero-name {
+      font-family: var(--serif);
+      font-size: clamp(3.5rem, 8vw, 7rem);
+      line-height: 1.0;
+      letter-spacing: -0.02em;
+      color: var(--ink);
+      margin-bottom: 1.5rem;
+    }
+
+    .hero-name em {
+      font-style: italic;
+      color: var(--accent-warm);
+    }
+
+    .hero-desc {
+      max-width: 520px;
+      color: var(--ink-light);
+      font-size: 1.05rem;
+      line-height: 1.7;
+      margin-bottom: 3rem;
+      font-weight: 300;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+
+    .btn-primary {
+      background: var(--ink);
+      color: var(--paper);
+      padding: 0.85rem 2rem;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      text-decoration: none;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+      display: inline-block;
+    }
+    .btn-primary:hover { background: var(--accent-warm); }
+
+    .btn-secondary {
+      color: var(--ink-light);
+      font-size: 13px;
+      font-weight: 400;
+      text-decoration: none;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid var(--rule);
+      padding-bottom: 2px;
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .btn-secondary:hover { color: var(--accent-warm); border-color: var(--accent-warm); }
+
+    .hero-stats {
+      position: absolute;
+      right: 5rem;
+      bottom: 5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+      text-align: right;
+    }
+
+    .stat-num {
+      font-family: var(--serif);
+      font-size: 3rem;
+      line-height: 1;
+      color: var(--ink);
+    }
+    .stat-label {
+      font-size: 11px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin-top: 4px;
+    }
+
+    /* ── ABOUT / VALUE PROP ── */
+    .value-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 4rem;
+      align-items: start;
+    }
+
+    .value-headline {
+      font-family: var(--serif);
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+      line-height: 1.2;
+      letter-spacing: -0.01em;
+    }
+
+    .value-headline em { font-style: italic; color: var(--accent-warm); }
+
+    .value-body {
+      color: var(--ink-light);
+      font-size: 0.95rem;
+      line-height: 1.8;
+      font-weight: 300;
+    }
+    .value-body p + p { margin-top: 1rem; }
+
+    .pillars {
+      margin-top: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    .pillar {
+      padding: 1.5rem;
+      background: var(--paper-white);
+      border: 1px solid var(--rule);
+    }
+
+    .pillar-icon {
+      font-size: 1.4rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .pillar h4 {
+      font-family: var(--serif);
+      font-size: 1rem;
+      font-weight: 400;
+      margin-bottom: 0.4rem;
+    }
+
+    .pillar p {
+      font-size: 0.82rem;
+      color: var(--ink-faint);
+      line-height: 1.5;
+    }
+
+    /* ── IMPACT / NUMBERS ── */
+    #impact { background: var(--ink); color: var(--paper); border-bottom: none; }
+    #impact .section-label { color: rgba(245,244,240,0.3); }
+    #impact .section-label::after { background: rgba(245,244,240,0.1); }
+
+    .impact-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0;
+      border: 1px solid rgba(245,244,240,0.1);
+    }
+
+    .impact-cell {
+      padding: 3rem 2.5rem;
+      border-right: 1px solid rgba(245,244,240,0.1);
+    }
+    .impact-cell:last-child { border-right: none; }
+
+    .impact-num {
+      font-family: var(--serif);
+      font-size: 3.5rem;
+      line-height: 1;
+      color: var(--paper);
+      margin-bottom: 0.5rem;
+    }
+
+    .impact-num span { color: var(--accent-warm); }
+
+    .impact-desc {
+      font-size: 0.85rem;
+      color: rgba(245,244,240,0.5);
+      line-height: 1.5;
+      font-weight: 300;
+    }
+
+    .impact-context {
+      font-size: 0.78rem;
+      color: rgba(245,244,240,0.3);
+      margin-top: 0.4rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    /* ── EXPERIENCE ── */
+    .exp-list { display: flex; flex-direction: column; }
+
+    .exp-item {
+      display: grid;
+      grid-template-columns: 160px 1fr;
+      gap: 3rem;
+      padding: 3rem 0;
+      border-bottom: 1px solid var(--rule);
+    }
+    .exp-item:first-child { padding-top: 0; }
+
+    .exp-meta { padding-top: 4px; }
+
+    .exp-period {
+      font-size: 11px;
+      color: var(--ink-faint);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      line-height: 1.6;
+    }
+
+    .exp-company {
+      font-family: var(--serif);
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.01em;
+    }
+
+    .exp-role {
+      font-size: 0.85rem;
+      color: var(--ink-faint);
+      margin-bottom: 1.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+    }
+
+    .exp-highlights {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .highlight-tag {
+      font-size: 11px;
+      padding: 4px 10px;
+      background: var(--paper-white);
+      border: 1px solid var(--rule);
+      color: var(--ink-light);
+      letter-spacing: 0.04em;
+    }
+
+    .highlight-tag.accent {
+      background: #fdf0e8;
+      border-color: #f0c9a8;
+      color: var(--accent-warm);
+    }
+
+    .exp-body {
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* ── SKILLS ── */
+    .skills-layout {
+      display: grid;
+      grid-template-columns: 1fr 2fr;
+      gap: 5rem;
+      align-items: start;
+    }
+
+    .skills-intro {
+      font-family: var(--serif);
+      font-size: 1.6rem;
+      line-height: 1.3;
+      letter-spacing: -0.01em;
+    }
+
+    .skill-groups {
+      display: flex;
+      flex-direction: column;
+      gap: 2rem;
+    }
+
+    .skill-group h4 {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: var(--ink-faint);
+      margin-bottom: 0.75rem;
+    }
+
+    .skill-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .skill-tag {
+      font-size: 13px;
+      padding: 6px 14px;
+      background: var(--paper-white);
+      border: 1px solid var(--rule);
+      color: var(--ink);
+      font-weight: 400;
+    }
+
+    /* ── CONTACT ── */
+    #contact { background: var(--paper-white); }
+
+    .contact-layout {
+      display: grid;
+      grid-template-columns: 1fr 1.5fr;
+      gap: 6rem;
+      align-items: start;
+    }
+
+    .contact-headline {
+      font-family: var(--serif);
+      font-size: clamp(2rem, 4vw, 3rem);
+      line-height: 1.1;
+      letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+
+    .contact-headline em { font-style: italic; color: var(--accent-warm); }
+
+    .contact-info {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+
+    .contact-info a {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.9rem;
+      color: var(--ink-light);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    .contact-info a:hover { color: var(--accent-warm); }
+
+    .contact-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-warm);
+      flex-shrink: 0;
+    }
+
+    /* ── FORM ── */
+    .contact-form {
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+
+    .form-field label {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: var(--ink-faint);
+    }
+
+    .form-field input,
+    .form-field textarea {
+      background: var(--paper);
+      border: 1px solid var(--rule);
+      border-radius: 0;
+      padding: 0.8rem 1rem;
+      font-family: var(--sans);
+      font-size: 14px;
+      color: var(--ink);
+      outline: none;
+      transition: border-color 0.2s;
+      resize: none;
+      -webkit-appearance: none;
+    }
+    .form-field input:focus,
+    .form-field textarea:focus {
+      border-color: var(--ink);
+    }
+
+    .form-submit {
+      background: var(--ink);
+      color: var(--paper);
+      border: none;
+      padding: 1rem 2.5rem;
+      font-family: var(--sans);
+      font-size: 13px;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+      align-self: flex-start;
+    }
+    .form-submit:hover { background: var(--accent-warm); }
+
+    /* ── FOOTER ── */
+    footer {
+      margin-left: 0;
+      padding: 2rem 5rem;
+      border-top: 1px solid var(--rule);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--ink-faint);
+    }
+
+    footer a {
+      color: var(--ink-faint);
+      text-decoration: none;
+    }
+    footer a:hover { color: var(--accent-warm); }
+
+    /* ── MOBILE ── */
+    @media (max-width: 768px) {
+      :root { --nav-w: 0px; }
+
+      nav {
+        width: 100%;
+        height: 56px;
+        flex-direction: row;
+        padding: 0 1.5rem;
+        bottom: auto;
+        top: 0;
+      }
+
+      .nav-logo {
+        writing-mode: horizontal-tb;
+        transform: none;
+        margin-bottom: 0;
+        padding-top: 0;
+        font-size: 12px;
+        margin-right: auto;
+      }
+
+      .nav-links {
+        flex-direction: row;
+        gap: 1.2rem;
+        margin-bottom: 0;
+      }
+
+      .nav-links a {
+        writing-mode: horizontal-tb;
+        transform: none;
+        font-size: 9px;
+      }
+
+      main { margin-left: 0; margin-top: 56px; }
+
+      section { padding: 4rem 1.5rem; }
+
+      #hero { padding-bottom: 3rem; min-height: auto; padding-top: 3rem; }
+
+      .hero-stats {
+        position: static;
+        flex-direction: row;
+        gap: 2rem;
+        text-align: left;
+        margin-top: 3rem;
+      }
+
+      .stat-num { font-size: 2rem; }
+
+      .value-grid,
+      .contact-layout,
+      .skills-layout { grid-template-columns: 1fr; gap: 2.5rem; }
+
+      .impact-grid { grid-template-columns: 1fr; }
+      .impact-cell { border-right: none; border-bottom: 1px solid rgba(245,244,240,0.1); }
+
+      .exp-item { grid-template-columns: 1fr; gap: 0.5rem; }
+
+      .form-row { grid-template-columns: 1fr; }
+
+      .pillars { grid-template-columns: 1fr; }
+
+      footer { flex-direction: column; gap: 0.5rem; text-align: center; padding: 1.5rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <span class="nav-logo">Chintan Agheda</span>
+    <ul class="nav-links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#impact">Impact</a></li>
+      <li><a href="#experience">Experience</a></li>
+      <li><a href="#skills">Skills</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </nav>
+
+  <main>
+
+    <!-- HERO -->
+    <section id="hero" style="padding: 5rem 5rem 5rem 5rem;">
+      <p class="hero-tag">Finance Manager · Mumbai, India</p>
+      <h1 class="hero-name">Building finance<br>that <em>works.</em></h1>
+      <p class="hero-desc">
+        10+ years helping startups go from finance chaos to finance clarity.
+        From Zepto's $50M/month operation to automating accounts payable across
+        40+ cities — I build processes that scale.
+      </p>
+      <div class="hero-ctas">
+        <a href="#contact" class="btn-primary">Let's Talk →</a>
+        <a href="https://drive.google.com/file/d/1BDIRQmq6uji2muwXcS7kMNfQVJyYKK5w/view?usp=drive_link" target="_blank" class="btn-secondary">Download Resume</a>
+        <a href="https://www.linkedin.com/in/chintanagheda" target="_blank" class="btn-secondary">LinkedIn ↗</a>
+      </div>
+
+      <div class="hero-stats">
+        <div>
+          <div class="stat-num">10+</div>
+          <div class="stat-label">Years experience</div>
+        </div>
+        <div>
+          <div class="stat-num">6+</div>
+          <div class="stat-label">In startups</div>
+        </div>
+        <div>
+          <div class="stat-num">4</div>
+          <div class="stat-label">Funding rounds</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about">
+      <p class="section-label">About</p>
+      <div class="value-grid">
+        <div>
+          <h2 class="value-headline">Finance isn't just numbers — it's the <em>backbone</em> of every decision.</h2>
+        </div>
+        <div>
+          <div class="value-body">
+            <p>I'm a CA Finalist and Finance Manager with deep roots in startup finance. I've sat in core finance teams through hypergrowth, funding rounds, audits, and operational fire drills — and I know what it takes to build systems that don't break.</p>
+            <p>My work spans financial operations, process automation, FP&A, compliance, and ERP implementation. I don't just report numbers — I make sure the numbers are right, the processes are tight, and the team isn't drowning in manual work.</p>
+          </div>
+
+          <div class="pillars">
+            <div class="pillar">
+              <div class="pillar-icon">⚙️</div>
+              <h4>Process Automation</h4>
+              <p>Turning manual, error-prone workflows into automated, audit-ready systems.</p>
+            </div>
+            <div class="pillar">
+              <div class="pillar-icon">📊</div>
+              <h4>FP&amp;A &amp; MIS</h4>
+              <p>Building the reporting infrastructure that drives real business decisions.</p>
+            </div>
+            <div class="pillar">
+              <div class="pillar-icon">🔒</div>
+              <h4>Compliance &amp; Controls</h4>
+              <p>GST, TDS, Income Tax, internal audits — keeping companies clean and protected.</p>
+            </div>
+            <div class="pillar">
+              <div class="pillar-icon">🚀</div>
+              <h4>Startup Scale-Up</h4>
+              <p>Building finance from scratch for fast-moving startups that need to move fast and stay clean.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPACT -->
+    <section id="impact">
+      <p class="section-label">Impact by numbers</p>
+      <div class="impact-grid">
+        <div class="impact-cell">
+          <div class="impact-num">₹136<span>Cr</span></div>
+          <div class="impact-desc">Accounting backlog resolved — 98% clearance of stuck transactions across CAT, OPS &amp; TECH issues.</div>
+          <div class="impact-context">Zepto</div>
+        </div>
+        <div class="impact-cell">
+          <div class="impact-num">$4<span>M</span></div>
+          <div class="impact-desc">Recovered from top brands for advertising &amp; marketing income.</div>
+          <div class="impact-context">Zepto</div>
+        </div>
+        <div class="impact-cell">
+          <div class="impact-num">40<span>%</span></div>
+          <div class="impact-desc">Increase in invoice processing efficiency after identifying and plugging financial leakages.</div>
+          <div class="impact-context">Zepto</div>
+        </div>
+        <div class="impact-cell">
+          <div class="impact-num">$232<span>Mn</span></div>
+          <div class="impact-desc">Part of due diligence finance team for Zepto's Series E funding round.</div>
+          <div class="impact-context">Zepto · Series E</div>
+        </div>
+        <div class="impact-cell">
+          <div class="impact-num">6<span> days</span></div>
+          <div class="impact-desc">Reduced MIS monthly closing turnaround time — faster insights, faster decisions.</div>
+          <div class="impact-context">Zepto</div>
+        </div>
+        <div class="impact-cell">
+          <div class="impact-num">40<span>+</span></div>
+          <div class="impact-desc">Cities under PAN India accounts payable management, including domestic &amp; international payments.</div>
+          <div class="impact-context">Chalo</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- EXPERIENCE -->
+    <section id="experience">
+      <p class="section-label">Experience</p>
+      <div class="exp-list">
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-period">Apr 2023 — Present</div>
+          </div>
+          <div>
+            <h3 class="exp-company">Zepto</h3>
+            <p class="exp-role">Finance Manager · Q-Commerce · Mumbai</p>
+            <div class="exp-highlights">
+              <span class="highlight-tag accent">$50M/month turnover</span>
+              <span class="highlight-tag">Zoho ERP</span>
+              <span class="highlight-tag">5 Internal Cos</span>
+              <span class="highlight-tag">Team of 10</span>
+            </div>
+            <p class="exp-body">Core finance team member for a fast-scaling Q-commerce startup. Led monthly closing, SOP drafting, stakeholder management, advertising income recovery, and invoice processing efficiency improvements. Part of the due diligence team for a $232M Series E funding round.</p>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-period">Jul 2022 — Mar 2023</div>
+          </div>
+          <div>
+            <h3 class="exp-company">Chalo</h3>
+            <p class="exp-role">Finance Manager · Mobility Startup · Navi Mumbai</p>
+            <div class="exp-highlights">
+              <span class="highlight-tag accent">40+ Cities AP</span>
+              <span class="highlight-tag">AOP Setting</span>
+              <span class="highlight-tag">International Payments</span>
+            </div>
+            <p class="exp-body">Automated accounts payable processes and led PAN India AP across 40+ cities. Set up finance SOPs, drove AOP for functional teams, and supported Big4 due diligence audits. Focused on operational profitability and internal controls.</p>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-period">Nov 2020 — Jul 2022</div>
+          </div>
+          <div>
+            <h3 class="exp-company">IGP.com</h3>
+            <p class="exp-role">Assistant Finance Manager · E-Commerce · Mumbai</p>
+            <div class="exp-highlights">
+              <span class="highlight-tag accent">2 Funding Rounds</span>
+              <span class="highlight-tag">CFS Preparation</span>
+              <span class="highlight-tag">10+ Entities</span>
+              <span class="highlight-tag">Tax Compliance</span>
+            </div>
+            <p class="exp-body">Played a vital role in closing two funding rounds. Led consolidated financial statement prep, MIS, FP&A, tax compliance (GST, TDS, Income Tax), inventory management, and managed a team of 10–12.</p>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-period">Apr 2019 — Nov 2020</div>
+          </div>
+          <div>
+            <h3 class="exp-company">SuprDaily / Swiggy</h3>
+            <p class="exp-role">Finance Executive · Mumbai</p>
+            <div class="exp-highlights">
+              <span class="highlight-tag">MIS &amp; Cash Flows</span>
+              <span class="highlight-tag">6 Cities</span>
+              <span class="highlight-tag">Payroll Processing</span>
+            </div>
+            <p class="exp-body">Prepared MIS and cash flow statements for 6 cities, managed delivery executive and employee payroll, handled accounts payable, and set up new automated processes to reduce manual effort.</p>
+          </div>
+        </div>
+
+        <div class="exp-item">
+          <div class="exp-meta">
+            <div class="exp-period">Aug 2013 — Mar 2019</div>
+          </div>
+          <div>
+            <h3 class="exp-company">CA Firms</h3>
+            <p class="exp-role">S S Padhi &amp; Associates · H A M &amp; Co · Article Trainee → Senior Manager</p>
+            <div class="exp-highlights">
+              <span class="highlight-tag">Audit &amp; Finalization</span>
+              <span class="highlight-tag">GST / TDS / VAT</span>
+              <span class="highlight-tag">ROC Filings</span>
+            </div>
+            <p class="exp-body">Full accounting lifecycle from data entry to finalization, tax compliance (Income Tax, TDS, VAT, Service Tax, GST), ROC filings, stock audits, and drafting legal documents. Strong foundation across diverse industries and client types.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SKILLS -->
+    <section id="skills">
+      <p class="section-label">Skills &amp; Tools</p>
+      <div class="skills-layout">
+        <div>
+          <h2 class="skills-intro">What I bring to your finance team.</h2>
+          <br>
+          <p style="font-size: 0.85rem; color: var(--ink-faint); line-height: 1.6;">CA Finalist · B.Com · Mumbai University<br>ICAI — 100Hr Advanced IT Training · GMCS</p>
+        </div>
+        <div class="skill-groups">
+          <div class="skill-group">
+            <h4>Financial Operations</h4>
+            <div class="skill-tags">
+              <span class="skill-tag">Accounts Payable</span>
+              <span class="skill-tag">General Ledger</span>
+              <span class="skill-tag">Month-End Closing</span>
+              <span class="skill-tag">Reconciliation</span>
+              <span class="skill-tag">Inventory Management</span>
+              <span class="skill-tag">Banking &amp; Payments</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Planning &amp; Analysis</h4>
+            <div class="skill-tags">
+              <span class="skill-tag">FP&amp;A</span>
+              <span class="skill-tag">MIS Reporting</span>
+              <span class="skill-tag">AOP Setting</span>
+              <span class="skill-tag">Budgeting &amp; Forecasting</span>
+              <span class="skill-tag">CFS Preparation</span>
+              <span class="skill-tag">Unit Economics</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Compliance &amp; Controls</h4>
+            <div class="skill-tags">
+              <span class="skill-tag">GST</span>
+              <span class="skill-tag">TDS</span>
+              <span class="skill-tag">Income Tax</span>
+              <span class="skill-tag">Internal Controls</span>
+              <span class="skill-tag">Due Diligence Support</span>
+              <span class="skill-tag">SOP Drafting</span>
+            </div>
+          </div>
+          <div class="skill-group">
+            <h4>Tools &amp; ERP</h4>
+            <div class="skill-tags">
+              <span class="skill-tag">Zoho Books</span>
+              <span class="skill-tag">Zoho Inventory</span>
+              <span class="skill-tag">Zoho Analytics</span>
+              <span class="skill-tag">MS Excel</span>
+              <span class="skill-tag">Process Automation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACT -->
+    <section id="contact">
+      <p class="section-label">Let's connect</p>
+      <div class="contact-layout">
+        <div>
+          <h2 class="contact-headline">Ready to build something <em>better?</em></h2>
+          <p style="font-size: 0.9rem; color: var(--ink-light); line-height: 1.7; font-weight: 300; margin-top: 1rem;">
+            Whether you're a startup that needs finance built from scratch, a growing company looking to tighten processes, or a recruiter with an exciting opportunity — I'd love to hear from you.
+          </p>
+          <div class="contact-info">
+            <a href="mailto:chintanagheda@gmail.com">
+              <span class="contact-dot"></span>
+              chintanagheda@gmail.com
+            </a>
+            <a href="https://www.linkedin.com/in/chintanagheda" target="_blank">
+              <span class="contact-dot"></span>
+              linkedin.com/in/chintanagheda
+            </a>
+            <a href="#">
+              <span class="contact-dot"></span>
+              Mumbai, Maharashtra, India
+            </a>
+          </div>
+          <div style="margin-top: 2.5rem;">
+            <a href="https://drive.google.com/file/d/1BDIRQmq6uji2muwXcS7kMNfQVJyYKK5w/view?usp=drive_link" target="_blank" class="btn-primary">Download Resume →</a>
+          </div>
+        </div>
+
+        <form class="contact-form" action="https://getform.io/f/b35976a2-5870-4ca9-9c11-39e8f1bce9a8" method="post" enctype="multipart/form-data">
+          <div class="form-row">
+            <div class="form-field">
+              <label>Your Name</label>
+              <input type="text" name="name" placeholder="Full name" required>
+            </div>
+            <div class="form-field">
+              <label>Your Email</label>
+              <input type="email" name="email" placeholder="email@company.com" required>
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-field">
+              <label>Phone (optional)</label>
+              <input type="tel" name="mobileNo" placeholder="+91 ...">
+            </div>
+            <div class="form-field">
+              <label>Subject</label>
+              <input type="text" name="subject" placeholder="What's this about?" required>
+            </div>
+          </div>
+          <div class="form-field">
+            <label>Message</label>
+            <textarea name="message" rows="5" placeholder="Tell me about your situation and what you're looking for..." required></textarea>
+          </div>
+          <div class="form-field">
+            <label>Attachment (optional)</label>
+            <input type="file" name="file" style="font-size: 13px; color: var(--ink-light);">
+          </div>
+          <button type="submit" class="form-submit">Send Message →</button>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <span>© 2025 Chintan Agheda. All rights reserved.</span>
+    <span>Finance Manager · Mumbai · <a href="https://www.linkedin.com/in/chintanagheda" target="_blank">LinkedIn</a></span>
+  </footer>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.08 });
+
+    document.querySelectorAll('section').forEach(s => observer.observe(s));
+
+    document.querySelector('#hero').classList.add('visible');
+  </script>
+
+</body>
+</html>
