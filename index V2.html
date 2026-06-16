@@ -1,0 +1,1328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Chintan Agheda — Commercial Finance Operator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+:root{
+--bg:#070707;
+--surface:#111111;
+--gold:#c7a76a;
+--green:#16392d;
+--text:#f5f5f5;
+--muted:#9d9d9d;
+--line:rgba(255,255,255,.08);
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--bg);
+color:var(--text);
+overflow-x:hidden;
+-webkit-font-smoothing:antialiased;
+}
+
+/* NOISE */
+.noise{
+position:fixed;
+inset:0;
+pointer-events:none;
+opacity:.025;
+background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+z-index:999;
+}
+
+/* LOADER */
+.loader{
+position:fixed;
+inset:0;
+background:#050505;
+z-index:99999;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+.loader::before{
+content:'';
+position:absolute;
+width:700px;
+height:700px;
+background:radial-gradient(circle, rgba(199,167,106,.12), transparent 70%);
+filter:blur(100px);
+}
+
+.loader-grid{
+position:absolute;
+inset:0;
+background-image:
+linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+background-size:60px 60px;
+mask-image:radial-gradient(circle at center, black 20%, transparent 80%);
+}
+
+.loader-content{
+position:relative;
+z-index:3;
+text-align:center;
+}
+
+.loader-label{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.35em;
+text-transform:uppercase;
+color:rgba(255,255,255,.45);
+margin-bottom:30px;
+opacity:0;
+}
+
+.loader-title{
+font-family:'Manrope',sans-serif;
+font-size:clamp(4rem,10vw,9rem);
+line-height:.9;
+font-weight:800;
+letter-spacing:-.08em;
+overflow:hidden;
+margin-bottom:22px;
+}
+
+.loader-title span{
+display:block;
+transform:translateY(120%);
+}
+
+.loader-sub{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.4em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+margin-bottom:50px;
+opacity:0;
+}
+
+.loader-line{
+width:320px;
+height:1px;
+background:rgba(255,255,255,.08);
+overflow:hidden;
+margin:auto;
+position:relative;
+}
+
+.loader-progress{
+position:absolute;
+left:0;
+top:0;
+width:0%;
+height:100%;
+background:var(--gold);
+}
+
+.loader-bottom{
+margin-top:16px;
+display:flex;
+justify-content:space-between;
+font-family:'IBM Plex Mono', monospace;
+font-size:10px;
+letter-spacing:.2em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+}
+
+.loader-doors-top,
+.loader-doors-bottom{
+position:absolute;
+left:0;
+width:100%;
+height:50%;
+background:#050505;
+z-index:10;
+transition:1.4s cubic-bezier(.77,0,.18,1);
+}
+
+.loader-doors-top{ top:0; }
+.loader-doors-bottom{ bottom:0; }
+
+.loader.open .loader-doors-top{ transform:translateY(-100%); }
+.loader.open .loader-doors-bottom{ transform:translateY(100%); }
+
+/* NAVBAR */
+nav{
+position:fixed;
+top:0;
+width:100%;
+padding:28px 70px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:1000;
+backdrop-filter:blur(12px);
+background:rgba(7,7,7,.4);
+border-bottom:1px solid rgba(255,255,255,.04);
+}
+
+.logo{
+display:flex;
+align-items:center;
+gap:14px;
+font-family:'IBM Plex Mono', monospace;
+font-size:12px;
+letter-spacing:.25em;
+text-transform:uppercase;
+}
+
+.logo-box{
+width:36px;
+height:36px;
+background:var(--gold);
+color:black;
+display:flex;
+align-items:center;
+justify-content:center;
+border-radius:10px;
+font-weight:700;
+font-size:11px;
+}
+
+.nav-links{
+display:flex;
+gap:40px;
+}
+
+.nav-links a{
+text-decoration:none;
+font-size:14px;
+color:rgba(255,255,255,.55);
+transition:.4s;
+}
+
+.nav-links a:hover{ color:white; }
+
+.nav-btn{
+padding:14px 22px;
+border-radius:100px;
+background:var(--gold);
+color:black;
+font-size:13px;
+font-weight:700;
+text-decoration:none;
+transition:.4s;
+}
+
+.nav-btn:hover{ transform:translateY(-3px); }
+
+/* HERO */
+.hero{
+min-height:100vh;
+display:flex;
+align-items:center;
+padding:160px 80px 100px;
+position:relative;
+}
+
+.hero-grid{
+max-width:1400px;
+margin:auto;
+display:grid;
+grid-template-columns:1.1fr .9fr;
+gap:100px;
+align-items:center;
+width:100%;
+}
+
+.hero-tag{
+display:inline-flex;
+align-items:center;
+gap:12px;
+padding:10px 18px;
+border-radius:100px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.06);
+margin-bottom:35px;
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.25em;
+text-transform:uppercase;
+color:rgba(255,255,255,.6);
+}
+
+.dot{
+width:7px;
+height:7px;
+background:#2fd27b;
+border-radius:50%;
+}
+
+.hero h1{
+font-family:'Manrope',sans-serif;
+font-size:clamp(4rem,8vw,8rem);
+line-height:.92;
+letter-spacing:-.08em;
+font-weight:800;
+margin-bottom:35px;
+overflow:hidden;
+}
+
+.hero h1 span{
+display:block;
+transform:translateY(120%);
+}
+
+.hero p{
+max-width:650px;
+font-size:18px;
+line-height:1.9;
+color:var(--muted);
+margin-bottom:45px;
+opacity:0;
+transform:translateY(40px);
+}
+
+.hero-actions{
+display:flex;
+gap:18px;
+opacity:0;
+transform:translateY(40px);
+}
+
+.btn{
+padding:18px 34px;
+border-radius:100px;
+font-size:14px;
+font-weight:700;
+text-decoration:none;
+transition:.4s;
+display:inline-flex;
+align-items:center;
+gap:12px;
+}
+
+.btn-primary{
+background:var(--gold);
+color:black;
+}
+
+.btn-primary:hover{ transform:translateY(-4px); }
+
+.btn-secondary{
+border:1px solid rgba(255,255,255,.08);
+background:rgba(255,255,255,.03);
+color:white;
+}
+
+.btn-secondary:hover{ transform:translateY(-4px); }
+
+.hero-image{
+position:relative;
+opacity:0;
+transform:translateY(60px);
+}
+
+.image-wrap{
+aspect-ratio:4/5;
+overflow:hidden;
+border-radius:36px;
+background:#111;
+}
+
+.image-wrap img{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:1.2s;
+}
+
+.image-wrap:hover img{ transform:scale(1.04); }
+
+.floating-card{
+position:absolute;
+bottom:-25px;
+right:-25px;
+padding:24px;
+background:rgba(255,255,255,.04);
+backdrop-filter:blur(18px);
+border:1px solid rgba(255,255,255,.08);
+border-radius:24px;
+min-width:230px;
+}
+
+.floating-label{
+font-family:'IBM Plex Mono', monospace;
+font-size:10px;
+letter-spacing:.25em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+margin-bottom:10px;
+}
+
+.floating-value{
+font-family:'Manrope',sans-serif;
+font-size:24px;
+font-weight:700;
+line-height:1.2;
+}
+
+/* HYPERGROWTH */
+.hypergrowth{
+position:relative;
+display:inline-block;
+color:#15382c;
+background:white;
+padding:0 .08em;
+}
+
+.hypergrowth svg{
+position:absolute;
+left:-1%;
+bottom:-18px;
+width:102%;
+height:18px;
+overflow:visible;
+}
+
+.hypergrowth path{
+fill:none;
+stroke:var(--gold);
+stroke-width:5;
+stroke-linecap:round;
+stroke-dasharray:600;
+stroke-dashoffset:600;
+}
+
+/* SECTION */
+.section{
+padding:150px 80px;
+}
+
+.section-head{
+max-width:1300px;
+margin:auto auto 90px;
+}
+
+.section-label{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.35em;
+text-transform:uppercase;
+color:var(--gold);
+margin-bottom:22px;
+}
+
+.section-title{
+font-family:'Manrope',sans-serif;
+font-size:clamp(3rem,6vw,6rem);
+line-height:1;
+letter-spacing:-.07em;
+font-weight:800;
+max-width:1000px;
+}
+
+/* RESULTS */
+.stats{
+max-width:1300px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:24px;
+}
+
+.stat{
+padding:40px;
+background:rgba(255,255,255,.025);
+border:1px solid rgba(255,255,255,.06);
+border-radius:28px;
+transition:.4s;
+}
+
+.stat:hover{
+transform:translateY(-8px);
+border-color:rgba(199,167,106,.2);
+}
+
+.stat-number{
+font-family:'Manrope',sans-serif;
+font-size:56px;
+font-weight:800;
+letter-spacing:-.06em;
+margin-bottom:12px;
+}
+
+.stat-label{
+font-size:14px;
+line-height:1.8;
+color:var(--muted);
+}
+
+/* TIMELINE */
+.timeline{
+max-width:1200px;
+margin:auto;
+display:flex;
+flex-direction:column;
+gap:30px;
+}
+
+.timeline-item{
+padding:40px;
+border-radius:30px;
+background:rgba(255,255,255,.025);
+border:1px solid rgba(255,255,255,.06);
+transition:.4s;
+}
+
+.timeline-item:hover{
+transform:translateY(-8px);
+border-color:rgba(199,167,106,.2);
+}
+
+.timeline-item.current{
+border-color:rgba(199,167,106,.25);
+background:rgba(199,167,106,.04);
+}
+
+.timeline-year{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.3em;
+text-transform:uppercase;
+color:var(--gold);
+margin-bottom:18px;
+}
+
+/* COMPANY HEADER ROW */
+.company-header{
+display:flex;
+align-items:center;
+gap:20px;
+margin-bottom:10px;
+}
+
+.company-logo{
+width:52px;
+height:52px;
+border-radius:14px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-weight:800;
+font-size:13px;
+flex-shrink:0;
+overflow:hidden;
+}
+
+/* Logo colors per company */
+.logo-noon{ background:#FFC200; color:#000; font-size:11px; letter-spacing:.05em; }
+.logo-zepto{ background:#6B2FE3; color:#fff; }
+.logo-chalo{ background:#FF5A00; color:#fff; }
+.logo-igp{ background:#E83D3D; color:#fff; }
+.logo-supr{ background:#00B27A; color:#fff; }
+.logo-padhi{ background:rgba(255,255,255,.08); color:rgba(255,255,255,.7); }
+.logo-ham{ background:rgba(255,255,255,.08); color:rgba(255,255,255,.7); }
+
+.timeline h3{
+font-family:'Manrope',sans-serif;
+font-size:38px;
+font-weight:800;
+letter-spacing:-.05em;
+line-height:1;
+}
+
+.timeline-role{
+font-size:15px;
+margin-bottom:6px;
+color:rgba(255,255,255,.72);
+}
+
+.timeline-sub-role{
+font-size:13px;
+color:var(--muted);
+margin-bottom:20px;
+font-family:'IBM Plex Mono', monospace;
+letter-spacing:.05em;
+}
+
+/* BULLETS */
+.timeline-bullets{
+list-style:none;
+display:flex;
+flex-direction:column;
+gap:10px;
+}
+
+.timeline-bullets li{
+display:flex;
+gap:14px;
+align-items:flex-start;
+font-size:14px;
+line-height:1.8;
+color:var(--muted);
+}
+
+.timeline-bullets li::before{
+content:'';
+width:5px;
+height:5px;
+border-radius:50%;
+background:var(--gold);
+flex-shrink:0;
+margin-top:9px;
+}
+
+/* Sub-section label inside card */
+.role-block{
+margin-bottom:28px;
+}
+
+.role-block:last-child{
+margin-bottom:0;
+}
+
+.role-divider{
+height:1px;
+background:rgba(255,255,255,.06);
+margin:24px 0;
+}
+
+/* CONTACT */
+.contact-box{
+max-width:1200px;
+margin:auto;
+padding:70px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.06);
+border-radius:40px;
+text-align:center;
+}
+
+.contact-box h2{
+font-family:'Manrope',sans-serif;
+font-size:clamp(3rem,6vw,5rem);
+line-height:1;
+letter-spacing:-.07em;
+font-weight:800;
+margin-bottom:24px;
+}
+
+.contact-box p{
+max-width:700px;
+margin:auto auto 40px;
+line-height:1.9;
+color:var(--muted);
+}
+
+.contact-links{
+display:flex;
+justify-content:center;
+gap:18px;
+flex-wrap:wrap;
+}
+
+/* FOOTER */
+footer{
+padding:50px 80px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+border-top:1px solid rgba(255,255,255,.05);
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.2em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+}
+
+/* CUSTOM CURSOR */
+body{ cursor:none; }
+
+/* ROLLING WORDS */
+.rolling-wrap{
+display:inline-block;
+overflow:hidden;
+vertical-align:bottom;
+height:1.1em;
+}
+.rolling-inner{
+display:flex;
+flex-direction:column;
+transition:transform .6s cubic-bezier(.77,0,.18,1);
+}
+.rolling-inner span{
+display:block;
+line-height:1.1;
+color:var(--gold);
+}
+
+/* MARQUEE */
+.marquee-strip{
+border-top:1px solid var(--line);
+border-bottom:1px solid var(--line);
+padding:18px 0;
+background:rgba(255,255,255,.015);
+overflow:hidden;
+white-space:nowrap;
+}
+.marquee-track{
+display:inline-flex;
+gap:0;
+animation:marqueeScroll 22s linear infinite;
+}
+.marquee-item{
+font-family:'IBM Plex Mono',monospace;
+font-size:11px;
+letter-spacing:.3em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+padding:0 40px;
+}
+.marquee-item .sep{
+color:var(--gold);
+margin:0 10px;
+}
+@keyframes marqueeScroll{
+0%{ transform:translateX(0); }
+100%{ transform:translateX(-50%); }
+}
+
+/* CARD HOVER BORDER EFFECT (for stat cards) */
+.stat{
+position:relative;
+overflow:hidden;
+}
+.stat::before{
+content:'';
+position:absolute;
+top:0; left:0;
+width:2px; height:0;
+background:var(--gold);
+transition:height .4s ease;
+}
+.stat:hover::before{ height:100%; }
+
+/* CUSTOM CURSOR */
+.cursor{
+position:fixed;
+width:8px;height:8px;
+background:var(--gold);
+border-radius:50%;
+pointer-events:none;
+z-index:99999;
+transform:translate(-50%,-50%);
+}
+.cursor-ring{
+position:fixed;
+width:38px;height:38px;
+border:1.5px solid var(--gold);
+border-radius:50%;
+pointer-events:none;
+z-index:99998;
+transform:translate(-50%,-50%);
+opacity:.35;
+transition:width .3s,height .3s,opacity .3s,border-style .3s;
+}
+@keyframes spin-ring{ to{ transform:translate(-50%,-50%) rotate(360deg); } }
+.cursor-ring.hovered{ animation:spin-ring 1.2s linear infinite; opacity:.5; }
+@media(max-width:768px){ .cursor,.cursor-ring{ display:none; } body{ cursor:auto; } }
+
+/* RESPONSIVE */
+@media(max-width:1000px){
+.hero-grid{ grid-template-columns:1fr; }
+.stats{ grid-template-columns:1fr 1fr; }
+nav{ padding:22px; }
+.hero{ padding:140px 22px 100px; }
+.section{ padding:110px 22px; }
+footer{ padding:40px 22px; flex-direction:column; gap:14px; }
+.nav-links{ display:none; }
+}
+
+@media(max-width:700px){
+.stats{ grid-template-columns:1fr; }
+.hero-actions{ flex-direction:column; align-items:flex-start; }
+.contact-box{ padding:40px 30px; }
+.loader-line{ width:260px; }
+.timeline-item{ padding:28px; }
+.timeline h3{ font-size:28px; }
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="noise"></div>
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="ring"></div>
+
+<!-- LOADER -->
+<div class="loader" id="loader">
+<div class="loader-grid"></div>
+<div class="loader-content">
+<div class="loader-label">Commercial Finance Systems</div>
+<h1 class="loader-title">
+<span>CHINTAN</span>
+<span>AGHEDA</span>
+</h1>
+<div class="loader-sub">Hypergrowth Finance Operator</div>
+<div class="loader-line">
+<div class="loader-progress"></div>
+</div>
+<div class="loader-bottom">
+<span>Mumbai · UAE · KSA</span>
+<span class="loader-percent">0%</span>
+</div>
+</div>
+<div class="loader-doors-top"></div>
+<div class="loader-doors-bottom"></div>
+</div>
+
+<!-- NAVBAR -->
+<nav>
+<div class="logo">
+<div class="logo-box">CA</div>
+CHINTAN AGHEDA
+</div>
+<div class="nav-links">
+<a href="#about">About</a>
+<a href="#results">Results</a>
+<a href="#experience">Experience</a>
+<a href="#contact">Contact</a>
+</div>
+<a href="#contact" class="nav-btn">Start Conversation</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+<div class="hero-grid">
+<div>
+<div class="hero-tag">
+<div class="dot"></div>
+Open For Leadership Conversations
+</div>
+<h1>
+<span>Finance</span>
+<span>Built For</span>
+<span class="hypergrowth">
+hypergrowth
+<svg viewBox="0 0 800 70" preserveAspectRatio="none">
+<path id="wavePath" d="M10 40 Q 120 10 230 30 T 450 32 T 790 28"/>
+</svg>
+</span>
+</h1>
+<div style="margin-bottom:14px;font-family:'IBM Plex Mono',monospace;font-size:13px;letter-spacing:.2em;color:rgba(255,255,255,.5);">
+I specialise in —
+<span class="rolling-wrap" id="rollingWrap">
+<span class="rolling-inner" id="rollingInner">
+<span>AP at Scale</span>
+<span>Automation</span>
+<span>Due Diligence</span>
+<span>MIS &amp; FP&amp;A</span>
+<span>Vendor Ops</span>
+<span>AP at Scale</span>
+</span>
+</span>
+</div>
+<p>
+Commercial finance operator building scalable systems across India, UAE and KSA. Focused on operational finance, startup infrastructure, automation, due diligence and hypergrowth execution.
+</p>
+<div class="hero-actions">
+<a href="#results" class="btn btn-primary">View Results</a>
+<a href="#contact" class="btn btn-secondary">Get In Touch</a>
+</div>
+</div>
+<div class="hero-image">
+<div class="image-wrap">
+<img src="assets/img/Professional Photo Chintan Agheda Website.jpg" alt="Chintan Agheda">
+</div>
+<div class="floating-card">
+<div class="floating-label">Operational Markets</div>
+<div class="floating-value">India · UAE · KSA</div>
+</div>
+</div>
+</div>
+</section>
+
+<!-- MARQUEE STRIP -->
+<div class="marquee-strip">
+<div class="marquee-track" id="marqueeTrack">
+<span class="marquee-item">Zepto<span class="sep">·</span></span>
+<span class="marquee-item">noon<span class="sep">·</span></span>
+<span class="marquee-item">Chalo<span class="sep">·</span></span>
+<span class="marquee-item">IGP.com<span class="sep">·</span></span>
+<span class="marquee-item">SuprDaily<span class="sep">·</span></span>
+<span class="marquee-item">S S Padhi<span class="sep">·</span></span>
+<span class="marquee-item">HAM &amp; Co<span class="sep">·</span></span>
+<span class="marquee-item">Series E · $665M<span class="sep">·</span></span>
+<span class="marquee-item">Series F · $232M<span class="sep">·</span></span>
+<span class="marquee-item">40+ Cities AP Ops<span class="sep">·</span></span>
+<span class="marquee-item">1500+ Vendors GCC<span class="sep">·</span></span>
+<span class="marquee-item">13+ Years<span class="sep">·</span></span>
+<!-- duplicate for seamless loop -->
+<span class="marquee-item">Zepto<span class="sep">·</span></span>
+<span class="marquee-item">noon<span class="sep">·</span></span>
+<span class="marquee-item">Chalo<span class="sep">·</span></span>
+<span class="marquee-item">IGP.com<span class="sep">·</span></span>
+<span class="marquee-item">SuprDaily<span class="sep">·</span></span>
+<span class="marquee-item">S S Padhi<span class="sep">·</span></span>
+<span class="marquee-item">HAM &amp; Co<span class="sep">·</span></span>
+<span class="marquee-item">Series E · $665M<span class="sep">·</span></span>
+<span class="marquee-item">Series F · $232M<span class="sep">·</span></span>
+<span class="marquee-item">40+ Cities AP Ops<span class="sep">·</span></span>
+<span class="marquee-item">1500+ Vendors GCC<span class="sep">·</span></span>
+<span class="marquee-item">13+ Years<span class="sep">·</span></span>
+</div>
+</div>
+
+<!-- RESULTS -->
+<section class="section" id="results">
+<div class="section-head">
+<div class="section-label">Selected Results</div>
+<h2 class="section-title">Building finance systems for companies moving at startup speed.</h2>
+</div>
+<div class="stats">
+<div class="stat">
+<div class="stat-number">13+</div>
+<div class="stat-label">Years building finance operations and commercial systems.</div>
+</div>
+<div class="stat">
+<div class="stat-number">$897M</div>
+<div class="stat-label">Series E + F due diligence and hypergrowth finance exposure.</div>
+</div>
+<div class="stat">
+<div class="stat-number">2500+</div>
+<div class="stat-label">Vendor relationships and finance operations managed.</div>
+</div>
+<div class="stat">
+<div class="stat-number">40+</div>
+<div class="stat-label">Cities under AP operations and commercial workflows.</div>
+</div>
+</div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="section" id="experience">
+<div class="section-head">
+<div class="section-label">Track Record</div>
+<h2 class="section-title">Finance as operational leverage — not reporting.</h2>
+</div>
+
+<div class="timeline">
+
+  <!-- NOON -->
+  <div class="timeline-item current">
+    <div class="timeline-year">Jan 2026 — Present</div>
+    <div class="company-header">
+      <div class="company-logo logo-noon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="10" stroke="#000" stroke-width="3.5" fill="none"/>
+          <path d="M18 8 A10 10 0 0 1 28 18" stroke="#000" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div>
+        <h3>noon</h3>
+        <div class="timeline-role">Senior Manager | Head of Commercial Finance · GCC</div>
+        <div class="timeline-sub-role">AE · SA · KSA · EG · EGY · QA · QAT · BH · BAH · IQ · IRAQ</div>
+      </div>
+    </div>
+    <ul class="timeline-bullets">
+      <li>End-to-end financial operations across GCC, managing annual business volume of AED xBn+</li>
+      <li>Finance strategy — formulation and execution across markets</li>
+      <li>P&amp;L ownership, budgeting, reporting and optimization</li>
+      <li>Process development, revamp and automation; SOP creation and implementation</li>
+      <li>Stakeholder management with Group CXOs, HODs and GMs</li>
+      <li>Working directly with Product and Tech teams to build scalable, structured finance tools and solutions</li>
+      <li>Cashflow optimization and working capital management</li>
+      <li>Governance, compliance and internal controls</li>
+      <li>Vendor management: 1500+ vendors across GCC and international</li>
+      <li>Team management: built a team from 2 to 20+</li>
+      <li>Functional and cross-functional process optimization</li>
+      <li>P2P, R2R, SOP adherence</li>
+      <li>Leveraging finance processes with FinTech and AI tools</li>
+      <li>Collaborating with Commercial, Ops, Instock, Pricing, Marketing and AdMon teams</li>
+    </ul>
+  </div>
+
+  <!-- NOON MANAGER -->
+  <div class="timeline-item">
+    <div class="timeline-year">Aug 2024 — Dec 2025</div>
+    <div class="company-header">
+      <div class="company-logo logo-noon">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="18" cy="18" r="10" stroke="#000" stroke-width="3.5" fill="none"/>
+          <path d="M18 8 A10 10 0 0 1 28 18" stroke="#000" stroke-width="3.5" stroke-linecap="round" fill="none"/>
+        </svg>
+      </div>
+      <div>
+        <h3>noon</h3>
+        <div class="timeline-role">Manager · Commercial Finance · GCC</div>
+        <div class="timeline-sub-role">GCC's Biggest and Fastest Growing Quick Commerce</div>
+      </div>
+    </div>
+    <ul class="timeline-bullets">
+      <li>Built and scaled commercial finance processes for noon Minutes across GCC markets</li>
+      <li>Drove cross-functional alignment with Ops, Instock, Pricing and Commercial teams</li>
+      <li>Developed finance infrastructure to support rapid expansion</li>
+    </ul>
+  </div>
+
+  <!-- ZEPTO -->
+  <div class="timeline-item">
+    <div class="timeline-year">Apr 2023 — Aug 2024</div>
+    <div class="company-header">
+      <div class="company-logo logo-zepto">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <path d="M5 22L14 8H5V6H25V8L16 22H25V24H5V22Z" fill="white"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Zepto</h3>
+        <div class="timeline-role">Finance Manager · Mumbai</div>
+        <div class="timeline-sub-role">India's Fastest Growing Quick Commerce — Top 3</div>
+      </div>
+    </div>
+    <ul class="timeline-bullets">
+      <li>Part of the core finance team for Zepto's retail trading business with a monthly turnover of $50M</li>
+      <li>Instrumental member of the due diligence finance team for $665M Series F and $232M Series E funding rounds</li>
+      <li>MIS reporting and monthly closing — reduced turnaround time by 6 days</li>
+      <li>Streamlined accounting and financial processes at PO ↔ ASN ↔ GRN ↔ Invoice level</li>
+      <li>Resolved accounting backlog by 98% (₹136 Cr) stuck due to CAT / OPS / TECH issues</li>
+      <li>Resolved and collected ~$10M from top brands for advertising and marketing income</li>
+      <li>Managed 5 internal companies and led a team of 10 members</li>
+    </ul>
+  </div>
+
+  <!-- CHALO -->
+  <div class="timeline-item">
+    <div class="timeline-year">Jul 2022 — Mar 2023</div>
+    <div class="company-header">
+      <div class="company-logo logo-chalo">
+        <svg width="30" height="30" viewBox="0 0 30 30" fill="none">
+          <circle cx="15" cy="10" r="4" fill="white"/>
+          <path d="M8 24 Q15 14 22 24" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div>
+        <h3>Chalo</h3>
+        <div class="timeline-role">Finance Manager · Navi Mumbai</div>
+        <div class="timeline-sub-role">India's No. 1 Travel Tech Startup</div>
+      </div>
+    </div>
+    <ul class="timeline-bullets">
+      <li>Led PAN India Accounts Payable across 40+ cities covering domestic and international payments</li>
+      <li>MIS reporting, stakeholder management and monthly closing activity</li>
+      <li>Set up Annual Operating Plan (AOP) across all departments with monthly tracking</li>
+      <li>Reconciliation of e-wallet database and identification of financial discrepancies</li>
+      <li>Big4 due diligence coordination and finance SOPs implementation</li>
+    </ul>
+  </div>
+
+  <!-- IGP -->
+  <div class="timeline-item">
+    <div class="timeline-year">Nov 2020 — Jul 2022</div>
+    <div class="company-header">
+      <div class="company-logo logo-igp">
+        <svg width="30" height="18" viewBox="0 0 30 18" fill="none">
+          <text x="0" y="15" font-family="serif" font-weight="800" font-size="16" fill="white">igp</text>
+        </svg>
+      </div>
+      <div>
+        <h3>IGP.com</h3>
+        <div class="timeline-role">Assistant Manager Finance · Mumbai</div>
+        <div class="timeline-sub-role">Global Gift Tech Company</div>
+      </div>
+    </div>
+    <ul class="timeline-bullets">
+      <li>Preparation of standalone and consolidated financial statements per GAAP</li>
+      <li>Part of due diligence team for $10M funding round</li>
+      <li>MIS reporting, budgeting, FP&amp;A and monthly closing</li>
+      <li>Inventory finance management and identifying and reducing financial discrepancies</li>
+      <li>Operational systems management for a fast-growing e-commerce ecosystem</li>
+    </ul>
+  </div>
+
+  <!-- SUPRDAILY -->
+  <div class="timeline-item">
+    <div class="timeline-year">Apr 2019 — Nov 2020</div>
+    <div class="company-header">
+      <div class="company-logo logo-supr">
+        <svg width="30" height="28" viewBox="0 0 30 28" fill="none">
+          <path d="M5 8 Q15 2 25 8 L22 22 Q15 26 8 22Z" fill="none" stroke="white" stroke-width="2"/>
+          <circle cx="15" cy="14" r="3" fill="white"/>
+        </svg>
+      </div>
+      <div>
+        <h3>SuprDaily</h3>
+        <div class="timeline-role">Finance Executive · Mumbai</div>
+        <div class="timeline-sub-role">Pioneering E-Commerce to Quick Commerce · Swiggy</div>
+      </div>
+    </div>
+    <ul class="timeline-bullets">
+      <li>Led PAN India Accounts Payable with ~10,000 payments per month — delivery partner salary & incentives (weekly/bi-monthly), corporate salary and promoter payouts</li>
+      <li>MIS reporting, unit economics reporting and cash flow statements across 6 cities</li>
+      <li>Process setup and automation for manual finance activities</li>
+      <li>Review of trade procurements from PO to GRN to Invoice to Payment level</li>
+    </ul>
+  </div>
+
+  <!-- SS PADHI -->
+  <div class="timeline-item">
+    <div class="timeline-year">Oct 2018 — Apr 2019</div>
+    <div class="company-header">
+      <div class="company-logo logo-padhi">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.05em;color:rgba(255,255,255,.7);">SSP</span>
+      </div>
+      <div>
+        <h3>S S Padhi</h3>
+        <div class="timeline-role">Finance Associate</div>
+      </div>
+    </div>
+    <ul class="timeline-bullets">
+      <li>Finalization of books of accounts, cash flow statements and financial reports</li>
+      <li>GST, TDS and PT — computation, return filing, payments and reconciliation</li>
+    </ul>
+  </div>
+
+  <!-- HAM & CO -->
+  <div class="timeline-item">
+    <div class="timeline-year">May 2017 — Oct 2018 &amp; Aug 2013 — Apr 2017</div>
+    <div class="company-header">
+      <div class="company-logo logo-ham">
+        <span style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.05em;color:rgba(255,255,255,.7);">CA</span>
+      </div>
+      <div>
+        <h3>HAM &amp; Co</h3>
+        <div class="timeline-role">Accounts Manager · May 2017 — Oct 2018</div>
+        <div class="timeline-sub-role">Article Trainee · Aug 2013 — Apr 2017</div>
+      </div>
+    </div>
+
+    <div class="role-block">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;">Accounts Manager</div>
+      <ul class="timeline-bullets">
+        <li>Preparation and finalization of books of accounts, cash flow statements and financials (PF / Companies)</li>
+        <li>GST, TDS and PT — computation, return filing, payments and reconciliation</li>
+        <li>200+ GST registrations managed</li>
+      </ul>
+    </div>
+
+    <div class="role-divider"></div>
+
+    <div class="role-block">
+      <div style="font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(255,255,255,.35);margin-bottom:12px;">Article Trainee · Chartered Accountants</div>
+      <ul class="timeline-bullets">
+        <li>Preparation and finalization of books of accounts for Companies, Partnership Firms, Trusts, HUFs and Individuals</li>
+        <li>Income Tax Returns, TDS Returns, PAN / TAN applications, computation and advance tax payments</li>
+        <li>Incorporation of companies, MCA compliance, MGT-7 and AOC-4 filings</li>
+        <li>VAT / Service Tax — application, computation, payment, filing and audit</li>
+        <li>Assisted in scrutiny and assessment cases: Income Tax and VAT</li>
+        <li>Stock audits, drafting legal documents, Form 15 CA and 15 CB</li>
+      </ul>
+    </div>
+  </div>
+
+</div>
+</section>
+
+<!-- CONTACT -->
+<section class="section" id="contact">
+<div class="contact-box">
+<h2>Let's build finance that scales.</h2>
+<p>Available for leadership opportunities, consulting engagements and startup finance transformation conversations.</p>
+<div class="contact-links">
+<a href="#" class="btn btn-primary">LinkedIn</a>
+<a href="#" class="btn btn-secondary">Email</a>
+</div>
+</div>
+</section>
+
+<footer>
+<div>© 2026 Chintan Agheda</div>
+<div>Commercial Finance Operator</div>
+</footer>
+
+<script>
+
+/* ROLLING WORDS */
+(function(){
+  var words = ['AP at Scale','Automation','Due Diligence','MIS & FP&A','Vendor Ops'];
+  var idx = 0;
+  var inner = document.getElementById('rollingInner');
+  var wrap = document.getElementById('rollingWrap');
+  if(!inner || !wrap) return;
+  // Set height of wrap to one line
+  setInterval(function(){
+    idx = (idx + 1) % words.length;
+    inner.style.transform = 'translateY(-' + (idx * 1.1) + 'em)';
+  }, 2000);
+})();
+
+/* =========================
+CUSTOM CURSOR
+========================= */
+
+(function(){
+  var cursor = document.getElementById('cursor');
+  var ring   = document.getElementById('ring');
+  if(!cursor || !ring) return;
+
+  var mx=0, my=0, rx=0, ry=0;
+
+  document.addEventListener('mousemove', function(e){
+    mx = e.clientX; my = e.clientY;
+    gsap.to(cursor, { x: mx, y: my, duration: 0.06 });
+  });
+
+  // Ring lags behind smoothly
+  (function followRing(){
+    rx += (mx - rx) * 0.10;
+    ry += (my - ry) * 0.10;
+    gsap.set(ring, { x: rx, y: ry });
+    requestAnimationFrame(followRing);
+  })();
+
+  // Hover: ring becomes dotted + spins
+  document.querySelectorAll('a, button, .timeline-item, .stat, .btn, .nav-btn').forEach(function(el){
+    el.addEventListener('mouseenter', function(){
+      ring.classList.add('hovered');
+      gsap.to(cursor, { scale: 1.8, duration: 0.3 });
+    });
+    el.addEventListener('mouseleave', function(){
+      ring.classList.remove('hovered');
+      gsap.to(cursor, { scale: 1, duration: 0.3 });
+    });
+  });
+
+})();
+
+
+
+/* LOADER */
+const tl = gsap.timeline();
+
+tl.to(".loader-title span",{
+y:0,
+duration:1.1,
+stagger:.12,
+ease:"power4.out"
+})
+
+.to(".loader-label",{
+opacity:1,
+duration:.8
+},"-=.9")
+
+.to(".loader-sub",{
+opacity:1,
+duration:.8
+},"-=.8")
+
+.to(".loader-progress",{
+width:"100%",
+duration:2.2,
+ease:"power2.inOut",
+onUpdate:function(){
+const progress = Math.round(this.progress()*100);
+document.querySelector(".loader-percent").innerHTML = progress + "%";
+}
+},"-=.4")
+
+.to(".loader",{
+delay:.2,
+onComplete:()=>{
+document.querySelector(".loader").classList.add("open");
+}
+})
+
+.to(".loader",{
+opacity:0,
+pointerEvents:"none",
+duration:.9
+},"+=1")
+
+.from("nav",{
+y:-80,
+opacity:0,
+duration:1
+},"-=.7")
+
+.to(".hero h1 span",{
+y:0,
+stagger:.12,
+duration:1.1,
+ease:"power4.out"
+},"-=.7")
+
+.to(".hero p",{
+opacity:1,
+y:0,
+duration:.8
+},"-=.8")
+
+.to(".hero-actions",{
+opacity:1,
+y:0,
+duration:.8
+},"-=.8")
+
+.to(".hero-image",{
+opacity:1,
+y:0,
+duration:1
+},"-=.9")
+
+.to("#wavePath",{
+strokeDashoffset:0,
+duration:1.2,
+ease:"power2.out"
+},"-=.8");
+
+/* SCROLL */
+gsap.utils.toArray(".stat").forEach((el,i)=>{
+gsap.from(el,{
+scrollTrigger:{ trigger:el, start:"top 85%" },
+opacity:0,
+y:80,
+duration:1,
+delay:i*.08
+});
+});
+
+gsap.utils.toArray(".timeline-item").forEach((el,i)=>{
+gsap.from(el,{
+scrollTrigger:{ trigger:el, start:"top 85%" },
+opacity:0,
+y:90,
+duration:1,
+delay:i*.07
+});
+});
+
+</script>
+
+</body>
+</html>

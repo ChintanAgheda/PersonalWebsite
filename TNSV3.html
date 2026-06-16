@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Nathdwara Store — Original Pichwai & Shrinathji Art</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400&family=Marcellus&family=Yatra+One&family=EB+Garamond:ital@0;1&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --night: #1a0f0a;          /* deep temple brown-black */
+    --maroon: #6e1423;         /* Nathdwara red */
+    --maroon-2: #4a0d18;
+    --cream: #f6ecd9;          /* parchment */
+    --cream-soft: #e9d9bb;
+    --gold: #c9a44c;
+    --gold-bright: #e8cd82;
+    --gold-deep: #9c7c2e;
+    --peacock: #1f5c4d;        /* peacock green */
+    --indigo: #233b6e;         /* krishna blue */
+    --lotus: #d65a3a;          /* terracotta/saffron */
+    --shadow: rgba(0,0,0,0.45);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background:var(--night);
+    color:var(--cream);
+    font-family:'EB Garamond',serif;
+    overflow-x:hidden;
+    position:relative;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; z-index:9999; pointer-events:none; opacity:0.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* ===== LOGO / WORDMARK ===== */
+  .brand-mark { display:flex; align-items:center; gap:0.7rem; }
+  .brand-mark .lotus-icon { width:30px; height:30px; flex-shrink:0; }
+  .brand-text { display:flex; flex-direction:column; line-height:1; }
+  .brand-text .the { font-family:'Marcellus',serif; font-size:0.55rem; letter-spacing:0.42em; color:var(--gold); text-transform:uppercase; margin-bottom:3px; }
+  .brand-text .name { font-family:'Yatra One',serif; font-size:1.1rem; letter-spacing:0.04em; color:var(--cream); }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.2rem 3rem;
+    background:linear-gradient(var(--night),transparent);
+    transition:background 0.4s;
+  }
+  nav.scrolled { background:rgba(26,15,10,0.94); backdrop-filter:blur(8px); box-shadow:0 1px 0 rgba(201,164,76,0.3); }
+  nav .links { display:flex; gap:2.5rem; font-family:'Marcellus',serif; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.25em; }
+  nav a { color:var(--cream); text-decoration:none; transition:color 0.3s; position:relative; }
+  nav a::after { content:''; position:absolute; left:0; bottom:-6px; width:0; height:1px; background:var(--gold); transition:width 0.35s; }
+  nav a:hover { color:var(--gold-bright); }
+  nav a:hover::after { width:100%; }
+
+  /* arched temple divider */
+  .arch-divider { display:flex; justify-content:center; padding:0; }
+  .arch-divider svg { width:120px; }
+
+  /* HERO */
+  header {
+    min-height:100vh; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
+    padding:9rem 2rem 5rem; position:relative;
+    background:
+      radial-gradient(ellipse at 50% 35%, rgba(110,20,35,0.3), transparent 60%),
+      radial-gradient(circle at 50% 125%, rgba(201,164,76,0.16), transparent 55%);
+  }
+  .hero-deity { font-size:2.4rem; margin-bottom:1.2rem; opacity:0; animation:fade 1.4s 0.2s forwards; }
+  .hero-tag { font-family:'Marcellus',serif; font-size:0.82rem; text-transform:uppercase; letter-spacing:0.4em; color:var(--gold); margin-bottom:1.8rem; opacity:0; animation:fade 1.4s 0.4s forwards; }
+  .hero-tag::before, .hero-tag::after { content:'❉'; margin:0 1rem; color:var(--maroon); }
+  h1 {
+    font-family:'Cormorant Garamond',serif; font-weight:300;
+    font-size:clamp(3rem,10vw,8rem); line-height:1.0; letter-spacing:0.01em; max-width:16ch;
+  }
+  h1 .line { display:block; opacity:0; transform:translateY(30px); animation:rise 1.4s forwards; }
+  h1 em { font-style:italic; color:var(--gold-bright); }
+  .hero-sub {
+    margin-top:2.4rem; max-width:48ch; font-size:1.3rem; line-height:1.65; font-weight:300; font-style:italic;
+    color:var(--cream-soft); opacity:0; animation:fade 1.6s 1.3s forwards;
+  }
+  .hero-cta {
+    margin-top:3rem; display:inline-block; font-family:'Marcellus',serif; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.28em;
+    color:var(--gold); text-decoration:none; padding:1rem 2.6rem; border:1px solid var(--gold-deep);
+    transition:all 0.4s; opacity:0; animation:fade 1.6s 1.6s forwards; position:relative; overflow:hidden;
+  }
+  .hero-cta span { position:relative; z-index:2; transition:color 0.4s; }
+  .hero-cta::before { content:''; position:absolute; inset:0; background:var(--gold); transform:translateY(101%); transition:transform 0.45s cubic-bezier(.2,.8,.2,1); }
+  .hero-cta:hover::before { transform:translateY(0); }
+  .hero-cta:hover span { color:var(--night); }
+  @keyframes rise { to { opacity:1; transform:translateY(0); } }
+  @keyframes fade { to { opacity:1; } }
+
+  /* MARQUEE */
+  .marquee { border-top:1px solid var(--gold-deep); border-bottom:1px solid var(--gold-deep); padding:0.9rem 0; overflow:hidden; white-space:nowrap; background:var(--maroon-2); }
+  .marquee div { display:inline-block; animation:scroll 40s linear infinite; font-family:'Marcellus',serif; text-transform:uppercase; letter-spacing:0.3em; font-size:0.78rem; color:var(--gold-bright); }
+  .marquee span { margin:0 1.6rem; }
+  .marquee span::after { content:'❉'; margin-left:3.2rem; color:var(--gold); }
+  @keyframes scroll { to { transform:translateX(-50%); } }
+
+  /* GALLERY */
+  .gallery-head { padding:6rem 3rem 2.5rem; text-align:center; }
+  .gallery-head .eyebrow { font-family:'Marcellus',serif; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.4em; color:var(--gold); display:block; margin-bottom:1rem; }
+  .gallery-head h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.6rem,6vw,4.5rem); font-weight:300; font-style:italic; }
+  .filters { display:flex; gap:0.6rem; flex-wrap:wrap; justify-content:center; margin-top:2rem; }
+  .filters button {
+    font-family:'Marcellus',serif; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.18em;
+    background:none; border:1px solid var(--gold-deep); padding:0.55rem 1.4rem; cursor:pointer;
+    transition:all 0.35s; color:var(--cream-soft);
+  }
+  .filters button:hover, .filters button.active { background:var(--gold); color:var(--night); border-color:var(--gold); }
+
+  .grid { padding:1rem 3rem 7rem; display:grid; grid-template-columns:repeat(12,1fr); gap:2rem; }
+  .card { position:relative; cursor:pointer; }
+  .card:nth-child(6n+1){ grid-column:span 7; }
+  .card:nth-child(6n+2){ grid-column:span 5; }
+  .card:nth-child(6n+3){ grid-column:span 4; }
+  .card:nth-child(6n+4){ grid-column:span 4; }
+  .card:nth-child(6n+5){ grid-column:span 4; }
+  .card:nth-child(6n){ grid-column:span 12; }
+
+  .frame-outer {
+    padding:14px; background:linear-gradient(135deg,var(--gold-bright),var(--gold-deep) 40%,var(--gold-bright) 55%,var(--gold-deep));
+    box-shadow:0 20px 50px var(--shadow), inset 0 0 0 1px rgba(0,0,0,0.2);
+    position:relative; transition:transform 0.6s cubic-bezier(.2,.8,.2,1);
+  }
+  .frame-inner { padding:4px; background:var(--night); }
+  .frame { aspect-ratio:4/5; position:relative; overflow:hidden; background:linear-gradient(150deg,var(--c1),var(--c2)); display:flex; align-items:center; justify-content:center; }
+  .card:nth-child(6n) .frame { aspect-ratio:16/7; }
+  .card:nth-child(6n+1) .frame { aspect-ratio:4/3; }
+  .frame::after { content:''; position:absolute; inset:0; background:radial-gradient(ellipse at 30% 25%, rgba(255,255,255,0.12), transparent 55%); }
+  .card:hover .frame-outer { transform:translateY(-6px); box-shadow:0 30px 70px rgba(0,0,0,0.55); }
+  .placeholder-label { font-family:'Marcellus',serif; font-size:0.68rem; letter-spacing:0.25em; text-transform:uppercase; color:rgba(246,236,217,0.6); z-index:2; }
+  .meta { position:absolute; inset:auto 0 0 0; padding:1.4rem; z-index:3; background:linear-gradient(transparent,rgba(20,8,5,0.88)); transform:translateY(100%); transition:transform 0.5s cubic-bezier(.2,.8,.2,1); display:flex; justify-content:space-between; align-items:flex-end; }
+  .card:hover .meta { transform:translateY(0); }
+  .meta h3 { font-family:'Cormorant Garamond',serif; font-size:1.5rem; font-weight:400; font-style:italic; color:var(--cream); }
+  .meta .info { font-family:'Marcellus',serif; font-size:0.66rem; letter-spacing:0.12em; color:var(--gold-bright); margin-top:0.2rem; }
+  .meta .price { font-family:'Marcellus',serif; font-size:0.85rem; color:var(--gold-bright); }
+  .badge { position:absolute; top:0.9rem; left:0.9rem; z-index:4; font-family:'Marcellus',serif; font-size:0.58rem; text-transform:uppercase; letter-spacing:0.2em; background:var(--maroon); color:var(--cream); padding:0.3rem 0.7rem; border:1px solid var(--gold-deep); }
+
+  /* ABOUT */
+  .about { background:var(--maroon-2); padding:8rem 3rem; display:grid; grid-template-columns:1fr 1.1fr; gap:5rem; align-items:center; position:relative; }
+  .about::before, .about::after { content:''; position:absolute; left:3rem; right:3rem; height:1px; background:linear-gradient(90deg,transparent,var(--gold-deep),transparent); }
+  .about::before { top:0; } .about::after { bottom:0; }
+  .about .portrait-wrap { padding:14px; background:linear-gradient(135deg,var(--gold-bright),var(--gold-deep),var(--gold-bright)); box-shadow:0 25px 60px var(--shadow); }
+  .about .portrait { aspect-ratio:3/4; background:linear-gradient(150deg,var(--peacock),var(--indigo)); display:flex; align-items:center; justify-content:center; }
+  .about .portrait span { font-family:'Marcellus',serif; font-size:0.68rem; letter-spacing:0.25em; text-transform:uppercase; opacity:0.55; }
+  .about .eyebrow { font-family:'Marcellus',serif; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.4em; color:var(--gold); display:block; margin-bottom:1.2rem; }
+  .about h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.2rem,4.5vw,3.4rem); font-weight:300; font-style:italic; margin-bottom:1.8rem; line-height:1.1; }
+  .about p { font-size:1.18rem; line-height:1.8; color:var(--cream-soft); margin-bottom:1.3rem; max-width:50ch; }
+  .signature { font-family:'Yatra One',serif; font-size:1.4rem; color:var(--gold-bright); margin-top:1rem; }
+
+  /* HERITAGE STRIP */
+  .heritage { padding:5rem 3rem; text-align:center; background:var(--night); }
+  .heritage .cols { display:grid; grid-template-columns:repeat(3,1fr); gap:3rem; max-width:1000px; margin:2.5rem auto 0; }
+  .heritage .col .ic { font-size:1.8rem; color:var(--gold); margin-bottom:1rem; }
+  .heritage .col h4 { font-family:'Marcellus',serif; font-size:0.95rem; letter-spacing:0.15em; text-transform:uppercase; margin-bottom:0.7rem; color:var(--cream); }
+  .heritage .col p { font-size:1.05rem; line-height:1.6; color:var(--cream-soft); opacity:0.85; }
+  .heritage .eyebrow { font-family:'Marcellus',serif; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.4em; color:var(--gold); display:block; }
+
+  /* INQUIRY */
+  .inquiry { padding:8rem 3rem; max-width:820px; margin:0 auto; text-align:center; }
+  .inquiry .eyebrow { font-family:'Marcellus',serif; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.4em; color:var(--gold); display:block; margin-bottom:1.2rem; }
+  .inquiry h2 { font-family:'Cormorant Garamond',serif; font-size:clamp(2.6rem,7vw,5rem); font-weight:300; line-height:1.02; margin-bottom:3rem; }
+  .inquiry h2 em { font-style:italic; color:var(--gold-bright); }
+  .form { text-align:left; }
+  .form-row { display:flex; gap:2rem; margin-bottom:2rem; }
+  .form-row > div { flex:1; }
+  .inquiry label { display:block; font-family:'Marcellus',serif; font-size:0.66rem; text-transform:uppercase; letter-spacing:0.2em; margin-bottom:0.6rem; color:var(--gold); }
+  .inquiry input, .inquiry textarea, .inquiry select { width:100%; padding:0.9rem 0; background:none; border:none; border-bottom:1px solid var(--gold-deep); font-family:'EB Garamond',serif; font-size:1.15rem; color:var(--cream); transition:border-color 0.3s; }
+  .inquiry select option { background:var(--night); }
+  .inquiry input:focus, .inquiry textarea:focus, .inquiry select:focus { outline:none; border-color:var(--gold-bright); }
+  .inquiry input::placeholder, .inquiry textarea::placeholder { color:rgba(246,236,217,0.35); }
+  .inquiry textarea { resize:vertical; min-height:90px; }
+  .submit-btn { margin-top:1.5rem; font-family:'Marcellus',serif; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.25em; background:none; color:var(--gold); border:1px solid var(--gold); padding:1.1rem 3rem; cursor:pointer; transition:all 0.4s; position:relative; overflow:hidden; }
+  .submit-btn span { position:relative; z-index:2; transition:color 0.4s; }
+  .submit-btn::before { content:''; position:absolute; inset:0; background:var(--gold); transform:translateX(-101%); transition:transform 0.45s cubic-bezier(.2,.8,.2,1); }
+  .submit-btn:hover::before { transform:translateX(0); }
+  .submit-btn:hover span { color:var(--night); }
+  .form-note { font-family:'Marcellus',serif; font-size:0.66rem; letter-spacing:0.1em; opacity:0.4; margin-top:2rem; text-transform:uppercase; }
+
+  /* FOOTER */
+  footer { border-top:1px solid var(--gold-deep); padding:3.5rem 3rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:2rem; align-items:center; background:var(--maroon-2); }
+  footer .fbrand .name { font-family:'Yatra One',serif; font-size:1.2rem; color:var(--gold-bright); }
+  footer .fbrand .loc { font-family:'Marcellus',serif; font-size:0.66rem; letter-spacing:0.2em; text-transform:uppercase; color:var(--cream-soft); margin-top:0.4rem; }
+  footer .fcol { font-family:'Marcellus',serif; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.18em; }
+  footer a { color:var(--cream-soft); text-decoration:none; transition:color 0.3s; display:block; margin-bottom:0.5rem; }
+  footer a:hover { color:var(--gold-bright); }
+
+  /* LIGHTBOX */
+  .lightbox { position:fixed; inset:0; z-index:2000; background:rgba(20,8,5,0.96); display:none; align-items:center; justify-content:center; padding:3rem; backdrop-filter:blur(4px); }
+  .lightbox.open { display:flex; }
+  .lb-inner { max-width:720px; text-align:center; }
+  .lb-frame { padding:14px; background:linear-gradient(135deg,var(--gold-bright),var(--gold-deep),var(--gold-bright)); width:min(80vw,440px); margin:0 auto 2rem; box-shadow:0 30px 70px rgba(0,0,0,0.6); }
+  .lb-img { aspect-ratio:4/5; display:flex; align-items:center; justify-content:center; }
+  .lb-inner h3 { font-family:'Cormorant Garamond',serif; font-size:2.4rem; font-style:italic; font-weight:400; color:var(--cream); margin-bottom:0.6rem; }
+  .lb-meta { font-family:'Marcellus',serif; font-size:0.74rem; letter-spacing:0.18em; color:var(--gold-bright); margin-bottom:2rem; text-transform:uppercase; }
+  .lb-cta { font-family:'Marcellus',serif; font-size:0.74rem; text-transform:uppercase; letter-spacing:0.25em; border:1px solid var(--gold); padding:0.9rem 2.4rem; background:none; color:var(--gold); cursor:pointer; transition:all 0.4s; }
+  .lb-cta:hover { background:var(--gold); color:var(--night); }
+  .lb-close { position:absolute; top:2rem; right:3rem; font-family:'Marcellus',serif; font-size:0.78rem; color:var(--gold); cursor:pointer; letter-spacing:0.15em; text-transform:uppercase; }
+  .lb-close:hover { color:var(--gold-bright); }
+
+  @media (max-width:820px) {
+    nav { padding:1rem 1.4rem; }
+    nav .links { gap:1.2rem; font-size:0.66rem; letter-spacing:0.12em; }
+    .brand-text .name { font-size:0.95rem; }
+    header { padding:8rem 1.4rem 4rem; }
+    .grid { padding:1rem 1.4rem 4rem; gap:1.4rem; }
+    .card[class] { grid-column:span 12 !important; }
+    .about { grid-template-columns:1fr; padding:5rem 1.4rem; gap:2.5rem; }
+    .heritage .cols { grid-template-columns:1fr; gap:2.5rem; }
+    .gallery-head, .inquiry, footer, .heritage { padding-left:1.4rem; padding-right:1.4rem; }
+    .form-row { flex-direction:column; gap:2rem; }
+    footer { flex-direction:column; text-align:center; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <div class="brand-mark">
+    <svg class="lotus-icon" viewBox="0 0 40 40" fill="none">
+      <g stroke="#c9a44c" stroke-width="1.4" fill="none">
+        <path d="M20 6 C22 14 22 18 20 22 C18 18 18 14 20 6Z" fill="#c9a44c" opacity="0.9"/>
+        <path d="M20 22 C16 16 11 14 7 15 C10 20 15 23 20 22Z" fill="#c9a44c" opacity="0.7"/>
+        <path d="M20 22 C24 16 29 14 33 15 C30 20 25 23 20 22Z" fill="#c9a44c" opacity="0.7"/>
+        <path d="M20 22 C14 22 9 25 7 30 C13 31 18 27 20 22Z" fill="#c9a44c" opacity="0.5"/>
+        <path d="M20 22 C26 22 31 25 33 30 C27 31 22 27 20 22Z" fill="#c9a44c" opacity="0.5"/>
+      </g>
+    </svg>
+    <div class="brand-text">
+      <span class="the">The</span>
+      <span class="name">Nathdwara Store</span>
+    </div>
+  </div>
+  <div class="links">
+    <a href="#gallery">Collection</a>
+    <a href="#heritage">Heritage</a>
+    <a href="#about">Atelier</a>
+    <a href="#inquiry">Acquire</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-deity">🪷</div>
+  <div class="hero-tag">Pichwai &amp; Shrinathji Art</div>
+  <h1>
+    <span class="line" style="animation-delay:.4s">Devotion,</span>
+    <span class="line" style="animation-delay:.6s">painted by <em>hand.</em></span>
+  </h1>
+  <p class="hero-sub">Original Pichwai and Shrinathji paintings from the sacred town of Nathdwara — each piece carrying centuries of temple tradition into your home.</p>
+  <a href="#gallery" class="hero-cta"><span>View the Collection</span></a>
+</header>
+
+<div class="marquee"><div>
+  <span>Handmade in Nathdwara</span><span>Original Pichwai Art</span><span>Shrinathji Devotional Works</span><span>Worldwide Shipping</span><span>Commissions Welcome</span><span>Handmade in Nathdwara</span><span>Original Pichwai Art</span><span>Shrinathji Devotional Works</span><span>Worldwide Shipping</span><span>Commissions Welcome</span>
+</div></div>
+
+<section id="gallery">
+  <div class="gallery-head">
+    <span class="eyebrow">The Collection</span>
+    <h2>Original Works</h2>
+    <div class="filters">
+      <button class="active" data-f="all">All Works</button>
+      <button data-f="pichwai">Pichwai</button>
+      <button data-f="shrinathji">Shrinathji</button>
+      <button data-f="miniature">Miniature</button>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="heritage" class="heritage">
+  <span class="eyebrow">Our Heritage</span>
+  <div class="cols">
+    <div class="col"><div class="ic">❉</div><h4>Born in Nathdwara</h4><p>From the town that gave the world Pichwai — the devotional art tradition that adorns the Shrinathji temple for over three centuries.</p></div>
+    <div class="col"><div class="ic">✦</div><h4>Painted by Hand</h4><p>Natural pigments, fine brushwork, and gold detailing — every piece made by master artisans in the time-honoured way.</p></div>
+    <div class="col"><div class="ic">🪷</div><h4>One of One</h4><p>No prints, no reproductions. Each canvas is an original, carrying its own imperfections and soul.</p></div>
+  </div>
+</section>
+
+<section id="about" class="about">
+  <div class="portrait-wrap"><div class="portrait"><span>Artist portrait — pending</span></div></div>
+  <div>
+    <span class="eyebrow">The Atelier</span>
+    <h2>Keepers of a sacred craft</h2>
+    <p>This is placeholder text for your story. Speak to the lineage of Pichwai in your family or studio, the devotion behind each brushstroke, and what it means to carry Nathdwara's tradition forward.</p>
+    <p>When the photoshoot is complete, the gilded blocks become your paintings and your portrait fills this frame. The branding is ready for the work itself.</p>
+    <div class="signature">— The Nathdwara Store</div>
+  </div>
+</section>
+
+<section id="inquiry" class="inquiry">
+  <span class="eyebrow">Private Inquiry</span>
+  <h2>Acquire <em>a work.</em></h2>
+  <div class="form">
+    <div class="form-row">
+      <div><label>Name</label><input type="text" placeholder="Your name"></div>
+      <div><label>Email</label><input type="email" placeholder="you@email.com"></div>
+    </div>
+    <div class="form-row">
+      <div><label>Work of Interest</label><input type="text" id="pieceField" placeholder="Title (optional)"></div>
+      <div><label>Nature of Inquiry</label><select><option>Acquisition</option><option>Commission</option><option>Bulk / Wholesale</option><option>Private Viewing</option><option>Other</option></select></div>
+    </div>
+    <div style="margin-bottom:2rem;"><label>Message</label><textarea placeholder="Tell us which work speaks to you..."></textarea></div>
+    <button class="submit-btn" onclick="alert('Connect this form to your email or a service like Formspree before launch.')"><span>Send Inquiry</span></button>
+    <p class="form-note">Form is not yet connected to a backend — wire to Formspree, Netlify Forms, or your email before launch.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="fbrand">
+    <div class="name">The Nathdwara Store</div>
+    <div class="loc">Nathdwara · Rajasthan · India</div>
+  </div>
+  <div class="fcol">
+    <a href="#gallery">Collection</a>
+    <a href="#heritage">Heritage</a>
+    <a href="#inquiry">Acquire</a>
+  </div>
+  <div class="fcol">
+    <a href="#">Instagram</a>
+    <a href="#">WhatsApp</a>
+    <a href="#">Email</a>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lb-close" onclick="closeLightbox()">Close ✕</div>
+  <div class="lb-inner">
+    <div class="lb-frame"><div class="lb-img" id="lbImg"></div></div>
+    <h3 id="lbTitle"></h3>
+    <div class="lb-meta" id="lbMeta"></div>
+    <button class="lb-cta" onclick="inquireAbout()">Inquire About This Work</button>
+  </div>
+</div>
+
+<script>
+  const palettes = [
+    ['#6e1423','#2a0810'],['#1f5c4d','#0a201a'],['#233b6e','#0e162e'],
+    ['#9c7c2e','#2e2208'],['#d65a3a','#3a160c'],['#4a0d18','#1a0508'],
+    ['#2b4a3a','#0d1a14'],['#5e3a1d','#1e1208'],['#3a1d4a','#120a18'],
+    ['#1d4a4a','#0a1e1e']
+  ];
+  const cats = ['pichwai','shrinathji','miniature'];
+  const titles = ['Shrinathji Darshan','Kamal Talai','Gopashtami','Sharad Purnima','Annakut','Raas Leela','Govardhan','Morkuti','Vana Yatra','Holi at Nathdwara','Gau Mata','Kamal Pichwai','Shrinathji Shringar','Lotus Pond','Peacock Grove'];
+  const paintings = [];
+  for (let i=0;i<30;i++){
+    const p = palettes[i%palettes.length];
+    paintings.push({
+      title: titles[i%titles.length] + (i>=titles.length? ' II':''),
+      cat: cats[i%cats.length],
+      year: 2024 + (i%3),
+      size: ['60 × 90 cm','45 × 45 cm','120 × 150 cm','30 × 40 cm'][i%4],
+      medium: ['Natural pigment on cloth','Stone colour on canvas','Gold &amp; pigment on paper'][i%3],
+      price: '₹'+((i%5+3)*18000).toLocaleString('en-IN'),
+      sold: i%9===0,
+      c1:p[0], c2:p[1]
+    });
+  }
+
+  const grid = document.getElementById('grid');
+  function render(filter){
+    grid.innerHTML='';
+    paintings.filter(p=>filter==='all'||p.cat===filter).forEach(p=>{
+      const card=document.createElement('div');
+      card.className='card';
+      card.style.setProperty('--c1',p.c1);
+      card.style.setProperty('--c2',p.c2);
+      card.innerHTML=`
+        <div class="frame-outer"><div class="frame-inner"><div class="frame">
+          ${p.sold?'<div class="badge">Acquired</div>':''}
+          <span class="placeholder-label">Image pending</span>
+          <div class="meta">
+            <div><h3>${p.title}</h3><div class="info">${p.medium} · ${p.size}</div></div>
+            <div class="price">${p.sold?'—':p.price}</div>
+          </div>
+        </div></div></div>`;
+      card.onclick=()=>openLightbox(p);
+      grid.appendChild(card);
+    });
+  }
+  render('all');
+
+  document.querySelectorAll('.filters button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelector('.filters .active').classList.remove('active');
+      b.classList.add('active');
+      render(b.dataset.f);
+    };
+  });
+
+  const nav=document.getElementById('nav');
+  window.addEventListener('scroll',()=>{ nav.classList.toggle('scrolled', window.scrollY>40); });
+
+  const lb=document.getElementById('lightbox');
+  let current=null;
+  function openLightbox(p){
+    current=p;
+    document.getElementById('lbImg').style.background=`linear-gradient(150deg,${p.c1},${p.c2})`;
+    document.getElementById('lbTitle').textContent=p.title;
+    document.getElementById('lbMeta').innerHTML=`${p.medium} · ${p.size} · ${p.year} · ${p.sold?'Acquired':p.price}`;
+    lb.classList.add('open');
+  }
+  function closeLightbox(){ lb.classList.remove('open'); }
+  function inquireAbout(){
+    closeLightbox();
+    document.getElementById('pieceField').value=current.title;
+    document.getElementById('inquiry').scrollIntoView({behavior:'smooth'});
+  }
+  lb.onclick=(e)=>{ if(e.target===lb) closeLightbox(); };
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLightbox(); });
+</script>
+</body>
+</html>

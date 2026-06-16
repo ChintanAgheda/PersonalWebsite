@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+<title>Chintan Agheda — GCC Finance Operator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Manrope:wght@600;700;800&family=IBM+Plex+Mono:wght@400;500&family=Noto+Sans+Arabic:wght@500;700&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
+
+:root{
+--bg:#050505;
+--surface:#0d0d0d;
+--gold:#c7a76a;
+--text:#f4f4f4;
+--muted:#8f8f8f;
+--line:rgba(255,255,255,.07);
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+font-family:'Inter',sans-serif;
+background:var(--bg);
+color:var(--text);
+overflow-x:hidden;
+-webkit-font-smoothing:antialiased;
+}
+
+/* =========================
+SMOOTH GPU
+========================= */
+
+.loader,
+.hero-image,
+.hero h1 span,
+.loader-title span{
+transform:translateZ(0);
+backface-visibility:hidden;
+will-change:transform,opacity;
+}
+
+/* =========================
+NOISE
+========================= */
+
+.noise{
+position:fixed;
+inset:0;
+pointer-events:none;
+opacity:.03;
+background-image:url("https://grainy-gradients.vercel.app/noise.svg");
+z-index:9999;
+}
+
+/* =========================
+LOADER
+========================= */
+
+.loader{
+position:fixed;
+inset:0;
+background:#030303;
+z-index:999999;
+display:flex;
+align-items:center;
+justify-content:center;
+overflow:hidden;
+}
+
+.loader::before{
+content:'';
+position:absolute;
+width:600px;
+height:600px;
+background:radial-gradient(circle, rgba(199,167,106,.15), transparent 70%);
+filter:blur(40px);
+}
+
+.loader-grid{
+position:absolute;
+inset:0;
+
+background-image:
+linear-gradient(rgba(255,255,255,.02) 1px, transparent 1px),
+linear-gradient(90deg, rgba(255,255,255,.02) 1px, transparent 1px);
+
+background-size:60px 60px;
+
+mask-image:radial-gradient(circle at center, black 20%, transparent 80%);
+}
+
+.loader-content{
+position:relative;
+z-index:3;
+text-align:center;
+}
+
+.loader-label{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.35em;
+text-transform:uppercase;
+color:rgba(255,255,255,.45);
+margin-bottom:30px;
+opacity:0;
+}
+
+.loader-title{
+font-family:'Manrope',sans-serif;
+font-size:clamp(4rem,9vw,8rem);
+line-height:1;
+font-weight:800;
+letter-spacing:-.08em;
+margin-bottom:20px;
+overflow:hidden;
+}
+
+.loader-title span{
+display:block;
+}
+
+.eng{
+opacity:0;
+transform:translateY(80px);
+}
+
+.arabic{
+font-family:'Noto Sans Arabic',sans-serif;
+font-size:.72em;
+direction:rtl;
+opacity:0;
+transform:translateY(40px);
+color:rgba(255,255,255,.7);
+margin-top:10px;
+}
+
+.loader-sub{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.35em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+margin-bottom:50px;
+opacity:0;
+}
+
+.loader-line{
+width:320px;
+height:1px;
+background:rgba(255,255,255,.08);
+overflow:hidden;
+margin:auto;
+position:relative;
+}
+
+.loader-progress{
+position:absolute;
+left:0;
+top:0;
+width:0%;
+height:100%;
+background:var(--gold);
+}
+
+.loader-bottom{
+margin-top:16px;
+display:flex;
+justify-content:space-between;
+font-family:'IBM Plex Mono', monospace;
+font-size:10px;
+letter-spacing:.2em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+}
+
+.loader-doors-top,
+.loader-doors-bottom{
+position:absolute;
+left:0;
+width:100%;
+height:50%;
+background:#030303;
+z-index:10;
+transition:1.5s cubic-bezier(.87,0,.13,1);
+}
+
+.loader-doors-top{
+top:0;
+}
+
+.loader-doors-bottom{
+bottom:0;
+}
+
+.loader.open .loader-doors-top{
+transform:translateY(-100%);
+}
+
+.loader.open .loader-doors-bottom{
+transform:translateY(100%);
+}
+
+/* =========================
+NAVBAR
+========================= */
+
+nav{
+position:fixed;
+top:0;
+width:100%;
+padding:28px 70px;
+display:flex;
+justify-content:center;
+align-items:center;
+z-index:1000;
+backdrop-filter:blur(18px);
+background:rgba(5,5,5,.45);
+border-bottom:1px solid rgba(255,255,255,.04);
+}
+
+.logo{
+font-family:'Manrope',sans-serif;
+font-size:20px;
+font-weight:800;
+letter-spacing:.2em;
+text-transform:uppercase;
+}
+
+/* =========================
+HERO
+========================= */
+
+.hero{
+min-height:100vh;
+display:flex;
+align-items:center;
+justify-content:center;
+text-align:center;
+padding:140px 30px 100px;
+position:relative;
+overflow:hidden;
+}
+
+.hero::before{
+content:'';
+position:absolute;
+width:700px;
+height:700px;
+background:radial-gradient(circle, rgba(199,167,106,.13), transparent 70%);
+filter:blur(60px);
+}
+
+.hero-content{
+position:relative;
+z-index:2;
+max-width:1200px;
+}
+
+.hero-tag{
+display:inline-flex;
+align-items:center;
+gap:12px;
+padding:12px 20px;
+border-radius:100px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.06);
+margin-bottom:35px;
+
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.25em;
+text-transform:uppercase;
+color:rgba(255,255,255,.6);
+}
+
+.dot{
+width:7px;
+height:7px;
+background:#2fd27b;
+border-radius:50%;
+}
+
+.hero h1{
+font-family:'Manrope',sans-serif;
+font-size:clamp(4rem,9vw,9rem);
+line-height:.92;
+letter-spacing:-.08em;
+font-weight:800;
+margin-bottom:30px;
+overflow:hidden;
+}
+
+.hero h1 span{
+display:block;
+transform:translateY(120%);
+}
+
+.hero p{
+max-width:820px;
+margin:auto;
+font-size:19px;
+line-height:1.9;
+color:var(--muted);
+margin-bottom:50px;
+opacity:0;
+transform:translateY(40px);
+}
+
+.hero-actions{
+display:flex;
+justify-content:center;
+gap:18px;
+opacity:0;
+transform:translateY(40px);
+}
+
+.btn{
+padding:18px 34px;
+border-radius:100px;
+font-size:14px;
+font-weight:700;
+text-decoration:none;
+transition:.4s;
+display:inline-flex;
+align-items:center;
+gap:12px;
+}
+
+.btn-primary{
+background:var(--gold);
+color:black;
+}
+
+.btn-primary:hover{
+transform:translateY(-4px);
+}
+
+.btn-secondary{
+border:1px solid rgba(255,255,255,.08);
+background:rgba(255,255,255,.03);
+color:white;
+}
+
+.btn-secondary:hover{
+transform:translateY(-4px);
+}
+
+.gcc-strip{
+margin-top:70px;
+display:flex;
+justify-content:center;
+gap:18px;
+flex-wrap:wrap;
+opacity:0;
+transform:translateY(30px);
+}
+
+.gcc-item{
+padding:14px 22px;
+border-radius:100px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.06);
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.25em;
+text-transform:uppercase;
+color:rgba(255,255,255,.65);
+transition:.4s;
+}
+
+.gcc-item:hover{
+transform:translateY(-4px);
+border-color:rgba(199,167,106,.4);
+color:white;
+}
+
+/* =========================
+SECTION
+========================= */
+
+.section{
+padding:140px 80px;
+}
+
+.section-head{
+max-width:1300px;
+margin:auto auto 90px;
+text-align:center;
+}
+
+.section-label{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.35em;
+text-transform:uppercase;
+color:var(--gold);
+margin-bottom:22px;
+}
+
+.section-title{
+font-family:'Manrope',sans-serif;
+font-size:clamp(3rem,6vw,6rem);
+line-height:1;
+letter-spacing:-.07em;
+font-weight:800;
+max-width:1000px;
+margin:auto;
+}
+
+/* =========================
+STATS
+========================= */
+
+.stats{
+max-width:1300px;
+margin:auto;
+display:grid;
+grid-template-columns:repeat(4,1fr);
+gap:24px;
+}
+
+.stat{
+padding:40px;
+background:rgba(255,255,255,.025);
+border:1px solid rgba(255,255,255,.06);
+border-radius:28px;
+transition:.4s;
+backdrop-filter:blur(10px);
+}
+
+.stat:hover{
+transform:translateY(-8px);
+border-color:rgba(199,167,106,.2);
+}
+
+.stat-number{
+font-family:'Manrope',sans-serif;
+font-size:56px;
+font-weight:800;
+letter-spacing:-.06em;
+margin-bottom:12px;
+}
+
+.stat-label{
+font-size:14px;
+line-height:1.8;
+color:var(--muted);
+}
+
+/* =========================
+TIMELINE
+========================= */
+
+.timeline{
+max-width:1200px;
+margin:auto;
+display:flex;
+flex-direction:column;
+gap:30px;
+}
+
+.timeline-item{
+padding:45px;
+border-radius:30px;
+background:rgba(255,255,255,.025);
+border:1px solid rgba(255,255,255,.06);
+transition:.4s;
+backdrop-filter:blur(12px);
+}
+
+.timeline-item:hover{
+transform:translateY(-8px);
+border-color:rgba(199,167,106,.2);
+}
+
+.timeline-year{
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.3em;
+text-transform:uppercase;
+color:var(--gold);
+margin-bottom:18px;
+}
+
+.timeline h3{
+font-family:'Manrope',sans-serif;
+font-size:40px;
+font-weight:800;
+letter-spacing:-.05em;
+margin-bottom:10px;
+}
+
+.timeline-role{
+font-size:15px;
+margin-bottom:18px;
+color:rgba(255,255,255,.72);
+}
+
+.timeline p{
+line-height:1.9;
+color:var(--muted);
+}
+
+/* =========================
+CONTACT
+========================= */
+
+.contact-box{
+max-width:1200px;
+margin:auto;
+padding:70px;
+background:rgba(255,255,255,.03);
+border:1px solid rgba(255,255,255,.06);
+border-radius:40px;
+text-align:center;
+backdrop-filter:blur(12px);
+}
+
+.contact-box h2{
+font-family:'Manrope',sans-serif;
+font-size:clamp(3rem,6vw,5rem);
+line-height:1;
+letter-spacing:-.07em;
+font-weight:800;
+margin-bottom:24px;
+}
+
+.contact-box p{
+max-width:700px;
+margin:auto auto 40px;
+line-height:1.9;
+color:var(--muted);
+}
+
+.contact-links{
+display:flex;
+justify-content:center;
+gap:18px;
+flex-wrap:wrap;
+}
+
+/* =========================
+FOOTER
+========================= */
+
+footer{
+padding:50px 80px;
+display:flex;
+justify-content:center;
+align-items:center;
+border-top:1px solid rgba(255,255,255,.05);
+
+font-family:'IBM Plex Mono', monospace;
+font-size:11px;
+letter-spacing:.2em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+}
+
+/* =========================
+RESPONSIVE
+========================= */
+
+@media(max-width:1000px){
+
+.stats{
+grid-template-columns:1fr 1fr;
+}
+
+nav{
+padding:24px;
+}
+
+.section{
+padding:100px 22px;
+}
+
+footer{
+padding:40px 22px;
+}
+
+}
+
+@media(max-width:700px){
+
+.stats{
+grid-template-columns:1fr;
+}
+
+.hero-actions{
+flex-direction:column;
+align-items:center;
+}
+
+.loader-line{
+width:260px;
+}
+
+.hero h1{
+font-size:4rem;
+}
+
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="noise"></div>
+
+<!-- =========================
+LOADER
+========================= -->
+
+<div class="loader" id="loader">
+
+<div class="loader-grid"></div>
+
+<div class="loader-content">
+
+<div class="loader-label">
+Finance Built For Hypergrowth
+</div>
+
+<h1 class="loader-title">
+
+<span class="eng">
+CHINTAN AGHEDA
+</span>
+
+<span class="arabic">
+شينتان أغيدا
+</span>
+
+</h1>
+
+<div class="loader-sub">
+GCC Finance Infrastructure
+</div>
+
+<div class="loader-line">
+<div class="loader-progress"></div>
+</div>
+
+<div class="loader-bottom">
+<span>UAE · KSA · INDIA</span>
+<span class="loader-percent">0%</span>
+</div>
+
+</div>
+
+<div class="loader-doors-top"></div>
+<div class="loader-doors-bottom"></div>
+
+</div>
+
+<!-- =========================
+NAVBAR
+========================= -->
+
+<nav>
+
+<div class="logo">
+CHINTAN AGHEDA
+</div>
+
+</nav>
+
+<!-- =========================
+HERO
+========================= -->
+
+<section class="hero">
+
+<div class="hero-content">
+
+<div class="hero-tag">
+
+<div class="dot"></div>
+
+Open For Leadership Conversations
+
+</div>
+
+<h1>
+
+<span>Finance</span>
+
+<span>Built For</span>
+
+<span>Hypergrowth</span>
+
+</h1>
+
+<p>
+Commercial finance operator building scalable systems across UAE, KSA and India. Focused on operational finance, automation, due diligence, vendor infrastructure and startup scale execution.
+</p>
+
+<div class="hero-actions">
+
+<a href="#results" class="btn btn-primary">
+View Results
+</a>
+
+<a href="#contact" class="btn btn-secondary">
+Get In Touch
+</a>
+
+</div>
+
+<div class="gcc-strip">
+
+<div class="gcc-item">UAE</div>
+<div class="gcc-item">KSA</div>
+<div class="gcc-item">BAHRAIN</div>
+<div class="gcc-item">QATAR</div>
+<div class="gcc-item">EGYPT</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- RESULTS -->
+
+<section class="section" id="results">
+
+<div class="section-head">
+
+<div class="section-label">
+Selected Results
+</div>
+
+<h2 class="section-title">
+Building finance systems for companies moving at startup speed.
+</h2>
+
+</div>
+
+<div class="stats">
+
+<div class="stat">
+
+<div class="stat-number">
+13+
+</div>
+
+<div class="stat-label">
+Years building finance operations and commercial systems.
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-number">
+$232M
+</div>
+
+<div class="stat-label">
+Series E due diligence and hypergrowth finance exposure.
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-number">
+2500+
+</div>
+
+<div class="stat-label">
+Vendor relationships and finance operations managed.
+</div>
+
+</div>
+
+<div class="stat">
+
+<div class="stat-number">
+40+
+</div>
+
+<div class="stat-label">
+Cities under AP operations and commercial workflows.
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- EXPERIENCE -->
+
+<section class="section" id="experience">
+
+<div class="section-head">
+
+<div class="section-label">
+Track Record
+</div>
+
+<h2 class="section-title">
+Finance as operational leverage — not reporting.
+</h2>
+
+</div>
+
+<div class="timeline">
+
+<div class="timeline-item">
+
+<div class="timeline-year">
+2024 — Present
+</div>
+
+<h3>
+noon
+</h3>
+
+<div class="timeline-role">
+Commercial Finance Manager · GCC
+</div>
+
+<p>
+Managing commercial finance operations across UAE and KSA. Driving vendor infrastructure, finance systems, process optimization and hypergrowth execution.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<div class="timeline-year">
+2023 — 2024
+</div>
+
+<h3>
+Zepto
+</h3>
+
+<div class="timeline-role">
+Finance Manager · Mumbai
+</div>
+
+<p>
+Led finance operations, vendor systems, accounting cleanup and Series E due diligence support during rapid hypergrowth scaling.
+</p>
+
+</div>
+
+<div class="timeline-item">
+
+<div class="timeline-year">
+2022 — 2023
+</div>
+
+<h3>
+Chalo
+</h3>
+
+<div class="timeline-role">
+Finance Manager · Navi Mumbai
+</div>
+
+<p>
+Managed AP operations across forty plus cities and drove finance SOPs, workflows and profitability reviews.
+</p>
+
+</div>
+
+</div>
+
+</section>
+
+<!-- CONTACT -->
+
+<section class="section" id="contact">
+
+<div class="contact-box">
+
+<h2>
+Let’s build finance that scales.
+</h2>
+
+<p>
+Available for leadership opportunities, consulting engagements and startup finance transformation conversations.
+</p>
+
+<div class="contact-links">
+
+<a href="#" class="btn btn-primary">
+LinkedIn
+</a>
+
+<a href="#" class="btn btn-secondary">
+Email
+</a>
+
+</div>
+
+</div>
+
+</section>
+
+<footer>
+
+<div>
+© 2026 CHINTAN AGHEDA — GCC FINANCE OPERATOR
+</div>
+
+</footer>
+
+<!-- =========================
+REPLACE ONLY THIS SCRIPT SECTION
+OLD <script> ... </script>
+========================= -->
+
+<script>
+
+gsap.registerPlugin(ScrollTrigger);
+
+gsap.config({
+force3D:true
+});
+
+/* =========================
+INITIAL STATES
+========================= */
+
+gsap.set(".eng",{
+opacity:0,
+y:120
+});
+
+gsap.set(".arabic",{
+opacity:0,
+y:60
+});
+
+gsap.set(".hero h1 span",{
+y:120
+});
+
+gsap.set(".hero p",{
+opacity:0,
+y:40
+});
+
+gsap.set(".hero-actions",{
+opacity:0,
+y:40
+});
+
+gsap.set(".gcc-strip",{
+opacity:0,
+y:30
+});
+
+gsap.set(".hero-image",{
+opacity:0,
+y:80,
+scale:.92
+});
+
+/* =========================
+MASTER CINEMATIC TIMELINE
+========================= */
+
+const tl = gsap.timeline();
+
+/* =========================
+STEP 1
+LOADER LABEL
+========================= */
+
+tl.to(".loader-label",{
+opacity:1,
+duration:.6,
+ease:"power2.out"
+})
+
+/* =========================
+STEP 2
+ENGLISH NAME ENTRY
+========================= */
+
+.to(".eng",{
+opacity:1,
+y:0,
+duration:1.4,
+ease:"expo.out"
+})
+
+/* =========================
+STEP 3
+HOLD ENGLISH
+========================= */
+
+.to(".eng",{
+opacity:1,
+duration:.8
+})
+
+/* =========================
+STEP 4
+ENGLISH EXIT
+========================= */
+
+.to(".eng",{
+opacity:0,
+y:-80,
+filter:"blur(10px)",
+duration:.9,
+ease:"expo.inOut"
+})
+
+/* =========================
+STEP 5
+ARABIC ENTRY
+========================= */
+
+.to(".arabic",{
+opacity:1,
+y:0,
+duration:1.2,
+ease:"expo.out"
+},"-=.2")
+
+/* =========================
+STEP 6
+SUBTITLE
+========================= */
+
+.to(".loader-sub",{
+opacity:1,
+duration:.7
+},"-=.7")
+
+/* =========================
+STEP 7
+LOADING BAR
+========================= */
+
+.to(".loader-progress",{
+width:"100%",
+duration:1.8,
+ease:"expo.inOut",
+
+onUpdate:function(){
+
+const progress = Math.round(this.progress()*100);
+
+document.querySelector(".loader-percent").innerHTML = progress + "%";
+
+}
+
+},"-=.5")
+
+/* =========================
+STEP 8
+HOLD SCREEN
+========================= */
+
+.to(".arabic",{
+opacity:1,
+duration:.4
+})
+
+/* =========================
+STEP 9
+OPEN DOORS
+========================= */
+
+.to(".loader",{
+onComplete:()=>{
+
+document.querySelector(".loader").classList.add("open");
+
+}
+})
+
+/* =========================
+STEP 10
+REMOVE LOADER
+========================= */
+
+.to(".loader",{
+opacity:0,
+pointerEvents:"none",
+duration:1,
+ease:"expo.out"
+},"+=1")
+
+/* =========================
+STEP 11
+NAVBAR ENTRY
+========================= */
+
+.from("nav",{
+y:-80,
+opacity:0,
+duration:1,
+ease:"expo.out"
+},"-=.8")
+
+/* =========================
+STEP 12
+HERO TEXT ENTRY
+========================= */
+
+.to(".hero h1 span",{
+y:0,
+stagger:.12,
+duration:1.2,
+ease:"expo.out"
+},"-=.7")
+
+/* =========================
+STEP 13
+PARAGRAPH
+========================= */
+
+.to(".hero p",{
+opacity:1,
+y:0,
+duration:1
+},"-=1")
+
+/* =========================
+STEP 14
+BUTTONS
+========================= */
+
+.to(".hero-actions",{
+opacity:1,
+y:0,
+duration:.9
+},"-=.9")
+
+/* =========================
+STEP 15
+GCC STRIP
+========================= */
+
+.to(".gcc-strip",{
+opacity:1,
+y:0,
+duration:.9
+},"-=.8")
+
+/* =========================
+STEP 16
+PHOTO CINEMATIC ENTRY
+========================= */
+
+.to(".hero-image",{
+opacity:1,
+y:0,
+scale:1,
+duration:1.5,
+ease:"expo.out"
+},"-=1.2");
+
+/* =========================
+SCROLL ANIMATIONS
+========================= */
+
+gsap.utils.toArray(".stat").forEach((el,i)=>{
+
+gsap.from(el,{
+scrollTrigger:{
+trigger:el,
+start:"top 85%"
+},
+opacity:0,
+y:70,
+duration:1,
+delay:i*.08,
+ease:"power3.out"
+});
+
+});
+
+gsap.utils.toArray(".timeline-item").forEach((el,i)=>{
+
+gsap.from(el,{
+scrollTrigger:{
+trigger:el,
+start:"top 85%"
+},
+opacity:0,
+y:90,
+duration:1,
+delay:i*.1,
+ease:"power3.out"
+});
+
+});
+
+/* =========================
+PARALLAX PHOTO
+========================= */
+
+gsap.to(".hero-image img",{
+scale:1.08,
+scrollTrigger:{
+trigger:".hero",
+scrub:1
+}
+});
+
+</script>
+
+<!-- =========================
+NOW ADD THIS HERO IMAGE BLOCK
+INSIDE HERO SECTION
+JUST BELOW HERO CONTENT
+========================= -->
+
+<div class="hero-image">
+
+<div class="image-wrap">
+
+<img src="assets/img/Professional Photo Chintan Agheda Website.jpg">
+
+</div>
+
+<div class="floating-card">
+
+<div class="floating-label">
+Operational Markets
+</div>
+
+<div class="floating-value">
+India · UAE · KSA
+</div>
+
+</div>
+
+</div>
+
+<!-- =========================
+NOW ADD THIS CSS BACK
+========================= -->
+
+<style>
+
+.hero{
+min-height:100vh;
+display:flex;
+align-items:center;
+padding:160px 80px 100px;
+position:relative;
+overflow:hidden;
+}
+
+.hero-grid{
+max-width:1400px;
+margin:auto;
+display:grid;
+grid-template-columns:1.05fr .95fr;
+gap:90px;
+align-items:center;
+width:100%;
+}
+
+.hero-content{
+text-align:left;
+}
+
+.hero-image{
+position:relative;
+}
+
+.image-wrap{
+aspect-ratio:4/5;
+overflow:hidden;
+border-radius:36px;
+background:#111;
+}
+
+.image-wrap img{
+width:100%;
+height:100%;
+object-fit:cover;
+transition:1.5s;
+}
+
+.image-wrap:hover img{
+transform:scale(1.05);
+}
+
+.floating-card{
+position:absolute;
+bottom:-25px;
+right:-25px;
+
+padding:24px;
+
+background:rgba(255,255,255,.04);
+backdrop-filter:blur(18px);
+
+border:1px solid rgba(255,255,255,.08);
+
+border-radius:24px;
+
+min-width:230px;
+}
+
+.floating-label{
+font-family:'IBM Plex Mono', monospace;
+font-size:10px;
+letter-spacing:.25em;
+text-transform:uppercase;
+color:rgba(255,255,255,.35);
+margin-bottom:10px;
+}
+
+.floating-value{
+font-family:'Manrope',sans-serif;
+font-size:24px;
+font-weight:700;
+line-height:1.2;
+}
+
+@media(max-width:1000px){
+
+.hero-grid{
+grid-template-columns:1fr;
+}
+
+.hero-content{
+text-align:center;
+}
+
+}
+
+</style>
+
+</body>
+</html>

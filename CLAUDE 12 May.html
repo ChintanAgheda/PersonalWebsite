@@ -1,0 +1,1633 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Chintan Agheda — Commercial Finance, Operator</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;0,9..144,700;0,9..144,900;1,9..144,400&family=JetBrains+Mono:wght@300;400;500;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
+
+<style>
+  /* =========================================================
+     RESET + TOKENS
+  ========================================================= */
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  :root {
+    --paper:        #ece6db;       /* warm cream */
+    --paper-2:      #e3dccc;       /* deeper cream */
+    --ink:          #0e0e0c;       /* near black */
+    --ink-2:        #1a1916;
+    --oxblood:      #5a1f1a;       /* deep red accent */
+    --oxblood-hot:  #7a2a22;
+    --moss:         #2f3a22;       /* forest accent */
+    --rule:         rgba(14,14,12,0.18);
+    --rule-thin:    rgba(14,14,12,0.10);
+    --muted:        #4a4540;
+
+    --serif: 'Fraunces', 'Times New Roman', serif;
+    --display-italic: 'Instrument Serif', 'Times New Roman', serif;
+    --mono: 'JetBrains Mono', ui-monospace, monospace;
+
+    --pad-x: clamp(20px, 4vw, 64px);
+  }
+
+  html { scroll-behavior:smooth; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--serif);
+    font-weight: 400;
+    line-height: 1.5;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    font-feature-settings: "ss01", "ss02", "liga";
+  }
+
+  ::selection { background: var(--ink); color: var(--paper); }
+
+  a { color: inherit; text-decoration: none; }
+
+  /* Paper grain */
+  .grain {
+    position: fixed; inset:0; pointer-events:none; z-index: 9000;
+    opacity: 0.5;
+    mix-blend-mode: multiply;
+    background-image: url("data:image/svg+xml;utf8,<svg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0 0.05  0 0 0 0.18 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+  }
+
+  /* =========================================================
+     LOADER
+  ========================================================= */
+  .loader {
+    position: fixed; inset:0; z-index: 99999;
+    background: var(--paper);
+    display: flex; flex-direction: column;
+    padding: clamp(20px, 4vw, 48px);
+  }
+  .loader-top {
+    display:flex; justify-content:space-between; align-items:flex-start;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .loader-top span { display:block; }
+  .loader-center {
+    flex: 1;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column;
+    text-align: center;
+    position: relative;
+  }
+  .loader-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 28px;
+    opacity: 0;
+  }
+  .loader-name {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(56px, 14vw, 220px);
+    line-height: 0.85;
+    letter-spacing: -0.04em;
+    overflow: hidden;
+    margin-bottom: 0;
+  }
+  .loader-name .row {
+    display: block;
+    overflow: hidden;
+  }
+  .loader-name .row span {
+    display: inline-block;
+    transform: translateY(110%);
+    will-change: transform;
+  }
+  .loader-name em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--oxblood);
+  }
+  .loader-bottom {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    gap: 24px;
+  }
+  .loader-pct {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(60px, 12vw, 140px);
+    line-height: 1;
+    letter-spacing: -0.06em;
+    color: var(--ink);
+    text-align: center;
+  }
+  .loader-rule {
+    position: absolute;
+    left: 0; right: 0;
+    bottom: 30%;
+    height: 1px;
+    background: var(--ink);
+    transform-origin: left;
+    transform: scaleX(0);
+  }
+
+  /* =========================================================
+     TICKER (top + bottom utility bars)
+  ========================================================= */
+  .ticker {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    background: var(--ink);
+    color: var(--paper);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .ticker-track {
+    display: flex;
+    gap: 60px;
+    padding: 12px 0;
+    white-space: nowrap;
+    animation: ticker 60s linear infinite;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  .ticker-track span { display:flex; align-items:center; gap:12px; }
+  .ticker-track .dot {
+    width: 4px; height: 4px; background: var(--oxblood); border-radius: 50%;
+    display: inline-block;
+  }
+  .ticker-track .pos { color: #b8e0c5; }
+  .ticker-track .neg { color: #e7a99f; }
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to   { transform: translateX(-50%); }
+  }
+
+  /* =========================================================
+     NAV
+  ========================================================= */
+  nav {
+    position: fixed; top:0; left:0; right:0;
+    z-index: 1000;
+    padding: 18px var(--pad-x);
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    align-items: center;
+    gap: 32px;
+    background: rgba(236, 230, 219, 0.85);
+    backdrop-filter: blur(14px) saturate(110%);
+    -webkit-backdrop-filter: blur(14px) saturate(110%);
+    border-bottom: 1px solid var(--rule);
+    transform: translateY(-100%);
+  }
+  .nav-mark {
+    display: flex; align-items: baseline; gap: 12px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .nav-mark .sig {
+    font-family: var(--display-italic);
+    font-style: italic;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    line-height: 1;
+    color: var(--oxblood);
+    text-transform: none;
+  }
+  .nav-mark .sub { color: var(--muted); }
+
+  .nav-links {
+    justify-self: center;
+    display: flex; gap: 32px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .nav-links a {
+    position: relative;
+    padding: 6px 0;
+    transition: color .3s;
+  }
+  .nav-links a::after {
+    content:'';
+    position:absolute; left:0; bottom:0;
+    width:100%; height:1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transform-origin: right;
+    transition: transform .4s cubic-bezier(.7,0,.2,1);
+  }
+  .nav-links a:hover::after { transform: scaleX(1); transform-origin: left; }
+  .nav-links a .num {
+    font-size: 9px;
+    vertical-align: super;
+    margin-right: 4px;
+    color: var(--oxblood);
+  }
+
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 12px 20px;
+    border: 1px solid var(--ink);
+    background: var(--ink);
+    color: var(--paper);
+    transition: .3s;
+    display: inline-flex; align-items: center; gap: 8px;
+  }
+  .nav-cta::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: #6ed599;
+    border-radius: 50%;
+    box-shadow: 0 0 0 3px rgba(110,213,153,0.25);
+  }
+  .nav-cta:hover { background: var(--oxblood); border-color: var(--oxblood); }
+
+  /* =========================================================
+     HERO
+  ========================================================= */
+  .hero {
+    position: relative;
+    padding: clamp(120px, 16vh, 180px) var(--pad-x) 40px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+  }
+
+  .hero-meta {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: end;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: clamp(40px, 7vw, 80px);
+    opacity: 0;
+  }
+  .hero-meta .center {
+    text-align: center;
+    color: var(--ink);
+    letter-spacing: 0.28em;
+  }
+  .hero-meta .right { text-align: right; }
+  .hero-meta strong { color: var(--ink); font-weight: 500; }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(56px, 12vw, 196px);
+    line-height: 0.86;
+    letter-spacing: -0.045em;
+    color: var(--ink);
+    max-width: 1500px;
+  }
+  .hero-headline .line {
+    display: block;
+    overflow: hidden;
+  }
+  .hero-headline .line span {
+    display: inline-block;
+    transform: translateY(110%);
+    will-change: transform;
+  }
+  .hero-headline em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--oxblood);
+    position: relative;
+  }
+  .hero-headline em::after {
+    content:'';
+    position: absolute;
+    left: -2%; right: -2%;
+    bottom: 0.08em;
+    height: 0.06em;
+    background: var(--oxblood);
+    opacity: 0.15;
+  }
+  .hero-headline .ampersand {
+    font-family: var(--display-italic);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--oxblood);
+    padding: 0 0.05em;
+  }
+
+  /* Hero foot: portrait + lede + cards */
+  .hero-foot {
+    margin-top: clamp(48px, 8vw, 100px);
+    display: grid;
+    grid-template-columns: 1.2fr 1fr 1fr;
+    gap: clamp(24px, 4vw, 48px);
+    align-items: end;
+  }
+
+  .lede {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.4vw, 21px);
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 580px;
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  .lede .drop {
+    font-family: var(--display-italic);
+    font-style: italic;
+    font-size: 1.55em;
+    color: var(--oxblood);
+    line-height: 0.9;
+    float: left;
+    margin: 0.08em 0.12em 0 0;
+  }
+  .lede-cta {
+    margin-top: 28px;
+    display: flex; gap: 18px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .pill {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 14px 22px;
+    border: 1px solid var(--ink);
+    transition: .3s;
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .pill.solid {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .pill.solid:hover {
+    background: var(--oxblood);
+    border-color: var(--oxblood);
+  }
+  .pill.ghost:hover {
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .pill .arrow {
+    display: inline-block;
+    transition: transform .3s;
+  }
+  .pill:hover .arrow { transform: translateX(4px); }
+
+  .portrait-block {
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .portrait {
+    position: relative;
+    aspect-ratio: 4/5;
+    overflow: hidden;
+    background: var(--paper-2);
+    border: 1px solid var(--rule);
+  }
+  .portrait img {
+    width: 100%; height: 100%;
+    object-fit: cover;
+    filter: grayscale(35%) contrast(1.05);
+    transition: filter 1s, transform 1.5s cubic-bezier(.2,.7,.2,1);
+  }
+  .portrait:hover img {
+    filter: grayscale(0%);
+    transform: scale(1.04);
+  }
+  .portrait-tag {
+    position: absolute;
+    bottom: 16px; left: 16px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    background: var(--paper);
+    padding: 6px 12px;
+    border: 1px solid var(--ink);
+  }
+  .portrait-frame-num {
+    position: absolute;
+    top: 12px; right: 14px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    color: var(--paper);
+    mix-blend-mode: difference;
+  }
+
+  /* Hero data cards */
+  .data-stack {
+    display: flex; flex-direction: column;
+    gap: 14px;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+  .data-card {
+    border: 1px solid var(--rule);
+    background: var(--paper-2);
+    padding: 22px 24px;
+    position: relative;
+  }
+  .data-card .label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex; justify-content: space-between;
+  }
+  .data-card .label .indicator {
+    color: var(--oxblood);
+    font-weight: 700;
+  }
+  .data-card .value {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(28px, 3vw, 38px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .data-card .value em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+  .data-card .foot {
+    margin-top: 10px;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* =========================================================
+     MARQUEE strip (between hero & ledger)
+  ========================================================= */
+  .strip {
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    overflow: hidden;
+    position: relative;
+    background: var(--paper);
+  }
+  .strip-track {
+    display: flex;
+    gap: 0;
+    white-space: nowrap;
+    animation: ticker 38s linear infinite;
+    padding: 26px 0;
+  }
+  .strip-track .word {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-style: normal;
+    font-size: clamp(40px, 7vw, 92px);
+    letter-spacing: -0.04em;
+    line-height: 1;
+    padding: 0 30px;
+    display: inline-flex;
+    align-items: center;
+  }
+  .strip-track .word.it {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+  .strip-track .star {
+    display: inline-block;
+    font-size: clamp(28px, 4vw, 50px);
+    transform: translateY(-0.18em);
+    color: var(--ink);
+    padding: 0 20px;
+  }
+  .strip:hover .strip-track { animation-play-state: paused; }
+
+  /* =========================================================
+     LEDGER (Results)
+  ========================================================= */
+  .ledger {
+    padding: clamp(80px, 12vw, 160px) var(--pad-x);
+    position: relative;
+  }
+  .section-header {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 24px;
+    align-items: baseline;
+    padding-bottom: 28px;
+    border-bottom: 1px solid var(--ink);
+    margin-bottom: clamp(40px, 6vw, 72px);
+  }
+  .section-num {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .section-num em {
+    color: var(--oxblood);
+    font-style: normal;
+    font-weight: 700;
+  }
+  .section-title {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(36px, 5.5vw, 92px);
+    line-height: 0.95;
+    letter-spacing: -0.04em;
+  }
+  .section-title em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+  .section-stamp {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    text-align: right;
+    color: var(--muted);
+  }
+
+  .ledger-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 0;
+    border-top: 1px solid var(--rule);
+  }
+  .metric {
+    padding: 36px 32px 32px;
+    border-right: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    transition: background .4s;
+    cursor: default;
+  }
+  .metric:last-child { border-right: none; }
+  .metric:hover { background: var(--paper-2); }
+  .metric .m-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+    display: flex;
+    justify-content: space-between;
+  }
+  .metric .m-label .id {
+    color: var(--oxblood);
+  }
+  .metric .m-value {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(60px, 7vw, 108px);
+    line-height: 0.9;
+    letter-spacing: -0.05em;
+    margin-bottom: 18px;
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+  }
+  .metric .m-value sup {
+    font-family: var(--display-italic);
+    font-style: italic;
+    font-size: 0.45em;
+    color: var(--oxblood);
+    transform: translateY(-0.4em);
+  }
+  .metric .m-desc {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--ink-2);
+    max-width: 240px;
+  }
+  .metric .m-desc em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+
+  /* =========================================================
+     MANIFESTO (about / approach pull-quote)
+  ========================================================= */
+  .manifesto {
+    padding: clamp(80px, 14vw, 180px) var(--pad-x);
+    background: var(--ink);
+    color: var(--paper);
+    position: relative;
+    overflow: hidden;
+  }
+  .manifesto-grid {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: clamp(40px, 6vw, 80px);
+    align-items: start;
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+  .manifesto-aside {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(236, 230, 219, 0.5);
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    padding-top: 12px;
+  }
+  .manifesto-body {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(28px, 3.8vw, 64px);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+  .manifesto-body em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: #d6a878;
+  }
+  .manifesto-body .strike {
+    text-decoration: line-through;
+    text-decoration-thickness: 2px;
+    color: rgba(236,230,219,0.4);
+  }
+  .manifesto-sign {
+    margin-top: clamp(40px, 5vw, 70px);
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    border-top: 1px solid rgba(236,230,219,0.18);
+    padding-top: 22px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(236,230,219,0.65);
+  }
+  .manifesto-sign .signature {
+    font-family: var(--display-italic);
+    font-style: italic;
+    font-size: 36px;
+    letter-spacing: -0.02em;
+    color: #d6a878;
+    text-transform: none;
+    letter-spacing: 0;
+  }
+
+  /* =========================================================
+     DOSSIER (Experience)
+  ========================================================= */
+  .dossier { padding: clamp(80px, 12vw, 160px) var(--pad-x); }
+
+  .dossier-list { border-top: 1px solid var(--ink); }
+  .role {
+    display: grid;
+    grid-template-columns: 1fr 2.4fr 1fr;
+    gap: clamp(24px, 4vw, 56px);
+    align-items: start;
+    padding: clamp(36px, 5vw, 60px) 0;
+    border-bottom: 1px solid var(--rule);
+    position: relative;
+    transition: padding .5s cubic-bezier(.7,0,.2,1);
+  }
+  .role:hover { padding-left: 12px; padding-right: 12px; }
+  .role::before {
+    content:'';
+    position: absolute;
+    inset: 0;
+    background: var(--paper-2);
+    z-index: -1;
+    transform: scaleY(0);
+    transform-origin: bottom;
+    transition: transform .5s cubic-bezier(.7,0,.2,1);
+  }
+  .role:hover::before { transform: scaleY(1); transform-origin: top; }
+
+  .role-year {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding-top: 14px;
+    display: flex; flex-direction: column;
+    gap: 6px;
+  }
+  .role-year strong {
+    color: var(--ink);
+    font-size: 11px;
+    letter-spacing: 0.22em;
+  }
+  .role-year .badge {
+    margin-top: 6px;
+    color: var(--oxblood);
+    font-weight: 700;
+  }
+  .role-main h3 {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(48px, 7vw, 112px);
+    line-height: 0.92;
+    letter-spacing: -0.05em;
+    margin-bottom: 16px;
+  }
+  .role-main h3 em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+  .role-main .role-sub {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+    margin-bottom: 24px;
+    display: flex; align-items: center; gap: 14px;
+    flex-wrap: wrap;
+  }
+  .role-main .role-sub .sep {
+    width: 24px; height: 1px;
+    background: var(--ink);
+    display: inline-block;
+  }
+  .role-main p {
+    font-family: var(--serif);
+    font-size: clamp(16px, 1.3vw, 19px);
+    line-height: 1.55;
+    color: var(--ink-2);
+    max-width: 640px;
+  }
+  .role-main p em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+    font-size: 1.05em;
+  }
+  .role-tags {
+    padding-top: 16px;
+    display: flex; flex-direction: column;
+    gap: 8px;
+    text-align: right;
+  }
+  .role-tags .chip {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 6px 10px;
+    border: 1px solid var(--rule);
+    color: var(--ink-2);
+    align-self: end;
+  }
+
+  /* =========================================================
+     CAPABILITY GRID (between dossier & contact)
+  ========================================================= */
+  .capabilities {
+    padding: clamp(60px, 10vw, 140px) var(--pad-x);
+    background: var(--paper-2);
+    border-top: 1px solid var(--rule);
+    border-bottom: 1px solid var(--rule);
+  }
+  .cap-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+  }
+  .cap {
+    background: var(--paper-2);
+    padding: clamp(28px, 3vw, 42px);
+    transition: background .3s;
+    position: relative;
+  }
+  .cap:hover { background: var(--paper); }
+  .cap .cap-num {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: var(--oxblood);
+    margin-bottom: 22px;
+    display: block;
+  }
+  .cap h4 {
+    font-family: var(--serif);
+    font-weight: 400;
+    font-size: clamp(22px, 2vw, 30px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .cap h4 em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+  .cap p {
+    font-family: var(--serif);
+    font-size: 15px;
+    line-height: 1.55;
+    color: var(--ink-2);
+  }
+
+  /* =========================================================
+     CONTACT
+  ========================================================= */
+  .contact {
+    padding: clamp(80px, 14vw, 180px) var(--pad-x);
+    position: relative;
+  }
+  .contact-inner {
+    text-align: center;
+    max-width: 1500px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .contact-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+  }
+  .contact-eyebrow span { color: var(--oxblood); }
+  .contact-headline {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(54px, 11vw, 180px);
+    line-height: 0.88;
+    letter-spacing: -0.05em;
+    margin-bottom: 48px;
+  }
+  .contact-headline em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+  .contact-lede {
+    font-family: var(--serif);
+    font-size: clamp(17px, 1.4vw, 21px);
+    line-height: 1.55;
+    max-width: 620px;
+    margin: 0 auto 56px;
+    color: var(--ink-2);
+  }
+  .contact-actions {
+    display: flex;
+    gap: 14px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 80px;
+  }
+  .contact-info {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--rule);
+    border-top: 1px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+  }
+  .ci {
+    background: var(--paper);
+    padding: 32px 28px;
+    text-align: left;
+  }
+  .ci .ci-label {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+  }
+  .ci .ci-value {
+    font-family: var(--serif);
+    font-size: clamp(18px, 1.5vw, 22px);
+    line-height: 1.3;
+    letter-spacing: -0.01em;
+  }
+  .ci .ci-value em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: var(--oxblood);
+  }
+
+  /* =========================================================
+     FOOTER
+  ========================================================= */
+  footer {
+    padding: clamp(40px, 6vw, 64px) var(--pad-x);
+    background: var(--ink);
+    color: var(--paper);
+  }
+  .foot-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 32px;
+    align-items: end;
+  }
+  .foot-mark {
+    font-family: var(--serif);
+    font-weight: 300;
+    font-size: clamp(60px, 9vw, 140px);
+    line-height: 0.85;
+    letter-spacing: -0.05em;
+  }
+  .foot-mark em {
+    font-family: var(--display-italic);
+    font-style: italic;
+    color: #d6a878;
+  }
+  .foot-col {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(236,230,219,0.7);
+    display: flex; flex-direction: column;
+    gap: 10px;
+  }
+  .foot-col strong {
+    color: var(--paper);
+    font-weight: 500;
+    margin-bottom: 6px;
+  }
+  .foot-col a:hover { color: #d6a878; }
+  .foot-bottom {
+    margin-top: clamp(40px, 6vw, 64px);
+    padding-top: 22px;
+    border-top: 1px solid rgba(236,230,219,0.15);
+    display: flex; justify-content: space-between;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: rgba(236,230,219,0.5);
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+
+  /* =========================================================
+     RESPONSIVE
+  ========================================================= */
+  @media (max-width: 1100px) {
+    .nav-links { display: none; }
+    .hero-foot { grid-template-columns: 1fr; gap: 36px; }
+    .ledger-grid { grid-template-columns: repeat(2, 1fr); }
+    .metric:nth-child(2) { border-right: none; }
+    .role { grid-template-columns: 1fr; gap: 16px; }
+    .role-tags { flex-direction: row; flex-wrap: wrap; text-align: left; }
+    .role-tags .chip { align-self: flex-start; }
+    .cap-grid { grid-template-columns: 1fr; }
+    .contact-info { grid-template-columns: 1fr; }
+    .foot-grid { grid-template-columns: 1fr; gap: 40px; }
+  }
+
+  @media (max-width: 640px) {
+    .hero-meta { grid-template-columns: 1fr; gap: 10px; text-align: left !important; }
+    .hero-meta .center, .hero-meta .right { text-align: left; }
+    .ledger-grid { grid-template-columns: 1fr; }
+    .metric { border-right: none !important; }
+    .section-header { grid-template-columns: 1fr; }
+    .section-stamp { text-align: left; }
+    .manifesto-grid { grid-template-columns: 1fr; }
+    .manifesto-aside { writing-mode: horizontal-tb; transform: none; }
+    .loader-bottom { grid-template-columns: 1fr; text-align: center; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+
+<!-- =========================================================
+     LOADER
+========================================================= -->
+<div class="loader" id="loader">
+  <div class="loader-top">
+    <span>Vol. 01 / Issue MMXXVI</span>
+    <span>Commercial Finance Operator</span>
+    <span style="text-align:right">India · UAE · KSA</span>
+  </div>
+
+  <div class="loader-center">
+    <div class="loader-eyebrow">— A Portfolio in One Long Read —</div>
+    <h1 class="loader-name">
+      <span class="row"><span>Chintan</span></span>
+      <span class="row"><span><em>Agheda</em></span></span>
+    </h1>
+    <div class="loader-rule"></div>
+  </div>
+
+  <div class="loader-bottom">
+    <span>Loading the ledger…</span>
+    <span class="loader-pct">0</span>
+    <span style="text-align:right">Est. 2013</span>
+  </div>
+</div>
+
+<!-- =========================================================
+     TOP TICKER
+========================================================= -->
+<div class="ticker" style="border-top:none;">
+  <div class="ticker-track">
+    <span><i class="dot"></i> SERIES E DD <strong>$232M</strong> <i class="pos">▲ COMPLETE</i></span>
+    <span>VENDORS <strong>2,500+</strong></span>
+    <span><i class="dot"></i> AP CITIES <strong>40+</strong></span>
+    <span>YEARS <strong>13</strong></span>
+    <span>HYPERGROWTH MARKETS <strong>IN · AE · SA</strong></span>
+    <span><i class="dot"></i> BIG4 DD <i class="pos">▲ AUDITED</i></span>
+    <span>FY OUTLOOK <i class="pos">▲ EXPANSION</i></span>
+    <span>OPERATIONAL FINANCE <i class="pos">▲ LIVE</i></span>
+    <!-- duplicate for seamless loop -->
+    <span><i class="dot"></i> SERIES E DD <strong>$232M</strong> <i class="pos">▲ COMPLETE</i></span>
+    <span>VENDORS <strong>2,500+</strong></span>
+    <span><i class="dot"></i> AP CITIES <strong>40+</strong></span>
+    <span>YEARS <strong>13</strong></span>
+    <span>HYPERGROWTH MARKETS <strong>IN · AE · SA</strong></span>
+    <span><i class="dot"></i> BIG4 DD <i class="pos">▲ AUDITED</i></span>
+    <span>FY OUTLOOK <i class="pos">▲ EXPANSION</i></span>
+    <span>OPERATIONAL FINANCE <i class="pos">▲ LIVE</i></span>
+  </div>
+</div>
+
+<!-- =========================================================
+     NAV
+========================================================= -->
+<nav>
+  <div class="nav-mark">
+    <span class="sig">Cℎα.</span>
+    <span class="sub">Chintan Agheda · Commercial Finance</span>
+  </div>
+  <div class="nav-links">
+    <a href="#results"><span class="num">01</span>Results</a>
+    <a href="#approach"><span class="num">02</span>Approach</a>
+    <a href="#experience"><span class="num">03</span>Experience</a>
+    <a href="#capabilities"><span class="num">04</span>Capabilities</a>
+    <a href="#contact"><span class="num">05</span>Contact</a>
+  </div>
+  <a href="#contact" class="nav-cta">Available — Talk</a>
+</nav>
+
+<!-- =========================================================
+     HERO
+========================================================= -->
+<section class="hero">
+
+  <div class="hero-meta">
+    <div class="left">Portfolio <strong>№ 001</strong> &nbsp;·&nbsp; <strong>2026 / 27</strong></div>
+    <div class="center">— Chapter One —</div>
+    <div class="right"><strong>Mumbai · Dubai · Riyadh</strong> &nbsp;·&nbsp; Open for leadership</div>
+  </div>
+
+  <h2 class="hero-headline">
+    <span class="line"><span>Finance built</span></span>
+    <span class="line"><span>for the <em>messy</em>,</span></span>
+    <span class="line"><span>the fast <span class="ampersand">&amp;</span> the</span></span>
+    <span class="line"><span><em>still-being-invented</em>.</span></span>
+  </h2>
+
+  <div class="hero-foot">
+    <div>
+      <p class="lede">
+        <span class="drop">A</span>commercial-finance operator turning ambiguity into infrastructure. Thirteen years shipping the unglamorous parts — vendor systems, AP across forty cities, due-diligence packs that survive a Series E. The work is operational; the outcome is leverage.
+      </p>
+      <div class="lede-cta">
+        <a href="#results" class="pill solid">See the ledger <span class="arrow">↓</span></a>
+        <a href="#contact" class="pill ghost">Start a conversation <span class="arrow">→</span></a>
+      </div>
+    </div>
+
+    <div class="portrait-block">
+      <div class="portrait">
+        <img src="assets/img/Professional Photo Chintan Agheda Website.jpg" alt="Chintan Agheda">
+        <div class="portrait-frame-num">FRAME — 001</div>
+        <div class="portrait-tag">C.A. · Portrait, 2026</div>
+      </div>
+    </div>
+
+    <div class="data-stack">
+      <div class="data-card">
+        <div class="label"><span>STATUS</span><span class="indicator">● LIVE</span></div>
+        <div class="value">Open <em>book</em></div>
+        <div class="foot">Leadership / Consulting</div>
+      </div>
+      <div class="data-card">
+        <div class="label"><span>BASED</span><span>GMT +05:30</span></div>
+        <div class="value">Mumbai <em>↻</em> GCC</div>
+        <div class="foot">India · UAE · KSA corridor</div>
+      </div>
+      <div class="data-card">
+        <div class="label"><span>FOCUS</span><span class="indicator">FY26</span></div>
+        <div class="value">Series <em>B → E</em></div>
+        <div class="foot">Operational finance · DD · automation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     MARQUEE STRIP
+========================================================= -->
+<div class="strip">
+  <div class="strip-track">
+    <span class="word">Operational Finance</span>
+    <span class="star">✦</span>
+    <span class="word it">Due Diligence</span>
+    <span class="star">✦</span>
+    <span class="word">AP at Scale</span>
+    <span class="star">✦</span>
+    <span class="word it">Automation</span>
+    <span class="star">✦</span>
+    <span class="word">Vendor Systems</span>
+    <span class="star">✦</span>
+    <span class="word it">Hypergrowth</span>
+    <span class="star">✦</span>
+    <!-- duplicate -->
+    <span class="word">Operational Finance</span>
+    <span class="star">✦</span>
+    <span class="word it">Due Diligence</span>
+    <span class="star">✦</span>
+    <span class="word">AP at Scale</span>
+    <span class="star">✦</span>
+    <span class="word it">Automation</span>
+    <span class="star">✦</span>
+    <span class="word">Vendor Systems</span>
+    <span class="star">✦</span>
+    <span class="word it">Hypergrowth</span>
+    <span class="star">✦</span>
+  </div>
+</div>
+
+<!-- =========================================================
+     LEDGER / RESULTS
+========================================================= -->
+<section class="ledger" id="results">
+  <div class="section-header">
+    <div class="section-num"><em>§ 01</em> &nbsp;/ Ledger</div>
+    <h3 class="section-title">Numbers, on the <em>record.</em></h3>
+    <div class="section-stamp">Audited · 2013 — 2026</div>
+  </div>
+
+  <div class="ledger-grid">
+    <div class="metric">
+      <div class="m-label"><span>Tenure</span><span class="id">M-01</span></div>
+      <div class="m-value">13<sup>+</sup></div>
+      <div class="m-desc">Years building <em>finance operations</em> and commercial systems across emerging markets.</div>
+    </div>
+    <div class="metric">
+      <div class="m-label"><span>Series E DD</span><span class="id">M-02</span></div>
+      <div class="m-value">$232<sup>M</sup></div>
+      <div class="m-desc">Hypergrowth <em>due-diligence</em> exposure, audited at the Big4 standard.</div>
+    </div>
+    <div class="metric">
+      <div class="m-label"><span>Vendor Network</span><span class="id">M-03</span></div>
+      <div class="m-value">2.5<sup>K+</sup></div>
+      <div class="m-desc">Vendor relationships and <em>AP workflows</em> standardised and run.</div>
+    </div>
+    <div class="metric">
+      <div class="m-label"><span>Geographic Spread</span><span class="id">M-04</span></div>
+      <div class="m-value">40<sup>+</sup></div>
+      <div class="m-desc">Cities under live AP and <em>commercial finance</em> operations.</div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     MANIFESTO
+========================================================= -->
+<section class="manifesto" id="approach">
+  <div class="manifesto-grid">
+    <div class="manifesto-aside">§ 02 / Approach — A Working Philosophy</div>
+    <div>
+      <p class="manifesto-body">
+        Finance is <span class="strike">reporting</span> <em>infrastructure.</em> Built right, it stops being a back-office function and starts being the spine of the company — the thing that lets a founder say <em>yes</em> when the next opportunity arrives at 11pm on a Sunday.
+      </p>
+      <div class="manifesto-sign">
+        <div>— Operating note, 2026</div>
+        <div class="signature">C. Agheda</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     DOSSIER / EXPERIENCE
+========================================================= -->
+<section class="dossier" id="experience">
+  <div class="section-header">
+    <div class="section-num"><em>§ 03</em> &nbsp;/ Dossier</div>
+    <h3 class="section-title">Where the <em>work</em> happened.</h3>
+    <div class="section-stamp">Three chapters · Many cities</div>
+  </div>
+
+  <div class="dossier-list">
+
+    <article class="role">
+      <div class="role-year">
+        <strong>2023 — Present</strong>
+        <span>Chapter III</span>
+        <span class="badge">● Active</span>
+      </div>
+      <div class="role-main">
+        <h3>Zepto<em>.</em></h3>
+        <div class="role-sub">
+          <span>Finance Manager</span>
+          <span class="sep"></span>
+          <span>Mumbai · India</span>
+          <span class="sep"></span>
+          <span>Quick-commerce / hypergrowth</span>
+        </div>
+        <p>
+          Led finance operations, vendor systems, accounting cleanup and commercial workflows through Series E. Built the operational layer that lets a finance function <em>survive</em> 100% MoM growth — not in theory, in cash.
+        </p>
+      </div>
+      <div class="role-tags">
+        <span class="chip">Series E DD</span>
+        <span class="chip">Vendor Ops</span>
+        <span class="chip">Cleanup</span>
+        <span class="chip">Hypergrowth</span>
+      </div>
+    </article>
+
+    <article class="role">
+      <div class="role-year">
+        <strong>2022 — 2023</strong>
+        <span>Chapter II</span>
+      </div>
+      <div class="role-main">
+        <h3>Chalo<em>.</em></h3>
+        <div class="role-sub">
+          <span>Finance Manager</span>
+          <span class="sep"></span>
+          <span>Navi Mumbai · India</span>
+          <span class="sep"></span>
+          <span>Mobility</span>
+        </div>
+        <p>
+          Owned AP operations across <em>40+ cities</em>. Wrote the SOPs, ran profitability reviews and shepherded a Big4 due-diligence cycle. The boring sentence: standardised payables. The honest one: turned chaos into a system someone else could actually run.
+        </p>
+      </div>
+      <div class="role-tags">
+        <span class="chip">AP @ Scale</span>
+        <span class="chip">SOPs</span>
+        <span class="chip">Big4 DD</span>
+        <span class="chip">Profitability</span>
+      </div>
+    </article>
+
+    <article class="role">
+      <div class="role-year">
+        <strong>2020 — 2022</strong>
+        <span>Chapter I</span>
+      </div>
+      <div class="role-main">
+        <h3>IGP<em>.com</em></h3>
+        <div class="role-sub">
+          <span>Assistant Finance Manager</span>
+          <span class="sep"></span>
+          <span>Mumbai · India</span>
+          <span class="sep"></span>
+          <span>E-commerce</span>
+        </div>
+        <p>
+          Ran MIS, FP&amp;A, budgeting, reporting and <em>inventory finance</em> for a fast-growing ecommerce ecosystem. The first chapter where finance stopped being a ledger and started being a lens.
+        </p>
+      </div>
+      <div class="role-tags">
+        <span class="chip">MIS · FP&amp;A</span>
+        <span class="chip">Budgeting</span>
+        <span class="chip">Inventory</span>
+        <span class="chip">Reporting</span>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- =========================================================
+     CAPABILITIES
+========================================================= -->
+<section class="capabilities" id="capabilities">
+  <div class="section-header" style="margin-bottom: clamp(32px, 4vw, 56px);">
+    <div class="section-num"><em>§ 04</em> &nbsp;/ Capabilities</div>
+    <h3 class="section-title">What I <em>actually</em> ship.</h3>
+    <div class="section-stamp">Six lines of work</div>
+  </div>
+
+  <div class="cap-grid">
+    <div class="cap">
+      <span class="cap-num">01 / Operational</span>
+      <h4>Finance <em>infrastructure</em></h4>
+      <p>The plumbing — chart of accounts, close calendars, controls, vendor master, payment rails. Built once, runs for years.</p>
+    </div>
+    <div class="cap">
+      <span class="cap-num">02 / Diligence</span>
+      <h4>DD <em>readiness</em></h4>
+      <p>Data rooms, audit trails, reconciled history. The work that lets an investor say yes in days instead of months.</p>
+    </div>
+    <div class="cap">
+      <span class="cap-num">03 / Automation</span>
+      <h4>Workflow <em>leverage</em></h4>
+      <p>AP automation, vendor onboarding, approvals. Replace manual repetition with systems that scale with the team.</p>
+    </div>
+    <div class="cap">
+      <span class="cap-num">04 / Commercial</span>
+      <h4>Profitability <em>reviews</em></h4>
+      <p>Unit economics, contribution margin, category P&amp;Ls — the analysis layer that informs pricing and category bets.</p>
+    </div>
+    <div class="cap">
+      <span class="cap-num">05 / Geographic</span>
+      <h4>GCC <em>expansion</em></h4>
+      <p>Setting up finance ops across India, UAE and KSA. Entity structuring, banking, tax posture, statutory compliance.</p>
+    </div>
+    <div class="cap">
+      <span class="cap-num">06 / Advisory</span>
+      <h4>Founder <em>partner</em></h4>
+      <p>The thinking partner role — capital strategy, board prep, scenario modelling. Senior judgement on call.</p>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     CONTACT
+========================================================= -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="contact-eyebrow">§ 05 / Get in touch — <span>● Available FY26</span></div>
+
+    <h3 class="contact-headline">
+      Let's build the <em>boring parts</em> that actually win.
+    </h3>
+
+    <p class="contact-lede">
+      Open to leadership roles, fractional CFO engagements, and serious conversations about scaling commercial finance across the India–GCC corridor.
+    </p>
+
+    <div class="contact-actions">
+      <a href="#" class="pill solid">Email Chintan <span class="arrow">→</span></a>
+      <a href="#" class="pill ghost">LinkedIn <span class="arrow">↗</span></a>
+      <a href="#" class="pill ghost">Schedule a call <span class="arrow">→</span></a>
+    </div>
+
+    <div class="contact-info">
+      <div class="ci">
+        <div class="ci-label">Direct</div>
+        <div class="ci-value">chintan<em>@</em>agheda.work</div>
+      </div>
+      <div class="ci">
+        <div class="ci-label">Base</div>
+        <div class="ci-value">Mumbai <em>·</em> India</div>
+      </div>
+      <div class="ci">
+        <div class="ci-label">Operating Window</div>
+        <div class="ci-value">GMT <em>+5:30</em> · IN / AE / SA</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- =========================================================
+     BOTTOM TICKER
+========================================================= -->
+<div class="ticker">
+  <div class="ticker-track">
+    <span><i class="dot"></i> AVAILABLE FY26</span>
+    <span>LEADERSHIP <i class="pos">▲ OPEN</i></span>
+    <span>FRACTIONAL CFO <i class="pos">▲ OPEN</i></span>
+    <span>BOARD ADVISORY <i class="pos">▲ SELECT</i></span>
+    <span>RESPONSE WINDOW <strong>&lt; 48H</strong></span>
+    <span>CORRIDOR <strong>IN — AE — SA</strong></span>
+    <span><i class="dot"></i> NO COLD PITCHES</span>
+    <!-- duplicate -->
+    <span><i class="dot"></i> AVAILABLE FY26</span>
+    <span>LEADERSHIP <i class="pos">▲ OPEN</i></span>
+    <span>FRACTIONAL CFO <i class="pos">▲ OPEN</i></span>
+    <span>BOARD ADVISORY <i class="pos">▲ SELECT</i></span>
+    <span>RESPONSE WINDOW <strong>&lt; 48H</strong></span>
+    <span>CORRIDOR <strong>IN — AE — SA</strong></span>
+    <span><i class="dot"></i> NO COLD PITCHES</span>
+  </div>
+</div>
+
+<!-- =========================================================
+     FOOTER
+========================================================= -->
+<footer>
+  <div class="foot-grid">
+    <div class="foot-mark">
+      Chintan<br><em>Agheda.</em>
+    </div>
+    <div class="foot-col">
+      <strong>Navigate</strong>
+      <a href="#results">01 — Results</a>
+      <a href="#approach">02 — Approach</a>
+      <a href="#experience">03 — Experience</a>
+      <a href="#capabilities">04 — Capabilities</a>
+      <a href="#contact">05 — Contact</a>
+    </div>
+    <div class="foot-col">
+      <strong>Elsewhere</strong>
+      <a href="#">LinkedIn ↗</a>
+      <a href="#">Email ↗</a>
+      <a href="#">Download CV ↗</a>
+      <a href="#">Calendar ↗</a>
+    </div>
+  </div>
+  <div class="foot-bottom">
+    <span>© MMXXVI · Chintan Agheda · All rights reserved</span>
+    <span>Designed as a long read</span>
+    <span>Set in Fraunces &amp; Instrument Serif</span>
+  </div>
+</footer>
+
+<!-- =========================================================
+     SCRIPT
+========================================================= -->
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* -----------------------
+   LOADER
+----------------------- */
+const loader = document.getElementById('loader');
+const pctEl  = document.querySelector('.loader-pct');
+
+const intro = gsap.timeline({ defaults: { ease: 'power4.out' }});
+
+intro
+  .to('.loader-name .row span', {
+    y: 0,
+    duration: 1.1,
+    stagger: 0.12,
+  })
+  .to('.loader-eyebrow', { opacity: 1, duration: 0.7 }, '-=0.9')
+  .to('.loader-rule', { scaleX: 1, duration: 1.2, ease: 'power3.inOut' }, '-=0.8')
+  .to({ v: 0 }, {
+    v: 100,
+    duration: 1.6,
+    ease: 'power2.inOut',
+    onUpdate: function() {
+      pctEl.textContent = Math.round(this.targets()[0].v);
+    }
+  }, '-=0.6')
+  .to('#loader', {
+    yPercent: -100,
+    duration: 1.1,
+    ease: 'expo.inOut',
+    onComplete: () => loader.style.display = 'none'
+  }, '+=0.15')
+  .from('nav', { yPercent: -100, opacity: 0, duration: 0.9, ease: 'power3.out' }, '-=0.7')
+  .to('.hero-meta', { opacity: 1, duration: 0.8 }, '-=0.6')
+  .to('.hero-headline .line span', {
+    y: 0,
+    duration: 1.15,
+    stagger: 0.1,
+    ease: 'power4.out'
+  }, '-=0.6')
+  .to('.lede', { opacity: 1, y: 0, duration: 0.9 }, '-=0.8')
+  .to('.portrait-block', { opacity: 1, y: 0, duration: 1.1 }, '-=1')
+  .to('.data-stack', { opacity: 1, y: 0, duration: 1 }, '-=0.9');
+
+/* Make nav visible after intro completes */
+gsap.set('nav', { y: 0 });
+
+/* -----------------------
+   SCROLL REVEALS
+----------------------- */
+gsap.utils.toArray('.metric').forEach((el, i) => {
+  gsap.from(el, {
+    scrollTrigger: { trigger: el, start: 'top 88%' },
+    opacity: 0,
+    y: 60,
+    duration: 0.9,
+    delay: i * 0.06,
+    ease: 'power3.out'
+  });
+});
+
+gsap.utils.toArray('.role').forEach((el) => {
+  gsap.from(el, {
+    scrollTrigger: { trigger: el, start: 'top 85%' },
+    opacity: 0,
+    y: 80,
+    duration: 1.1,
+    ease: 'power3.out'
+  });
+});
+
+gsap.utils.toArray('.cap').forEach((el, i) => {
+  gsap.from(el, {
+    scrollTrigger: { trigger: el, start: 'top 88%' },
+    opacity: 0,
+    y: 50,
+    duration: 0.85,
+    delay: (i % 3) * 0.08,
+    ease: 'power3.out'
+  });
+});
+
+gsap.from('.manifesto-body', {
+  scrollTrigger: { trigger: '.manifesto', start: 'top 70%' },
+  opacity: 0,
+  y: 40,
+  duration: 1.4,
+  ease: 'power3.out'
+});
+
+gsap.from('.contact-headline', {
+  scrollTrigger: { trigger: '.contact', start: 'top 75%' },
+  opacity: 0,
+  y: 50,
+  duration: 1.2,
+  ease: 'power3.out'
+});
+
+gsap.from('.section-header > *', {
+  scrollTrigger: { trigger: '.ledger', start: 'top 80%' },
+  opacity: 0,
+  y: 30,
+  stagger: 0.1,
+  duration: 0.9
+});
+
+/* -----------------------
+   Counting animation for metric numbers
+----------------------- */
+const counters = [
+  { sel: '.metric:nth-child(1) .m-value', from: 0, to: 13, suffix: '+', supIdx: 1 },
+  { sel: '.metric:nth-child(2) .m-value', from: 0, to: 232, prefix: '$', suffix: 'M', supIdx: 1 },
+  { sel: '.metric:nth-child(3) .m-value', from: 0, to: 2.5, decimals: 1, suffix: 'K+', supIdx: 1 },
+  { sel: '.metric:nth-child(4) .m-value', from: 0, to: 40, suffix: '+', supIdx: 1 }
+];
+
+counters.forEach(c => {
+  const el = document.querySelector(c.sel);
+  if (!el) return;
+  const supHTML = el.querySelector('sup')?.outerHTML || '';
+  const obj = { v: c.from };
+
+  ScrollTrigger.create({
+    trigger: el,
+    start: 'top 85%',
+    once: true,
+    onEnter: () => {
+      gsap.to(obj, {
+        v: c.to,
+        duration: 1.6,
+        ease: 'power2.out',
+        onUpdate: () => {
+          const val = c.decimals ? obj.v.toFixed(c.decimals) : Math.round(obj.v);
+          el.innerHTML = (c.prefix || '') + val + supHTML;
+        }
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>

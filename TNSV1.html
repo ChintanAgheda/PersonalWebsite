@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>STUDIO — Original Paintings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,600;1,9..144,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1410;
+    --paper: #f4ede1;
+    --paper-2: #ebe0cf;
+    --accent: #d6451f;
+    --accent-2: #2b5d4c;
+    --gold: #c9a227;
+    --shadow: rgba(26,20,16,0.18);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { scroll-behavior:smooth; }
+  body {
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'Fraunces',serif;
+    overflow-x:hidden;
+  }
+  body::before {
+    content:''; position:fixed; inset:0; z-index:9999; pointer-events:none;
+    opacity:0.04;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  }
+
+  /* NAV */
+  nav {
+    position:fixed; top:0; left:0; right:0; z-index:1000;
+    display:flex; justify-content:space-between; align-items:center;
+    padding:1.4rem 2.5rem;
+    mix-blend-mode:difference; color:#fff;
+  }
+  nav .logo { font-weight:600; font-size:1.3rem; letter-spacing:0.05em; }
+  nav .links { display:flex; gap:2rem; font-family:'Space Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.15em; }
+  nav a { color:inherit; text-decoration:none; transition:opacity 0.3s; }
+  nav a:hover { opacity:0.5; }
+
+  /* HERO */
+  header {
+    min-height:100vh; display:flex; flex-direction:column; justify-content:center;
+    padding:8rem 2.5rem 4rem; position:relative;
+  }
+  .hero-tag { font-family:'Space Mono',monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.3em; color:var(--accent); margin-bottom:1.5rem; opacity:0; animation:rise 1s 0.2s forwards; }
+  h1 {
+    font-size:clamp(3.5rem,13vw,12rem); font-weight:300; line-height:0.88;
+    letter-spacing:-0.03em; max-width:14ch;
+  }
+  h1 .word { display:inline-block; opacity:0; transform:translateY(40px); animation:rise 1s forwards; }
+  h1 em { font-style:italic; color:var(--accent); }
+  .hero-sub {
+    margin-top:2.5rem; max-width:42ch; font-size:1.25rem; line-height:1.5; font-weight:300;
+    opacity:0; animation:rise 1s 0.9s forwards;
+  }
+  .scroll-hint { position:absolute; bottom:2.5rem; right:2.5rem; font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; writing-mode:vertical-rl; opacity:0; animation:rise 1s 1.2s forwards; }
+  @keyframes rise { to { opacity:1; transform:translateY(0); } }
+
+  /* MARQUEE */
+  .marquee { border-top:1px solid var(--ink); border-bottom:1px solid var(--ink); padding:0.8rem 0; overflow:hidden; white-space:nowrap; }
+  .marquee div { display:inline-block; animation:scroll 30s linear infinite; font-family:'Space Mono',monospace; text-transform:uppercase; letter-spacing:0.2em; font-size:0.8rem; }
+  .marquee span { margin:0 1.5rem; }
+  .marquee span::after { content:'✦'; margin-left:3rem; color:var(--accent); }
+  @keyframes scroll { to { transform:translateX(-50%); } }
+
+  /* GALLERY */
+  .gallery-head { padding:6rem 2.5rem 2rem; display:flex; justify-content:space-between; align-items:flex-end; flex-wrap:wrap; gap:1rem; }
+  .gallery-head h2 { font-size:clamp(2rem,5vw,3.5rem); font-weight:400; font-style:italic; }
+  .filters { display:flex; gap:0.5rem; flex-wrap:wrap; }
+  .filters button {
+    font-family:'Space Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.1em;
+    background:none; border:1px solid var(--ink); padding:0.5rem 1rem; cursor:pointer; border-radius:2rem;
+    transition:all 0.25s; color:var(--ink);
+  }
+  .filters button:hover, .filters button.active { background:var(--ink); color:var(--paper); }
+
+  .grid { padding:2rem 2.5rem 6rem; display:grid; grid-template-columns:repeat(12,1fr); gap:1.5rem; }
+  .card { position:relative; cursor:pointer; overflow:hidden; background:var(--paper-2); transition:transform 0.5s cubic-bezier(.2,.8,.2,1); }
+  .card:nth-child(6n+1){ grid-column:span 7; }
+  .card:nth-child(6n+2){ grid-column:span 5; }
+  .card:nth-child(6n+3){ grid-column:span 4; }
+  .card:nth-child(6n+4){ grid-column:span 4; }
+  .card:nth-child(6n+5){ grid-column:span 4; }
+  .card:nth-child(6n){ grid-column:span 12; }
+  .card .frame {
+    aspect-ratio:4/5; display:flex; align-items:center; justify-content:center; position:relative;
+    background:linear-gradient(135deg,var(--c1),var(--c2));
+  }
+  .card:nth-child(6n) .frame { aspect-ratio:16/7; }
+  .card:nth-child(6n+1) .frame { aspect-ratio:4/3; }
+  .placeholder-label { font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; color:rgba(255,255,255,0.7); }
+  .card .meta {
+    position:absolute; inset:auto 0 0 0; padding:1.2rem; color:#fff;
+    background:linear-gradient(transparent,rgba(0,0,0,0.55));
+    transform:translateY(100%); transition:transform 0.4s; display:flex; justify-content:space-between; align-items:flex-end;
+  }
+  .card:hover .meta { transform:translateY(0); }
+  .card:hover { transform:scale(0.985); }
+  .card .meta h3 { font-size:1.3rem; font-weight:400; font-style:italic; }
+  .card .meta .info { font-family:'Space Mono',monospace; font-size:0.68rem; letter-spacing:0.1em; opacity:0.85; }
+  .card .price { font-family:'Space Mono',monospace; font-size:0.8rem; }
+  .badge { position:absolute; top:1rem; left:1rem; font-family:'Space Mono',monospace; font-size:0.6rem; text-transform:uppercase; letter-spacing:0.15em; background:var(--paper); color:var(--ink); padding:0.25rem 0.6rem; }
+
+  /* ABOUT */
+  .about { background:var(--ink); color:var(--paper); padding:7rem 2.5rem; display:grid; grid-template-columns:1fr 1fr; gap:4rem; align-items:center; }
+  .about .portrait { aspect-ratio:3/4; background:linear-gradient(135deg,var(--accent-2),var(--ink)); display:flex; align-items:center; justify-content:center; }
+  .about .portrait span { font-family:'Space Mono',monospace; font-size:0.7rem; letter-spacing:0.2em; text-transform:uppercase; opacity:0.5; }
+  .about h2 { font-size:clamp(2rem,4vw,3rem); font-weight:300; font-style:italic; margin-bottom:1.5rem; }
+  .about p { font-size:1.15rem; line-height:1.7; font-weight:300; opacity:0.85; margin-bottom:1.2rem; max-width:48ch; }
+
+  /* INQUIRY */
+  .inquiry { padding:7rem 2.5rem; max-width:760px; margin:0 auto; }
+  .inquiry h2 { font-size:clamp(2.5rem,7vw,5rem); font-weight:300; line-height:0.95; margin-bottom:2.5rem; }
+  .inquiry h2 em { font-style:italic; color:var(--accent); }
+  .form-row { display:flex; gap:1.5rem; margin-bottom:1.5rem; }
+  .form-row > div { flex:1; }
+  .inquiry label { display:block; font-family:'Space Mono',monospace; font-size:0.68rem; text-transform:uppercase; letter-spacing:0.15em; margin-bottom:0.5rem; }
+  .inquiry input, .inquiry textarea, .inquiry select {
+    width:100%; padding:0.9rem 0; background:none; border:none; border-bottom:1px solid var(--ink);
+    font-family:'Fraunces',serif; font-size:1.1rem; color:var(--ink); transition:border-color 0.3s;
+  }
+  .inquiry input:focus, .inquiry textarea:focus, .inquiry select:focus { outline:none; border-color:var(--accent); }
+  .inquiry textarea { resize:vertical; min-height:80px; }
+  .submit-btn {
+    margin-top:1rem; font-family:'Space Mono',monospace; font-size:0.78rem; text-transform:uppercase; letter-spacing:0.2em;
+    background:var(--accent); color:#fff; border:none; padding:1.1rem 2.5rem; cursor:pointer; transition:background 0.3s;
+  }
+  .submit-btn:hover { background:var(--ink); }
+  .form-note { font-family:'Space Mono',monospace; font-size:0.7rem; opacity:0.5; margin-top:1.5rem; }
+
+  /* FOOTER */
+  footer { border-top:1px solid var(--ink); padding:3rem 2.5rem; display:flex; justify-content:space-between; flex-wrap:wrap; gap:1.5rem; font-family:'Space Mono',monospace; font-size:0.72rem; text-transform:uppercase; letter-spacing:0.12em; }
+  footer a { color:var(--ink); text-decoration:none; opacity:0.7; }
+  footer a:hover { opacity:1; color:var(--accent); }
+
+  /* LIGHTBOX */
+  .lightbox { position:fixed; inset:0; z-index:2000; background:rgba(26,20,16,0.95); display:none; align-items:center; justify-content:center; padding:3rem; }
+  .lightbox.open { display:flex; }
+  .lightbox .lb-inner { max-width:700px; text-align:center; color:var(--paper); }
+  .lightbox .lb-img { aspect-ratio:4/5; width:min(80vw,460px); margin:0 auto 1.5rem; display:flex; align-items:center; justify-content:center; }
+  .lightbox h3 { font-size:2rem; font-style:italic; font-weight:400; margin-bottom:0.5rem; }
+  .lightbox .lb-meta { font-family:'Space Mono',monospace; font-size:0.75rem; letter-spacing:0.15em; opacity:0.7; margin-bottom:1.5rem; }
+  .lightbox .lb-cta { font-family:'Space Mono',monospace; font-size:0.75rem; text-transform:uppercase; letter-spacing:0.2em; border:1px solid var(--paper); padding:0.8rem 2rem; background:none; color:var(--paper); cursor:pointer; }
+  .lightbox .lb-cta:hover { background:var(--paper); color:var(--ink); }
+  .lb-close { position:absolute; top:2rem; right:2.5rem; font-family:'Space Mono',monospace; font-size:0.8rem; color:var(--paper); cursor:pointer; letter-spacing:0.1em; }
+
+  @media (max-width:820px) {
+    nav { padding:1.2rem 1.3rem; }
+    nav .links { gap:1rem; }
+    header { padding:7rem 1.3rem 3rem; }
+    .grid { padding:2rem 1.3rem 4rem; gap:1rem; }
+    .card[class] { grid-column:span 12 !important; }
+    .about { grid-template-columns:1fr; padding:4rem 1.3rem; gap:2rem; }
+    .gallery-head, .inquiry, footer { padding-left:1.3rem; padding-right:1.3rem; }
+    .form-row { flex-direction:column; gap:1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="logo">STUDIO⁕</div>
+  <div class="links">
+    <a href="#gallery">Work</a>
+    <a href="#about">About</a>
+    <a href="#inquiry">Inquire</a>
+  </div>
+</nav>
+
+<header>
+  <div class="hero-tag">Original Works · Est. 2026</div>
+  <h1>
+    <span class="word" style="animation-delay:.3s">Paint</span>
+    <span class="word" style="animation-delay:.45s"><em>that</em></span>
+    <span class="word" style="animation-delay:.6s">refuses</span>
+    <span class="word" style="animation-delay:.75s">to</span>
+    <span class="word" style="animation-delay:.9s">stay</span>
+    <span class="word" style="animation-delay:1.05s"><em>still.</em></span>
+  </h1>
+  <p class="hero-sub">A collection of original paintings — texture, pigment, and instinct. Each piece is one of one. Browse the work, then reach out about what moves you.</p>
+  <div class="scroll-hint">Scroll ↓</div>
+</header>
+
+<div class="marquee"><div>
+  <span>Original</span><span>One of One</span><span>Acrylic & Oil</span><span>Worldwide Shipping</span><span>Commissions Open</span><span>Original</span><span>One of One</span><span>Acrylic & Oil</span><span>Worldwide Shipping</span><span>Commissions Open</span>
+</div></div>
+
+<section id="gallery">
+  <div class="gallery-head">
+    <h2>The Collection</h2>
+    <div class="filters">
+      <button class="active" data-f="all">All</button>
+      <button data-f="abstract">Abstract</button>
+      <button data-f="landscape">Landscape</button>
+      <button data-f="figure">Figure</button>
+    </div>
+  </div>
+  <div class="grid" id="grid"></div>
+</section>
+
+<section id="about" class="about">
+  <div class="portrait"><span>Artist portrait — pending</span></div>
+  <div>
+    <h2>About the work</h2>
+    <p>This is placeholder text for your artist statement. Talk about your process, what pulls you to the canvas, and the materials you favor. A few honest sentences here do more than a polished bio.</p>
+    <p>When the photoshoot is done, swap the colored blocks for your painting images and drop your portrait into this frame. Everything else is ready to go live.</p>
+  </div>
+</section>
+
+<section id="inquiry" class="inquiry">
+  <h2>Ask about <em>a piece.</em></h2>
+  <div class="form-row">
+    <div><label>Name</label><input type="text" placeholder="Your name"></div>
+    <div><label>Email</label><input type="email" placeholder="you@email.com"></div>
+  </div>
+  <div class="form-row">
+    <div><label>Piece of interest</label><input type="text" id="pieceField" placeholder="Painting title (optional)"></div>
+    <div><label>Inquiry type</label><select><option>Purchase</option><option>Commission</option><option>Exhibition</option><option>Other</option></select></div>
+  </div>
+  <div style="margin-bottom:1.5rem;"><label>Message</label><textarea placeholder="Tell me what you're drawn to..."></textarea></div>
+  <button class="submit-btn" onclick="alert('Connect this form to your email or a service like Formspree before launch.')">Send inquiry →</button>
+  <p class="form-note">// Form is not wired to a backend yet — connect to Formspree, Netlify Forms, or your email before launch.</p>
+</section>
+
+<footer>
+  <div>© 2026 Studio. All works original.</div>
+  <div style="display:flex;gap:1.5rem;">
+    <a href="#">Instagram</a><a href="#">Email</a><a href="#">Newsletter</a>
+  </div>
+</footer>
+
+<div class="lightbox" id="lightbox">
+  <div class="lb-close" onclick="closeLightbox()">Close ✕</div>
+  <div class="lb-inner">
+    <div class="lb-img" id="lbImg"></div>
+    <h3 id="lbTitle"></h3>
+    <div class="lb-meta" id="lbMeta"></div>
+    <button class="lb-cta" onclick="inquireAbout()">Inquire about this piece</button>
+  </div>
+</div>
+
+<script>
+  const palettes = [
+    ['#d6451f','#2b1810'],['#2b5d4c','#0f261e'],['#c9a227','#3d2f0a'],
+    ['#3a4a8c','#12162e'],['#a8324a','#2b0c14'],['#e07a3f','#3a1c0a'],
+    ['#5a7a52','#1a2415'],['#8c4a8c','#2e1230'],['#3f8ca8','#0a2630'],
+    ['#b85c38','#2e1409']
+  ];
+  const cats = ['abstract','landscape','figure'];
+  const titles = ['Burning Field','Quiet Static','After the Rain','Untitled No.7','Crimson Hour','Low Tide','Figure in Ochre','Nocturne','Salt & Smoke','Threshold','Verdant Decay','First Light','The Long Room','Pale Witness','Heat'];
+  const paintings = [];
+  for (let i=0;i<30;i++){
+    const p = palettes[i%palettes.length];
+    paintings.push({
+      title: titles[i%titles.length] + (i>=titles.length? ' II':''),
+      cat: cats[i%cats.length],
+      year: 2024 + (i%3),
+      size: ['60×80cm','40×40cm','100×120cm','30×40cm'][i%4],
+      medium: ['Oil on canvas','Acrylic on linen','Mixed media'][i%3],
+      price: '$'+((i%5+2)*450).toLocaleString(),
+      sold: i%9===0,
+      c1:p[0], c2:p[1]
+    });
+  }
+
+  const grid = document.getElementById('grid');
+  function render(filter){
+    grid.innerHTML='';
+    paintings.filter(p=>filter==='all'||p.cat===filter).forEach(p=>{
+      const card=document.createElement('div');
+      card.className='card';
+      card.style.setProperty('--c1',p.c1);
+      card.style.setProperty('--c2',p.c2);
+      card.innerHTML=`
+        <div class="frame">
+          ${p.sold?'<div class="badge">Sold</div>':''}
+          <span class="placeholder-label">Image pending</span>
+          <div class="meta">
+            <div><h3>${p.title}</h3><div class="info">${p.medium} · ${p.size}</div></div>
+            <div class="price">${p.sold?'—':p.price}</div>
+          </div>
+        </div>`;
+      card.onclick=()=>openLightbox(p);
+      grid.appendChild(card);
+    });
+  }
+  render('all');
+
+  document.querySelectorAll('.filters button').forEach(b=>{
+    b.onclick=()=>{
+      document.querySelector('.filters .active').classList.remove('active');
+      b.classList.add('active');
+      render(b.dataset.f);
+    };
+  });
+
+  const lb=document.getElementById('lightbox');
+  let current=null;
+  function openLightbox(p){
+    current=p;
+    document.getElementById('lbImg').style.background=`linear-gradient(135deg,${p.c1},${p.c2})`;
+    document.getElementById('lbTitle').textContent=p.title;
+    document.getElementById('lbMeta').textContent=`${p.medium} · ${p.size} · ${p.year} · ${p.sold?'Sold':p.price}`;
+    lb.classList.add('open');
+  }
+  function closeLightbox(){ lb.classList.remove('open'); }
+  function inquireAbout(){
+    closeLightbox();
+    document.getElementById('pieceField').value=current.title;
+    document.getElementById('inquiry').scrollIntoView({behavior:'smooth'});
+  }
+  lb.onclick=(e)=>{ if(e.target===lb) closeLightbox(); };
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeLightbox(); });
+</script>
+</body>
+</html>

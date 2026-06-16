@@ -1,0 +1,1358 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+  <title>The Nathdwara Store</title>
+
+  <!-- ===================================================== -->
+  <!-- FONTS -->
+  <!-- ===================================================== -->
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cormorant+Garamond:wght@300;400;500;600;700&family=Marcellus&display=swap" rel="stylesheet">
+
+  <!-- ===================================================== -->
+  <!-- GSAP -->
+  <!-- ===================================================== -->
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+
+  <!-- ===================================================== -->
+  <!-- CSS -->
+  <!-- ===================================================== -->
+
+  <style>
+
+    *{
+      margin:0;
+      padding:0;
+      box-sizing:border-box;
+    }
+
+    html{
+      scroll-behavior:smooth;
+    }
+
+    body{
+
+      background:#0c0905;
+      color:#f5e6c8;
+      overflow-x:hidden;
+
+      font-family:'Marcellus', serif;
+
+    }
+
+    body::-webkit-scrollbar{
+      width:10px;
+    }
+
+    body::-webkit-scrollbar-thumb{
+      background:#c89b3c;
+    }
+
+    a{
+      text-decoration:none;
+      color:inherit;
+    }
+
+    .container{
+      width:92%;
+      max-width:1450px;
+      margin:auto;
+    }
+
+    /* ===================================================== */
+    /* SHRINATHJI LOADER */
+    /* ===================================================== */
+
+    .shrinathji-loader{
+
+      position:fixed;
+      inset:0;
+
+      z-index:999999;
+
+      overflow:hidden;
+
+      background:#060504;
+
+    }
+
+    .loader-overlay{
+
+      position:absolute;
+      inset:0;
+
+      background:
+      radial-gradient(circle at center,
+      rgba(214,171,74,.15),
+      #060504 70%);
+
+    }
+
+    .feet-container{
+
+      position:absolute;
+
+      width:100%;
+      height:100%;
+
+      overflow:hidden;
+
+      display:flex;
+      justify-content:center;
+
+    }
+
+    .feet-image{
+
+      position:absolute;
+
+      width:650px;
+
+      bottom:-250px;
+
+      opacity:.92;
+
+      animation:
+      darshanReveal 6s ease forwards;
+
+      filter:
+      drop-shadow(0 0 40px rgba(214,171,74,.25));
+
+    }
+
+    @keyframes darshanReveal{
+
+      0%{
+
+        transform:
+        translateY(0px)
+        scale(1.25);
+
+        opacity:0;
+
+      }
+
+      20%{
+
+        opacity:1;
+
+      }
+
+      100%{
+
+        transform:
+        translateY(-850px)
+        scale(1);
+
+        opacity:1;
+
+      }
+
+    }
+
+    .loader-glow{
+
+      position:absolute;
+
+      width:900px;
+      height:900px;
+
+      border-radius:50%;
+
+      background:
+      radial-gradient(circle,
+      rgba(214,171,74,.16),
+      transparent 70%);
+
+      top:50%;
+      left:50%;
+
+      transform:translate(-50%,-50%);
+
+      animation:pulseGlow 5s infinite;
+
+    }
+
+    @keyframes pulseGlow{
+
+      0%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(.8);
+
+        opacity:.5;
+
+      }
+
+      50%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(1.05);
+
+        opacity:1;
+
+      }
+
+      100%{
+
+        transform:
+        translate(-50%,-50%)
+        scale(.8);
+
+        opacity:.5;
+
+      }
+
+    }
+
+    .loader-text{
+
+      position:absolute;
+
+      bottom:90px;
+
+      width:100%;
+
+      text-align:center;
+
+      z-index:5;
+
+    }
+
+    .loader-text small{
+
+      color:#d6ab4a;
+
+      letter-spacing:10px;
+
+      text-transform:uppercase;
+
+      display:block;
+
+      margin-bottom:25px;
+
+      font-size:12px;
+
+    }
+
+    .loader-text h1{
+
+      font-size:80px;
+
+      line-height:.95;
+
+      color:#f5e6c8;
+
+      font-family:'Cinzel', serif;
+
+      margin-bottom:25px;
+
+    }
+
+    .loader-text p{
+
+      color:rgba(255,255,255,.65);
+
+      letter-spacing:4px;
+
+    }
+
+    /* ===================================================== */
+    /* NAVBAR */
+    /* ===================================================== */
+
+    nav{
+
+      position:fixed;
+      width:100%;
+      top:0;
+      z-index:999;
+
+      padding:28px 0;
+
+      background:rgba(0,0,0,.2);
+
+      backdrop-filter:blur(14px);
+
+      border-bottom:1px solid rgba(255,255,255,.04);
+
+    }
+
+    .nav-inner{
+
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+
+    }
+
+    .logo{
+
+      font-size:40px;
+      font-family:'Cinzel', serif;
+
+    }
+
+    .nav-links{
+
+      display:flex;
+      gap:40px;
+
+      text-transform:uppercase;
+
+      letter-spacing:5px;
+
+      font-size:12px;
+
+    }
+
+    /* ===================================================== */
+    /* HERO */
+    /* ===================================================== */
+
+    .hero{
+
+      min-height:100vh;
+
+      display:flex;
+      align-items:center;
+      justify-content:center;
+
+      text-align:center;
+
+      position:relative;
+
+      overflow:hidden;
+
+      background:
+      linear-gradient(to bottom,
+      rgba(0,0,0,.45),
+      rgba(0,0,0,.9)),
+
+      url('https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=2000&auto=format&fit=crop');
+
+      background-size:cover;
+      background-position:center;
+
+    }
+
+    .hero::before{
+
+      content:"";
+
+      position:absolute;
+      inset:0;
+
+      background:
+      radial-gradient(circle at center,
+      rgba(200,155,60,.15),
+      transparent 60%);
+
+    }
+
+    .hero-content{
+
+      position:relative;
+      z-index:5;
+
+      max-width:1200px;
+
+      padding-top:120px;
+
+    }
+
+    .hero-sub{
+
+      text-transform:uppercase;
+
+      letter-spacing:12px;
+
+      color:#c89b3c;
+
+      margin-bottom:35px;
+
+      font-size:12px;
+
+    }
+
+    .hero h1{
+
+      font-size:135px;
+
+      line-height:.9;
+
+      margin-bottom:35px;
+
+      font-family:'Cinzel', serif;
+
+    }
+
+    .hero p{
+
+      max-width:950px;
+
+      margin:auto;
+
+      font-size:23px;
+
+      line-height:2;
+
+      color:rgba(255,255,255,.72);
+
+      margin-bottom:55px;
+
+    }
+
+    .hero-buttons{
+
+      display:flex;
+      justify-content:center;
+      gap:20px;
+      flex-wrap:wrap;
+
+    }
+
+    .btn-primary,
+    .btn-secondary{
+
+      padding:18px 42px;
+
+      border-radius:100px;
+
+      cursor:pointer;
+
+      transition:.4s;
+
+      font-size:15px;
+
+      letter-spacing:2px;
+
+    }
+
+    .btn-primary{
+
+      background:#c89b3c;
+
+      color:black;
+
+      border:none;
+
+      font-weight:600;
+
+    }
+
+    .btn-primary:hover{
+
+      transform:translateY(-5px);
+
+      box-shadow:0 15px 40px rgba(200,155,60,.3);
+
+    }
+
+    .btn-secondary{
+
+      background:transparent;
+
+      border:1px solid rgba(255,255,255,.12);
+
+      color:white;
+
+    }
+
+    .btn-secondary:hover{
+
+      background:rgba(255,255,255,.05);
+
+    }
+
+    /* ===================================================== */
+    /* FLOATING LEAFS */
+    /* ===================================================== */
+
+    .leaf{
+
+      position:absolute;
+
+      color:rgba(200,155,60,.18);
+
+      animation:float 8s infinite ease-in-out;
+
+      z-index:3;
+
+    }
+
+    .leaf1{
+      top:18%;
+      left:8%;
+      font-size:70px;
+    }
+
+    .leaf2{
+      top:40%;
+      right:10%;
+      font-size:90px;
+    }
+
+    .leaf3{
+      bottom:12%;
+      left:50%;
+      font-size:65px;
+    }
+
+    @keyframes float{
+
+      0%{
+        transform:translateY(0px) rotate(0deg);
+      }
+
+      50%{
+        transform:translateY(-35px) rotate(12deg);
+      }
+
+      100%{
+        transform:translateY(0px) rotate(0deg);
+      }
+
+    }
+
+    /* ===================================================== */
+    /* KRISHNA SCROLL */
+    /* ===================================================== */
+
+    .krishna-scroll{
+
+      position:fixed;
+
+      right:25px;
+      bottom:25px;
+
+      z-index:999;
+
+      width:110px;
+
+      opacity:.8;
+
+      pointer-events:none;
+
+    }
+
+    .krishna-scroll img{
+
+      animation:walk 1s infinite alternate ease-in-out;
+
+    }
+
+    @keyframes walk{
+
+      from{
+        transform:translateY(0px);
+      }
+
+      to{
+        transform:translateY(-8px);
+      }
+
+    }
+
+    /* ===================================================== */
+    /* COMMON */
+    /* ===================================================== */
+
+    section{
+
+      padding:180px 0;
+
+      position:relative;
+
+    }
+
+    .section-tag{
+
+      text-transform:uppercase;
+
+      letter-spacing:10px;
+
+      color:#c89b3c;
+
+      margin-bottom:25px;
+
+      font-size:12px;
+
+    }
+
+    .section-title{
+
+      font-size:95px;
+
+      line-height:1;
+
+      margin-bottom:40px;
+
+      font-family:'Cinzel', serif;
+
+    }
+
+    .section-text{
+
+      font-size:23px;
+
+      line-height:2;
+
+      color:rgba(255,255,255,.72);
+
+    }
+
+    /* ===================================================== */
+    /* STORY */
+    /* ===================================================== */
+
+    .story{
+
+      background:#15110d;
+
+      text-align:center;
+
+    }
+
+    .story .section-text{
+
+      max-width:1100px;
+
+      margin:auto;
+
+    }
+
+    /* ===================================================== */
+    /* COLLECTION */
+    /* ===================================================== */
+
+    .collection-grid{
+
+      display:grid;
+
+      grid-template-columns:
+      repeat(auto-fit,minmax(340px,1fr));
+
+      gap:35px;
+
+      margin-top:90px;
+
+    }
+
+    .painting-card{
+
+      height:650px;
+
+      border-radius:45px;
+
+      overflow:hidden;
+
+      position:relative;
+
+      background:#17120d;
+
+      border:1px solid rgba(255,255,255,.05);
+
+      transition:.5s;
+
+    }
+
+    .painting-card:hover{
+
+      transform:translateY(-12px);
+
+      box-shadow:0 30px 60px rgba(200,155,60,.12);
+
+    }
+
+    .painting-image{
+
+      position:absolute;
+      inset:0;
+
+      background:
+      linear-gradient(to bottom,
+      rgba(0,0,0,.08),
+      rgba(0,0,0,.95)),
+
+      url('https://images.unsplash.com/photo-1579783902614-a3fb3927b6a5?q=80&w=1600&auto=format&fit=crop');
+
+      background-size:cover;
+      background-position:center;
+
+      opacity:.4;
+
+      transition:1.2s;
+
+    }
+
+    .painting-card:hover .painting-image{
+
+      transform:scale(1.08);
+
+    }
+
+    .painting-content{
+
+      position:absolute;
+
+      bottom:0;
+
+      padding:45px;
+
+      z-index:5;
+
+    }
+
+    .painting-coming{
+
+      text-transform:uppercase;
+
+      letter-spacing:5px;
+
+      color:#c89b3c;
+
+      margin-bottom:15px;
+
+      font-size:11px;
+
+    }
+
+    .painting-title{
+
+      font-size:50px;
+
+      margin-bottom:18px;
+
+      font-family:'Cormorant Garamond', serif;
+
+    }
+
+    .painting-text{
+
+      line-height:1.9;
+
+      color:rgba(255,255,255,.7);
+
+      margin-bottom:28px;
+
+    }
+
+    .painting-btn{
+
+      padding:14px 30px;
+
+      border-radius:100px;
+
+      background:transparent;
+
+      border:1px solid rgba(255,255,255,.12);
+
+      color:white;
+
+      cursor:pointer;
+
+      transition:.4s;
+
+    }
+
+    .painting-btn:hover{
+
+      background:#c89b3c;
+
+      color:black;
+
+    }
+
+    /* ===================================================== */
+    /* EXPERIENCE */
+    /* ===================================================== */
+
+    .experience{
+
+      background:
+      linear-gradient(to bottom,
+      rgba(0,0,0,.7),
+      rgba(0,0,0,.92)),
+
+      url('https://images.unsplash.com/photo-1518998053901-5348d3961a04?q=80&w=2000&auto=format&fit=crop');
+
+      background-size:cover;
+      background-position:center;
+
+      text-align:center;
+
+    }
+
+    .experience .section-text{
+
+      max-width:1100px;
+
+      margin:auto;
+
+    }
+
+    /* ===================================================== */
+    /* FOOTER */
+    /* ===================================================== */
+
+    footer{
+
+      padding:130px 0;
+
+      background:#0f0c08;
+
+      border-top:1px solid rgba(255,255,255,.05);
+
+    }
+
+    .footer-grid{
+
+      display:flex;
+      justify-content:space-between;
+      gap:50px;
+      flex-wrap:wrap;
+
+    }
+
+    .footer-logo{
+
+      font-size:58px;
+
+      margin-bottom:20px;
+
+      font-family:'Cinzel', serif;
+
+    }
+
+    .footer-text{
+
+      max-width:600px;
+
+      line-height:2;
+
+      color:rgba(255,255,255,.65);
+
+    }
+
+    .footer-contact p{
+
+      margin-bottom:16px;
+
+      color:rgba(255,255,255,.75);
+
+    }
+
+    /* ===================================================== */
+    /* MOBILE */
+    /* ===================================================== */
+
+    @media(max-width:992px){
+
+      .hero h1{
+        font-size:80px;
+      }
+
+      .section-title{
+        font-size:62px;
+      }
+
+    }
+
+    @media(max-width:768px){
+
+      .hero h1{
+        font-size:58px;
+      }
+
+      .hero p{
+        font-size:18px;
+      }
+
+      .section-title{
+        font-size:46px;
+      }
+
+      .nav-links{
+        display:none;
+      }
+
+      .loader-text h1{
+        font-size:42px;
+      }
+
+      .section-text{
+        font-size:18px;
+      }
+
+      .krishna-scroll{
+        width:70px;
+      }
+
+      .feet-image{
+
+        width:380px;
+
+      }
+
+    }
+
+  </style>
+
+</head>
+
+<body>
+
+  <!-- ===================================================== -->
+  <!-- LOADER -->
+  <!-- ===================================================== -->
+
+  <div class="shrinathji-loader">
+
+    <div class="loader-overlay"></div>
+
+    <div class="feet-container">
+
+      <img
+        class="feet-image"
+        src="https://i.imgur.com/8mR8N5M.png"
+      >
+
+    </div>
+
+    <div class="loader-glow"></div>
+
+    <div class="loader-text">
+
+      <small>
+        SHRINATHJI SEVA • NATHDWARA
+      </small>
+
+      <h1>
+        THE NATHDWARA STORE
+      </h1>
+
+      <p>
+        Entering Divine Darshan...
+      </p>
+
+    </div>
+
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- KRISHNA -->
+  <!-- ===================================================== -->
+
+  <div class="krishna-scroll">
+
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Peacock_Feather.svg/1200px-Peacock_Feather.svg.png">
+
+  </div>
+
+  <!-- ===================================================== -->
+  <!-- NAVBAR -->
+  <!-- ===================================================== -->
+
+  <nav>
+
+    <div class="container nav-inner">
+
+      <div class="logo">
+        The Nathdwara Store
+      </div>
+
+      <div class="nav-links">
+
+        <a href="#">Home</a>
+        <a href="#">Collection</a>
+        <a href="#">Story</a>
+        <a href="#">Experience</a>
+        <a href="#">Contact</a>
+
+      </div>
+
+    </div>
+
+  </nav>
+
+  <!-- ===================================================== -->
+  <!-- HERO -->
+  <!-- ===================================================== -->
+
+  <section class="hero">
+
+    <div class="leaf leaf1">❋</div>
+    <div class="leaf leaf2">❋</div>
+    <div class="leaf leaf3">❋</div>
+
+    <div class="hero-content">
+
+      <div class="hero-sub">
+        Sacred Art from Nathdwara
+      </div>
+
+      <h1>
+
+        Where <br>
+        Shrinathji Lives <br>
+        Through Art
+
+      </h1>
+
+      <p>
+
+        Handcrafted Pichwai paintings inspired by temple rituals,
+        lotus ponds, divine festivals, and centuries of Krishna bhakti.
+
+      </p>
+
+      <div class="hero-buttons">
+
+        <button class="btn-primary">
+          Explore Collection
+        </button>
+
+        <button class="btn-secondary">
+          Commission Artwork
+        </button>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- STORY -->
+  <!-- ===================================================== -->
+
+  <section class="story">
+
+    <div class="container">
+
+      <div class="section-tag">
+        The Story of Shrinathji
+      </div>
+
+      <h2 class="section-title">
+
+        A Divine Legacy <br>
+        Preserved Through Pichwai
+
+      </h2>
+
+      <p class="section-text">
+
+        In the sacred town of Nathdwara,
+        Shrinathji is worshipped as living Krishna.
+
+        <br><br>
+
+        Every Pichwai painting reflects His festivals,
+        temple rituals,
+        lotus ponds,
+        cows,
+        attire,
+        and divine leelas.
+
+        <br><br>
+
+        These paintings were never just decoration.
+        They were acts of devotion.
+
+      </p>
+
+    </div>
+
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- COLLECTION -->
+  <!-- ===================================================== -->
+
+  <section>
+
+    <div class="container">
+
+      <div class="section-tag">
+        Sacred Collection
+      </div>
+
+      <h2 class="section-title">
+
+        Curated Pichwai <br>
+        Masterpieces
+
+      </h2>
+
+      <div class="collection-grid">
+
+        <div class="painting-card">
+
+          <div class="painting-image"></div>
+
+          <div class="painting-content">
+
+            <div class="painting-coming">
+              Sacred Collection
+            </div>
+
+            <div class="painting-title">
+              Shrinathji Pichwai
+            </div>
+
+            <div class="painting-text">
+
+              Divine artworks inspired by temple rituals and Krishna bhakti.
+
+            </div>
+
+            <button class="painting-btn">
+              Inquire Artwork
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="painting-card">
+
+          <div class="painting-image"></div>
+
+          <div class="painting-content">
+
+            <div class="painting-coming">
+              Sacred Collection
+            </div>
+
+            <div class="painting-title">
+              Lotus Pichwai
+            </div>
+
+            <div class="painting-text">
+
+              Lotus-inspired compositions symbolising beauty and devotion.
+
+            </div>
+
+            <button class="painting-btn">
+              Inquire Artwork
+            </button>
+
+          </div>
+
+        </div>
+
+        <div class="painting-card">
+
+          <div class="painting-image"></div>
+
+          <div class="painting-content">
+
+            <div class="painting-coming">
+              Sacred Collection
+            </div>
+
+            <div class="painting-title">
+              Festival Paintings
+            </div>
+
+            <div class="painting-text">
+
+              Celebrating Janmashtami, Annakut, and temple traditions.
+
+            </div>
+
+            <button class="painting-btn">
+              Inquire Artwork
+            </button>
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </div>
+
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- EXPERIENCE -->
+  <!-- ===================================================== -->
+
+  <section class="experience">
+
+    <div class="container">
+
+      <div class="section-tag">
+        The Nathdwara Experience
+      </div>
+
+      <h2 class="section-title">
+
+        More Than Art. <br>
+        A Spiritual Experience.
+
+      </h2>
+
+      <p class="section-text">
+
+        Every transition,
+        glow,
+        texture,
+        and movement on this website is designed to evoke the feeling of entering Nathdwara itself.
+
+      </p>
+
+    </div>
+
+  </section>
+
+  <!-- ===================================================== -->
+  <!-- FOOTER -->
+  <!-- ===================================================== -->
+
+  <footer>
+
+    <div class="container footer-grid">
+
+      <div>
+
+        <div class="footer-logo">
+          The Nathdwara Store
+        </div>
+
+        <div class="footer-text">
+
+          Sacred Pichwai art inspired by devotion,
+          Shrinathji bhakti,
+          temple traditions,
+          and timeless craftsmanship from Nathdwara.
+
+        </div>
+
+      </div>
+
+      <div class="footer-contact">
+
+        <p>www.thenathdwarastore.com</p>
+
+        <p>hello@thenathdwarastore.com</p>
+
+        <p>+91 9873123445</p>
+
+      </div>
+
+    </div>
+
+  </footer>
+
+  <!-- ===================================================== -->
+  <!-- GSAP -->
+  <!-- ===================================================== -->
+
+  <script>
+
+    gsap.registerPlugin(ScrollTrigger)
+
+    window.addEventListener('load',()=>{
+
+      setTimeout(()=>{
+
+        gsap.to('.shrinathji-loader',{
+
+          opacity:0,
+          duration:1.5,
+          pointerEvents:'none',
+
+          onComplete:()=>{
+
+            document.querySelector('.shrinathji-loader').remove()
+
+          }
+
+        })
+
+      },6500)
+
+    })
+
+    gsap.from('.hero-sub',{
+
+      y:30,
+      opacity:0,
+      duration:1,
+      delay:6.8
+
+    })
+
+    gsap.from('.hero h1',{
+
+      y:80,
+      opacity:0,
+      duration:1.5,
+      delay:7
+
+    })
+
+    gsap.from('.hero p',{
+
+      y:40,
+      opacity:0,
+      duration:1,
+      delay:7.2
+
+    })
+
+    gsap.utils.toArray('.painting-card').forEach((card,index)=>{
+
+      gsap.from(card,{
+
+        scrollTrigger:{
+          trigger:card,
+          start:'top 85%'
+        },
+
+        opacity:0,
+        y:100,
+        duration:1,
+        delay:index*.08
+
+      })
+
+    })
+
+    gsap.to('.krishna-scroll',{
+
+      y:-200,
+
+      scrollTrigger:{
+        trigger:'body',
+        start:'top top',
+        end:'bottom bottom',
+        scrub:true
+      }
+
+    })
+
+  </script>
+
+</body>
+
+</html>
