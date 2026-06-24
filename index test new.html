@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Chintan Agheda — Finance Leader</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Inter:wght@300;400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --bg:#0a0908;
+  --bg-soft:#100e0c;
+  --ink:#ede8df;
+  --ink-soft:#b8b0a2;
+  --muted:#6f685c;
+  --gold:#c8a45a;
+  --gold-bright:#e6c886;
+  --gold-deep:#9a7b3e;
+  --line:rgba(200,164,90,.14);
+  --line-soft:rgba(237,232,223,.07);
+}
+html{scroll-behavior:smooth;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--ink);
+  overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  cursor:none;
+}
+
+/* warm grain + vignette */
+.grain{position:fixed;inset:0;pointer-events:none;z-index:600;opacity:.045;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+.vignette{position:fixed;inset:0;pointer-events:none;z-index:590;
+  background:radial-gradient(ellipse at center,transparent 50%,rgba(0,0,0,.55) 100%);}
+
+/* ── cursor ── */
+#cd{position:fixed;width:6px;height:6px;background:var(--gold-bright);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);}
+#cr{position:fixed;width:40px;height:40px;border:1px solid rgba(200,164,90,.45);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .35s,height .35s,opacity .35s,background .35s;}
+#cr.big{width:72px;height:72px;background:rgba(200,164,90,.05);border-color:rgba(200,164,90,.25);}
+@media(max-width:820px){#cd,#cr{display:none;}body{cursor:auto;}}
+
+/* ════════ LOADER ════════ */
+#loader{position:fixed;inset:0;z-index:99999;background:var(--bg);display:flex;align-items:center;justify-content:center;overflow:hidden;}
+.ld-rings{position:absolute;width:520px;height:520px;transition:opacity 1s ease,transform 1s ease;}
+.ld-rings span{position:absolute;inset:0;border:1px solid rgba(200,164,90,.1);border-radius:50%;transform-origin:center;}
+.ld-rings span:nth-child(1){animation:ringspin 26s linear infinite;}
+.ld-rings span:nth-child(2){inset:60px;border-color:rgba(200,164,90,.07);animation:ringspin 20s linear infinite reverse;}
+.ld-rings span:nth-child(3){inset:130px;border-color:rgba(200,164,90,.05);animation:ringspin 15s linear infinite;}
+@keyframes ringspin{to{transform:rotate(360deg);}}
+#loader.done .ld-rings{opacity:.35;transform:scale(1.08);}
+.ld-core{position:relative;text-align:center;z-index:3;}
+.ld-mono{
+  font-family:'Cormorant Garamond',serif;font-weight:500;
+  font-size:96px;line-height:1;letter-spacing:.02em;
+  color:transparent;
+  background:linear-gradient(135deg,var(--gold-deep),var(--gold-bright),var(--gold-deep));
+  -webkit-background-clip:text;background-clip:text;
+  margin-bottom:26px;opacity:0;transform:scale(.85);
+}
+.ld-name{overflow:hidden;height:24px;margin-bottom:30px;}
+.ld-name span{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.62em;text-transform:uppercase;color:var(--ink-soft);transform:translateY(110%);padding-left:.62em;}
+.ld-bar{width:200px;height:1px;background:rgba(237,232,223,.1);margin:auto;position:relative;overflow:hidden;}
+.ld-fill{position:absolute;left:0;top:0;height:100%;width:0;background:linear-gradient(90deg,var(--gold-deep),var(--gold-bright));}
+.ld-pct{margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.4em;color:var(--muted);opacity:0;}
+.ld-curtain{position:absolute;left:0;width:100%;height:50%;background:var(--bg);z-index:10;transition:transform 1.3s cubic-bezier(.76,0,.24,1);}
+.ld-curtain.t{top:0;}.ld-curtain.b{bottom:0;}
+#loader.open .ld-curtain.t{transform:translateY(-100%);}
+#loader.open .ld-curtain.b{transform:translateY(100%);}
+
+/* ════════ NAV ════════ */
+nav{position:fixed;top:0;width:100%;padding:30px 72px;display:flex;justify-content:space-between;align-items:center;z-index:1000;transform:translateY(-100%);transition:background .5s,padding .5s,border-color .5s;border-bottom:1px solid transparent;}
+nav.scrolled{padding:18px 72px;background:rgba(10,9,8,.72);backdrop-filter:blur(18px) saturate(140%);border-color:var(--line-soft);}
+.brand{display:flex;align-items:center;gap:14px;}
+.brand-mono{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:var(--gold-bright);line-height:1;}
+.brand-name{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.34em;text-transform:uppercase;color:var(--ink-soft);}
+.nav-mid{display:flex;gap:42px;}
+.nav-mid a{position:relative;text-decoration:none;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);transition:color .3s;}
+.nav-mid a::after{content:'';position:absolute;left:0;bottom:-6px;width:0;height:1px;background:var(--gold);transition:width .4s cubic-bezier(.23,1,.32,1);}
+.nav-mid a:hover{color:var(--ink);}
+.nav-mid a:hover::after{width:100%;}
+.nav-cta{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--gold-bright);text-decoration:none;padding:11px 22px;border:1px solid var(--line);border-radius:2px;transition:.4s;}
+.nav-cta:hover{background:var(--gold);color:#0a0908;border-color:var(--gold);}
+@media(max-width:960px){.nav-mid{display:none;}nav{padding:22px 24px;}nav.scrolled{padding:16px 24px;}}
+
+/* ════════ HERO ════════ */
+.hero{min-height:100vh;display:flex;align-items:center;padding:130px 72px 70px;position:relative;}
+.hero-glow{position:absolute;top:8%;right:6%;width:620px;height:620px;border-radius:50%;background:radial-gradient(circle,rgba(200,164,90,.12),transparent 65%);filter:blur(40px);pointer-events:none;}
+.hero-inner{max-width:1380px;margin:auto;width:100%;display:grid;grid-template-columns:1.25fr .75fr;gap:70px;align-items:center;}
+.eyebrow{display:flex;align-items:center;gap:16px;margin-bottom:34px;opacity:0;}
+.eyebrow .ln{width:54px;height:1px;background:linear-gradient(90deg,var(--gold),transparent);}
+.eyebrow span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);}
+.hero h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(3.6rem,8vw,8.5rem);line-height:.97;letter-spacing:-.01em;margin-bottom:18px;}
+.hero h1 .row{display:block;overflow:hidden;}
+.hero h1 .row i{display:inline-block;transform:translateY(110%);font-style:normal;}
+.hero h1 em{font-style:italic;color:transparent;background:linear-gradient(120deg,var(--gold-deep),var(--gold-bright) 55%,var(--gold-deep));-webkit-background-clip:text;background-clip:text;}
+.hero-rule{width:0;height:1px;background:var(--line);margin:30px 0;}
+.hero-sub{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.16em;color:var(--gold);height:16px;margin-bottom:26px;opacity:0;}
+#tw::after{content:'▍';margin-left:2px;animation:bk 1s step-end infinite;color:var(--gold-bright);}
+@keyframes bk{50%{opacity:0;}}
+.hero p{max-width:520px;font-size:16px;line-height:1.95;color:var(--ink-soft);font-weight:300;margin-bottom:42px;opacity:0;}
+.hero-act{display:flex;gap:18px;align-items:center;opacity:0;}
+.btn{position:relative;font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:.14em;text-transform:uppercase;text-decoration:none;padding:16px 32px;display:inline-flex;align-items:center;gap:10px;transition:.4s;overflow:hidden;}
+.btn-fill{background:linear-gradient(120deg,var(--gold-deep),var(--gold-bright));color:#0a0908;border-radius:2px;}
+.btn-fill:hover{transform:translateY(-2px);box-shadow:0 18px 40px rgba(200,164,90,.22);}
+.btn-ghost{color:var(--ink);border:1px solid var(--line);border-radius:2px;}
+.btn-ghost:hover{border-color:var(--gold);color:var(--gold-bright);}
+.mag{display:inline-block;}
+
+/* hero portrait */
+.portrait{position:relative;opacity:0;}
+.portrait-frame{position:relative;border-radius:3px;overflow:hidden;}
+.portrait-frame::after{content:'';position:absolute;inset:0;border:1px solid var(--line);border-radius:3px;pointer-events:none;z-index:3;}
+.portrait-frame::before{content:'';position:absolute;inset:0;z-index:2;background:linear-gradient(180deg,transparent 55%,rgba(10,9,8,.5) 100%);pointer-events:none;}
+.portrait-frame img{width:100%;display:block;aspect-ratio:4/5;object-fit:cover;filter:grayscale(.15) contrast(1.03);}
+.portrait-corner{position:absolute;width:26px;height:26px;border:1px solid var(--gold);z-index:4;}
+.portrait-corner.tl{top:-7px;left:-7px;border-right:0;border-bottom:0;}
+.portrait-corner.br{bottom:-7px;right:-7px;border-left:0;border-top:0;}
+.portrait-tag{position:absolute;bottom:22px;left:22px;z-index:5;}
+.portrait-tag .nm{font-family:'Cormorant Garamond',serif;font-size:28px;font-weight:600;line-height:1;}
+.portrait-tag .rl{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.28em;text-transform:uppercase;color:var(--gold);margin-top:6px;}
+@media(max-width:960px){.hero-inner{grid-template-columns:1fr;gap:50px;}.hero{padding:120px 24px 70px;}.portrait{max-width:380px;}}
+
+/* ════════ MARQUEE ════════ */
+.strip{border-top:1px solid var(--line-soft);border-bottom:1px solid var(--line-soft);padding:22px 0;overflow:hidden;white-space:nowrap;}
+.strip-in{display:inline-flex;animation:roll 38s linear infinite;}
+.strip-item{font-family:'Cormorant Garamond',serif;font-style:italic;font-size:22px;color:var(--ink-soft);padding:0 30px;}
+.strip-item b{color:var(--gold);font-style:normal;font-weight:400;margin:0 4px;}
+@keyframes roll{to{transform:translateX(-50%);}}
+
+/* ════════ SECTIONS ════════ */
+.section{padding:150px 72px;position:relative;}
+.s-head{max-width:1320px;margin:0 auto 90px;}
+.s-label{display:flex;align-items:center;gap:16px;margin-bottom:30px;}
+.s-label .ln{width:46px;height:1px;background:var(--gold);}
+.s-label span{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.34em;text-transform:uppercase;color:var(--gold);}
+.s-title{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(2.6rem,5.5vw,5.4rem);line-height:1.05;letter-spacing:-.01em;max-width:1000px;}
+.s-title em{font-style:italic;color:var(--gold-bright);}
+
+/* ════════ STATS ════════ */
+.stats{max-width:1320px;margin:auto;display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line-soft);}
+.stat{padding:48px 36px 44px;border-bottom:1px solid var(--line-soft);border-right:1px solid var(--line-soft);position:relative;transition:background .5s;}
+.stat:nth-child(4n){border-right:0;}
+.stat::before{content:'';position:absolute;left:0;top:0;width:0;height:1px;background:var(--gold);transition:width .6s cubic-bezier(.23,1,.32,1);}
+.stat:hover{background:rgba(200,164,90,.03);}
+.stat:hover::before{width:100%;}
+.stat-n{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:62px;line-height:1;letter-spacing:-.02em;margin-bottom:16px;color:transparent;background:linear-gradient(135deg,var(--ink) 40%,var(--gold) 130%);-webkit-background-clip:text;background-clip:text;}
+.stat-d{font-size:13px;line-height:1.7;color:var(--muted);font-weight:300;}
+@media(max-width:900px){.stats{grid-template-columns:1fr 1fr;}.stat:nth-child(4n){border-right:1px solid var(--line-soft);}.stat:nth-child(2n){border-right:0;}}
+@media(max-width:540px){.stats{grid-template-columns:1fr;}.stat{border-right:0!important;}}
+
+/* ════════ TIMELINE ════════ */
+.tl{max-width:1040px;margin:auto;position:relative;padding-left:56px;}
+.tl::before{content:'';position:absolute;left:14px;top:8px;bottom:8px;width:1px;background:var(--line-soft);}
+.tl-glow{position:absolute;left:14px;top:8px;width:1px;height:0;background:linear-gradient(180deg,var(--gold-bright),var(--gold-deep));box-shadow:0 0 14px rgba(200,164,90,.6);z-index:1;}
+.entry{position:relative;padding:40px 0 44px;border-bottom:1px solid var(--line-soft);transition:.5s;}
+.entry:last-child{border-bottom:0;}
+.entry::before{content:'';position:absolute;left:-49px;top:48px;width:13px;height:13px;border-radius:50%;background:var(--bg);border:1px solid var(--muted);transition:.4s;z-index:2;}
+.entry::after{content:'';position:absolute;left:-36px;top:54px;width:22px;height:1px;background:var(--line-soft);transition:.4s;}
+.entry:hover{padding-left:14px;}
+.entry:hover::before{border-color:var(--gold);background:var(--gold);box-shadow:0 0 16px rgba(200,164,90,.7);}
+.entry.lit::before{border-color:var(--gold);background:var(--gold);box-shadow:0 0 12px rgba(200,164,90,.5);}
+.entry.now::before{border-color:var(--gold);background:var(--gold);animation:np 2.2s ease-in-out infinite;}
+@keyframes np{0%,100%{box-shadow:0 0 0 0 rgba(200,164,90,.5);}50%{box-shadow:0 0 0 9px rgba(200,164,90,0);}}
+.entry-year{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.26em;text-transform:uppercase;color:var(--muted);margin-bottom:18px;}
+.entry-head{display:flex;align-items:flex-start;gap:18px;margin-bottom:18px;}
+.logo{width:52px;height:52px;border-radius:4px;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:transform .5s cubic-bezier(.23,1,.32,1);}
+.entry:hover .logo{transform:translateY(-3px);}
+.lo-noon{background:#FFC200;}.lo-zepto{background:#6B2FE3;}.lo-chalo{background:#FF5A00;}.lo-igp{background:#E83D3D;color:#fff;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:13px;}.lo-supr{background:#00B27A;}.lo-padhi,.lo-ham{background:rgba(237,232,223,.06);color:var(--ink-soft);font-family:'IBM Plex Mono',monospace;font-size:11px;border:1px solid var(--line-soft);}
+.entry-co{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:34px;line-height:1;display:flex;align-items:center;gap:12px;flex-wrap:wrap;}
+.now-tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:#0a0908;background:var(--gold);padding:3px 9px;border-radius:2px;display:inline-flex;align-items:center;gap:5px;}
+.now-tag i{width:4px;height:4px;border-radius:50%;background:#0a0908;animation:np 2s infinite;}
+.entry-role{font-size:14px;color:var(--ink-soft);margin-top:8px;font-weight:300;}
+.entry-loc{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;color:var(--muted);margin-top:4px;}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 20px;}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:5px 11px;border-radius:2px;transition:.3s;}
+.chip:hover{background:rgba(200,164,90,.06);}
+.bul{list-style:none;display:flex;flex-direction:column;gap:11px;}
+.bul li{display:flex;gap:13px;font-size:13.5px;line-height:1.7;color:var(--ink-soft);font-weight:300;}
+.bul li::before{content:'';width:5px;height:1px;background:var(--gold);flex-shrink:0;margin-top:11px;}
+.rblock{margin-bottom:24px;}.rblock:last-child{margin-bottom:0;}
+.rdiv{height:1px;background:var(--line-soft);margin:22px 0;}
+.rlabel{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+/* stacked roles within one company (promotion) */
+.role-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:6px;}
+.role-title{font-family:'Inter',sans-serif;font-weight:500;font-size:16px;letter-spacing:.01em;color:var(--ink);}
+.role-title .pp{color:var(--gold-bright);}
+.role-period{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.promo-div{display:flex;align-items:center;gap:14px;margin:26px 0;}
+.promo-div .ln{flex:1;height:1px;background:var(--line-soft);}
+.promo-div .tag{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);padding:5px 13px;border-radius:2px;}
+.promo-div .tag i{font-style:normal;color:var(--gold-bright);}
+@media(max-width:680px){.tl{padding-left:38px;}.tl::before,.tl-glow{left:9px;}.entry::before{left:-35px;}.entry::after{left:-25px;width:18px;}.entry-co{font-size:28px;}}
+
+/* ════════ EDUCATION ════════ */
+.edu{max-width:1040px;margin:auto;border-top:1px solid var(--line-soft);}
+.edu-item{display:grid;grid-template-columns:1fr auto;gap:36px;align-items:flex-start;padding:36px 10px 36px 0;border-bottom:1px solid var(--line-soft);position:relative;transition:padding .5s,background .5s;}
+.edu-item::before{content:'';position:absolute;left:0;top:0;width:0;height:1px;background:var(--gold);transition:width .6s cubic-bezier(.23,1,.32,1);}
+.edu-item:hover{background:rgba(200,164,90,.03);padding-left:20px;}
+.edu-item:hover::before{width:100%;}
+.edu-inst{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(21px,2.6vw,30px);line-height:1.12;}
+.edu-field{font-size:13px;color:var(--ink-soft);font-weight:300;margin-top:9px;letter-spacing:.01em;line-height:1.6;}
+.edu-skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
+.edu-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;text-align:right;}
+.edu-period{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
+.edu-grade{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 13px;border-radius:2px;white-space:nowrap;}
+.edu-ongoing{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#0a0908;background:var(--gold);padding:5px 12px;border-radius:2px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
+.edu-ongoing i{width:4px;height:4px;border-radius:50%;background:#0a0908;animation:np 2s infinite;}
+@media(max-width:680px){.edu-item{grid-template-columns:1fr;gap:14px;}.edu-right{align-items:flex-start;text-align:left;}}
+
+/* ════════ CONTACT ════════ */
+.contact{padding:170px 72px;text-align:center;position:relative;}
+.contact-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse at top,rgba(200,164,90,.1),transparent 70%);pointer-events:none;}
+.contact h2{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(3rem,7vw,6.5rem);line-height:1;margin-bottom:30px;position:relative;}
+.contact h2 em{font-style:italic;color:var(--gold-bright);}
+.contact p{max-width:520px;margin:0 auto 50px;font-size:16px;line-height:1.9;color:var(--ink-soft);font-weight:300;position:relative;}
+.contact-links{display:flex;gap:18px;justify-content:center;flex-wrap:wrap;position:relative;}
+
+/* ════════ FOOTER ════════ */
+footer{padding:50px 72px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--line-soft);font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:var(--muted);}
+@media(max-width:680px){footer{padding:40px 24px;flex-direction:column;gap:14px;}.section,.contact{padding:110px 24px;}}
+
+/* reveal states */
+.rv{opacity:0;transform:translateY(40px);}
+</style>
+</head>
+<body>
+
+<div class="grain"></div>
+<div class="vignette"></div>
+<div id="cd"></div>
+<div id="cr"></div>
+
+<!-- LOADER -->
+<div id="loader">
+  <div class="ld-rings"><span></span><span></span><span></span></div>
+  <div class="ld-core">
+    <div class="ld-mono">CA</div>
+    <div class="ld-name"><span>Chintan Agheda</span></div>
+    <div class="ld-bar"><div class="ld-fill" id="ldFill"></div></div>
+    <div class="ld-pct" id="ldPct">Loading 0%</div>
+  </div>
+  <div class="ld-curtain t"></div>
+  <div class="ld-curtain b"></div>
+</div>
+
+<!-- NAV -->
+<nav id="nav">
+  <div class="brand"><div class="brand-mono">CA</div><div class="brand-name">Chintan Agheda</div></div>
+  <div class="nav-mid">
+    <a href="#about">About</a>
+    <a href="#results">Results</a>
+    <a href="#experience">Experience</a>
+    <a href="#education">Education</a>
+    <a href="#contact">Contact</a>
+  </div>
+  <a href="#contact" class="nav-cta">Start a Conversation</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="about">
+  <div class="hero-glow"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="eyebrow" id="eyebrow"><div class="ln"></div><span>Commercial Finance · GCC</span></div>
+      <h1>
+        <span class="row"><i>Finance built</i></span>
+        <span class="row"><i>for <em>hypergrowth.</em></i></span>
+      </h1>
+      <div class="hero-rule" id="heroRule"></div>
+      <div class="hero-sub" id="heroSub"><span id="tw"></span></div>
+      <p id="heroP">A commercial finance operator building scalable systems across India, the UAE and KSA — operational finance, startup infrastructure, automation, due diligence and hypergrowth execution.</p>
+      <div class="hero-act" id="heroAct">
+        <span class="mag"><a href="#results" class="btn btn-fill">View Results →</a></span>
+        <span class="mag"><a href="#contact" class="btn btn-ghost">Get in Touch</a></span>
+      </div>
+    </div>
+    <div class="portrait" id="portrait">
+      <div class="portrait-frame" id="portraitFrame">
+        <span class="portrait-corner tl"></span>
+        <span class="portrait-corner br"></span>
+        <img src="assets/img/Professional Photo Chintan Agheda Website.jpg" alt="Chintan Agheda">
+        <div class="portrait-tag">
+          <div class="nm">Chintan Agheda</div>
+          <div class="rl">Head of Commercial Finance</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="strip">
+  <div class="strip-in">
+    <span class="strip-item">Zepto<b>—</b></span><span class="strip-item">noon<b>—</b></span><span class="strip-item">Chalo<b>—</b></span><span class="strip-item">IGP.com<b>—</b></span><span class="strip-item">SuprDaily<b>—</b></span><span class="strip-item">Series F · $665M<b>—</b></span><span class="strip-item">Series E · $232M<b>—</b></span><span class="strip-item">40+ Cities<b>—</b></span><span class="strip-item">1500+ Vendors<b>—</b></span><span class="strip-item">13+ Years<b>—</b></span>
+    <span class="strip-item">Zepto<b>—</b></span><span class="strip-item">noon<b>—</b></span><span class="strip-item">Chalo<b>—</b></span><span class="strip-item">IGP.com<b>—</b></span><span class="strip-item">SuprDaily<b>—</b></span><span class="strip-item">Series F · $665M<b>—</b></span><span class="strip-item">Series E · $232M<b>—</b></span><span class="strip-item">40+ Cities<b>—</b></span><span class="strip-item">1500+ Vendors<b>—</b></span><span class="strip-item">13+ Years<b>—</b></span>
+  </div>
+</div>
+
+<!-- RESULTS -->
+<section class="section" id="results">
+  <div class="s-head">
+    <div class="s-label rv"><div class="ln"></div><span>Selected Results</span></div>
+    <h2 class="s-title rv">Finance systems built for companies moving at <em>startup speed.</em></h2>
+  </div>
+  <div class="stats">
+    <div class="stat rv" data-count="13" data-suf="+"><div class="stat-n">13+</div><div class="stat-d">Years building finance operations and commercial systems.</div></div>
+    <div class="stat rv" data-count="897" data-pre="$" data-suf="M"><div class="stat-n">$897M</div><div class="stat-d">Series E + F due diligence and hypergrowth finance exposure.</div></div>
+    <div class="stat rv" data-count="2500" data-suf="+"><div class="stat-n">2500+</div><div class="stat-d">Vendor relationships and finance operations managed.</div></div>
+    <div class="stat rv" data-count="40" data-suf="+"><div class="stat-n">40+</div><div class="stat-d">Cities under AP operations and commercial workflows.</div></div>
+  </div>
+</section>
+
+<!-- EXPERIENCE -->
+<section class="section" id="experience">
+  <div class="s-head">
+    <div class="s-label rv"><div class="ln"></div><span>Track Record</span></div>
+    <h2 class="s-title rv">Finance as operational <em>leverage</em> — not reporting.</h2>
+  </div>
+  <div class="tl">
+    <div class="tl-glow" id="tlGlow"></div>
+
+    <div class="entry now rv-e">
+      <div class="entry-head">
+        <div class="logo lo-noon"><svg width="32" height="32" viewBox="0 0 34 34" fill="none"><circle cx="17" cy="17" r="9" stroke="#000" stroke-width="3.2"/><path d="M17 8 A9 9 0 0 1 26 17" stroke="#000" stroke-width="3.2" stroke-linecap="round"/></svg></div>
+        <div>
+          <div class="entry-co">noon <span class="now-tag"><i></i>Now</span></div>
+          <div class="entry-role">GCC's biggest and fastest-growing quick commerce</div>
+          <div class="entry-loc">UAE · KSA · EGY · QAT · BAH · IRAQ</div>
+        </div>
+      </div>
+
+      <!-- Current role: Senior Manager (promotion) -->
+      <div class="rblock">
+        <div class="role-head">
+          <div class="role-title">Senior Manager <span class="pp">· Head of Commercial Finance, GCC</span></div>
+          <div class="role-period">Jan 2026 — Present</div>
+        </div>
+        <div class="chips"><span class="chip">AED xBn+ Volume</span><span class="chip">1500+ Vendors</span><span class="chip">Team 2 → 20+</span><span class="chip">6 Markets</span></div>
+        <ul class="bul">
+          <li>End-to-end financial operations across GCC, managing annual business volume of AED xBn+</li>
+          <li>Finance strategy — formulation and execution across markets</li>
+          <li>P&amp;L ownership, budgeting, reporting and optimization</li>
+          <li>Process development, revamp and automation; SOP creation and implementation</li>
+          <li>Stakeholder management with Group CXOs, HODs and GMs</li>
+          <li>Working directly with Product and Tech teams to build scalable, structured finance tools</li>
+          <li>Cashflow optimization and working capital management</li>
+          <li>Governance, compliance and internal controls</li>
+          <li>Team management: built a team from 2 to 20+</li>
+          <li>P2P, R2R, SOP adherence; leveraging finance with FinTech and AI tools</li>
+          <li>Collaborating with Commercial, Ops, Instock, Pricing, Marketing and AdMon teams</li>
+        </ul>
+      </div>
+
+      <div class="promo-div"><span class="tag"><i>↑</i> Promoted · Jan 2026</span><span class="ln"></span></div>
+
+      <!-- Prior role: Manager -->
+      <div class="rblock">
+        <div class="role-head">
+          <div class="role-title">Manager <span class="pp">· Commercial Finance, GCC</span></div>
+          <div class="role-period">Aug 2024 — Dec 2025</div>
+        </div>
+        <ul class="bul">
+          <li>Built and scaled commercial finance processes for noon Minutes across GCC markets</li>
+          <li>Drove cross-functional alignment with Ops, Instock, Pricing and Commercial teams</li>
+          <li>Developed finance infrastructure to support rapid expansion</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="entry rv-e">
+      <div class="entry-year">Apr 2023 — Aug 2024</div>
+      <div class="entry-head">
+        <div class="logo lo-zepto"><svg width="26" height="26" viewBox="0 0 28 28"><path d="M4 20L13 6H4V4H24V6L15 20H24V22H4V20Z" fill="#fff"/></svg></div>
+        <div>
+          <div class="entry-co">Zepto</div>
+          <div class="entry-role">Finance Manager · Mumbai</div>
+          <div class="entry-loc">India's fastest-growing quick commerce — Top 3</div>
+        </div>
+      </div>
+      <div class="chips"><span class="chip">Series F $665M</span><span class="chip">Series E $232M</span><span class="chip">₹136 Cr Cleared</span><span class="chip">$50M / mo</span></div>
+      <ul class="bul">
+        <li>Part of the core finance team — monthly turnover of $50M</li>
+        <li>Due diligence finance team for $665M Series F and $232M Series E</li>
+        <li>MIS reporting and monthly closing — reduced turnaround time by 6 days</li>
+        <li>Streamlined accounting at PO ↔ ASN ↔ GRN ↔ Invoice level</li>
+        <li>Resolved accounting backlog by 98% (₹136 Cr)</li>
+        <li>Resolved and collected ~$10M from top brands for advertising income</li>
+        <li>Managed 5 internal companies and led a team of 10 members</li>
+      </ul>
+    </div>
+
+    <div class="entry rv-e">
+      <div class="entry-year">Jul 2022 — Mar 2023</div>
+      <div class="entry-head">
+        <div class="logo lo-chalo"><svg width="26" height="26" viewBox="0 0 28 28"><circle cx="14" cy="9" r="4" fill="#fff"/><path d="M7 23 Q14 13 21 23" stroke="#fff" stroke-width="2.2" fill="none" stroke-linecap="round"/></svg></div>
+        <div>
+          <div class="entry-co">Chalo</div>
+          <div class="entry-role">Finance Manager · Navi Mumbai</div>
+          <div class="entry-loc">India's No. 1 travel-tech startup</div>
+        </div>
+      </div>
+      <div class="chips"><span class="chip">40+ Cities AP</span><span class="chip">Big4 DD</span><span class="chip">AOP Setup</span></div>
+      <ul class="bul">
+        <li>Led PAN India Accounts Payable across 40+ cities — domestic and international</li>
+        <li>MIS reporting, stakeholder management and monthly closing</li>
+        <li>Set up Annual Operating Plan (AOP) with monthly tracking</li>
+        <li>Reconciliation of e-wallet database; Big4 due diligence coordination</li>
+      </ul>
+    </div>
+
+    <div class="entry rv-e">
+      <div class="entry-year">Nov 2020 — Jul 2022</div>
+      <div class="entry-head">
+        <div class="logo lo-igp">igp</div>
+        <div>
+          <div class="entry-co">IGP.com</div>
+          <div class="entry-role">Assistant Manager Finance · Mumbai</div>
+          <div class="entry-loc">Global gift-tech company</div>
+        </div>
+      </div>
+      <div class="chips"><span class="chip">$10M DD</span><span class="chip">GAAP</span><span class="chip">FP&amp;A</span></div>
+      <ul class="bul">
+        <li>Preparation of standalone and consolidated financial statements per GAAP</li>
+        <li>Part of due diligence team for $10M funding round</li>
+        <li>MIS reporting, budgeting, FP&amp;A and monthly closing</li>
+        <li>Inventory finance management and operational systems</li>
+      </ul>
+    </div>
+
+    <div class="entry rv-e">
+      <div class="entry-year">Apr 2019 — Nov 2020</div>
+      <div class="entry-head">
+        <div class="logo lo-supr"><svg width="26" height="24" viewBox="0 0 28 26"><path d="M4 7 Q14 2 24 7 L21 21 Q14 25 7 21Z" fill="none" stroke="#fff" stroke-width="1.8"/><circle cx="14" cy="13" r="3" fill="#fff"/></svg></div>
+        <div>
+          <div class="entry-co">SuprDaily <span style="font-size:18px;color:var(--muted);">by Swiggy</span></div>
+          <div class="entry-role">Finance Executive · Mumbai</div>
+          <div class="entry-loc">Pioneering e-commerce to quick commerce · Swiggy</div>
+        </div>
+      </div>
+      <div class="chips"><span class="chip">10,000 Payments / mo</span><span class="chip">6 Cities</span><span class="chip">Automation</span></div>
+      <ul class="bul">
+        <li>Led PAN India Accounts Payable — ~10,000 payments per month</li>
+        <li>MIS reporting, unit economics reporting and cash flow statements across 6 cities</li>
+        <li>Process setup and automation for manual finance activities</li>
+        <li>Review of trade procurements from PO to GRN to Invoice to Payment level</li>
+      </ul>
+    </div>
+
+    <div class="entry rv-e">
+      <div class="entry-year">Oct 2018 — Apr 2019</div>
+      <div class="entry-head">
+        <div class="logo lo-padhi">SSP</div>
+        <div>
+          <div class="entry-co">S S Padhi</div>
+          <div class="entry-role">Finance Associate</div>
+        </div>
+      </div>
+      <ul class="bul">
+        <li>Finalization of books of accounts, cash flow statements and financial reports</li>
+        <li>GST, TDS and PT — computation, return filing, payments and reconciliation</li>
+      </ul>
+    </div>
+
+    <div class="entry rv-e">
+      <div class="entry-year">May 2017 — Oct 2018 &amp; Aug 2013 — Apr 2017</div>
+      <div class="entry-head">
+        <div class="logo lo-ham">CA</div>
+        <div>
+          <div class="entry-co">HAM &amp; Co</div>
+          <div class="entry-role">Accounts Manager &amp; Article Trainee · Chartered Accountants</div>
+          <div class="entry-loc">2013 — 2018 · The CA foundation years</div>
+        </div>
+      </div>
+      <div class="rblock">
+        <div class="rlabel">Accounts Manager · May 2017 — Oct 2018</div>
+        <ul class="bul">
+          <li>Preparation and finalization of books of accounts, cash flow statements and financials</li>
+          <li>GST, TDS and PT — computation, return filing, payments and reconciliation</li>
+          <li>200+ GST registrations managed</li>
+        </ul>
+      </div>
+      <div class="rdiv"></div>
+      <div class="rblock">
+        <div class="rlabel">Article Trainee · Aug 2013 — Apr 2017</div>
+        <ul class="bul">
+          <li>Preparation and finalization of books of accounts for Companies, Firms, Trusts, HUFs</li>
+          <li>Income Tax Returns, TDS Returns, PAN/TAN applications and advance tax payments</li>
+          <li>Incorporation of companies, MCA compliance, MGT-7 and AOC-4 filings</li>
+          <li>VAT / Service Tax — application, computation, payment, filing and audit</li>
+          <li>Stock audits, legal documents, Form 15 CA and 15 CB</li>
+        </ul>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- EDUCATION -->
+<section class="section" id="education">
+  <div class="s-head">
+    <div class="s-label rv"><div class="ln"></div><span>Academic Foundation</span></div>
+    <h2 class="s-title rv">Built on rigorous <em>financial training.</em></h2>
+  </div>
+  <div class="edu">
+
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-inst">The Institute of Chartered Accountants of India</div>
+        <div class="edu-field">Finance · Auditing · Accounting · Taxation · Compliance</div>
+      </div>
+      <div class="edu-right">
+        <span class="edu-grade">CA Finalist</span>
+      </div>
+    </div>
+
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-inst">Indian Institute of Management, Calcutta</div>
+        <div class="edu-field">Executive Programme in FinTech and AI</div>
+        <div class="edu-skills">
+          <span class="chip">FinTech</span><span class="chip">Artificial Intelligence</span><span class="chip">Machine Learning</span><span class="chip">Data Analytics</span>
+        </div>
+      </div>
+      <div class="edu-right">
+        <span class="edu-ongoing"><i></i>Ongoing</span>
+        <span class="edu-period">Mar 2026 — Aug 2026</span>
+      </div>
+    </div>
+
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-inst">University of Mumbai</div>
+        <div class="edu-field">Bachelor of Commerce (B.Com), Commerce</div>
+      </div>
+      <div class="edu-right">
+        <span class="edu-period">Graduate</span>
+      </div>
+    </div>
+
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-inst">Maharashtra State Board (MSBSHSE)</div>
+        <div class="edu-field">HSC (12th), Commerce</div>
+      </div>
+      <div class="edu-right">
+        <span class="edu-period">Higher Secondary</span>
+      </div>
+    </div>
+
+    <div class="edu-item rv">
+      <div>
+        <div class="edu-inst">Maharashtra State Board (MSBSHSE)</div>
+        <div class="edu-field">SSC (10th)</div>
+      </div>
+      <div class="edu-right">
+        <span class="edu-period">Secondary</span>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-glow"></div>
+  <h2>Let's build finance<br>that <em>scales.</em></h2>
+  <p>Available for leadership opportunities, consulting engagements and startup finance transformation conversations.</p>
+  <div class="contact-links">
+    <span class="mag"><a href="https://www.linkedin.com/in/chintanagheda/" target="_blank" rel="noopener noreferrer" onclick="window.open(this.href,'_blank','noopener,noreferrer');return false;" class="btn btn-fill">LinkedIn →</a></span>
+    <span class="mag"><a href="mailto:cagheda@noon.com" class="btn btn-ghost">Email Me</a></span>
+  </div>
+</section>
+
+<footer>
+  <div>© 2026 Chintan Agheda</div>
+  <div>Commercial Finance Operator · GCC</div>
+</footer>
+
+<script>
+gsap.registerPlugin(ScrollTrigger);
+
+/* CURSOR */
+(function(){
+  var d=document.getElementById('cd'),r=document.getElementById('cr');
+  if(!d)return;var mx=0,my=0,rx=0,ry=0;
+  addEventListener('mousemove',function(e){mx=e.clientX;my=e.clientY;gsap.to(d,{x:mx,y:my,duration:.05,ease:'none'});});
+  (function loop(){rx+=(mx-rx)*.13;ry+=(my-ry)*.13;gsap.set(r,{x:rx,y:ry});requestAnimationFrame(loop);})();
+  document.querySelectorAll('a,.entry,.stat,.btn').forEach(function(el){
+    el.addEventListener('mouseenter',function(){r.classList.add('big');});
+    el.addEventListener('mouseleave',function(){r.classList.remove('big');});
+  });
+})();
+
+/* MAGNETIC */
+document.querySelectorAll('.mag').forEach(function(w){
+  var b=w.querySelector('.btn');
+  w.addEventListener('mousemove',function(e){var rc=w.getBoundingClientRect();gsap.to(b,{x:(e.clientX-rc.left-rc.width/2)*.3,y:(e.clientY-rc.top-rc.height/2)*.4,duration:.5,ease:'power3.out'});});
+  w.addEventListener('mouseleave',function(){gsap.to(b,{x:0,y:0,duration:.7,ease:'elastic.out(1,.4)'});});
+});
+
+/* PORTRAIT TILT */
+(function(){
+  var f=document.getElementById('portraitFrame');if(!f)return;
+  addEventListener('mousemove',function(e){
+    gsap.to(f,{rotateY:(e.clientX/innerWidth-.5)*10,rotateX:-(e.clientY/innerHeight-.5)*7,transformPerspective:1100,transformOrigin:'center',duration:.9,ease:'power2.out'});
+  });
+})();
+
+/* TYPEWRITER */
+(function(){
+  var el=document.getElementById('tw');if(!el)return;
+  var ph=['AP at Scale','Vendor Finance Automation','MIS & FP&A Systems','Due Diligence','Hypergrowth Operations'],pi=0,ci=0,del=false;
+  function t(){var p=ph[pi];if(!del){el.textContent=p.slice(0,++ci);if(ci===p.length){del=true;return setTimeout(t,1900);}}else{el.textContent=p.slice(0,--ci);if(ci===0){del=false;pi=(pi+1)%ph.length;}}setTimeout(t,del?40:75);}
+  setTimeout(t,3200);
+})();
+
+/* LOADER */
+(function(){
+  var fill=document.getElementById('ldFill'),pct=document.getElementById('ldPct'),loader=document.getElementById('loader');
+  var tl=gsap.timeline();
+  tl.to('.ld-mono',{opacity:1,scale:1,duration:1,ease:'power3.out'})
+    .to('.ld-name span',{y:'0%',duration:.9,ease:'expo.out'},'-=.4')
+    .to('.ld-pct',{opacity:1,duration:.5},'-=.5')
+    .to({v:0},{v:100,duration:1.9,ease:'power1.inOut',onUpdate:function(){var v=Math.round(this.targets()[0].v);fill.style.width=v+'%';pct.textContent='Loading '+v+'%';}},'-=.3')
+    /* completion state */
+    .add(function(){loader.classList.add('done');})
+    .to('.ld-pct',{opacity:0,duration:.35,ease:'power1.in',onComplete:function(){pct.textContent='Welcome';}})
+    .to('.ld-pct',{opacity:1,duration:.45,ease:'power1.out'})
+    /* ── hold for ~2.4s so it breathes before exit ── */
+    .to('.ld-core',{opacity:0,y:-26,duration:.9,ease:'power2.inOut'},'+=2.4')
+    .add(function(){loader.classList.add('open');})        /* curtains slide (1.3s CSS) */
+    .to('#loader',{opacity:0,duration:.9,ease:'power2.inOut',onComplete:function(){loader.style.pointerEvents='none';}},'+=1')
+    /* ── hero entrance, smoothly overlapped with the reveal ── */
+    .add(function(){gsap.to('#nav',{y:0,duration:.9,ease:'power3.out'});},'-=.55')
+    .to('#eyebrow',{opacity:1,duration:.6,ease:'power2.out'},'-=.5')
+    .to('.hero h1 .row i',{y:'0%',duration:1.1,stagger:.12,ease:'expo.out'},'-=.4')
+    .to('#heroRule',{width:'100%',duration:.9,ease:'power3.out'},'-=.5')
+    .to('#heroSub',{opacity:1,duration:.6},'-=.4')
+    .to('#heroP',{opacity:1,y:0,duration:.8,ease:'power3.out'},'-=.5')
+    .to('#heroAct',{opacity:1,y:0,duration:.7,ease:'power3.out'},'-=.6')
+    .fromTo('#portrait',{opacity:0,x:50,filter:'blur(10px)'},{opacity:1,x:0,filter:'blur(0px)',duration:1.2,ease:'expo.out'},'-=1.1');
+  gsap.set('#heroP,#heroAct',{y:20});
+})();
+
+/* NAV SCROLL */
+ScrollTrigger.create({start:'top -60',onUpdate:function(s){document.getElementById('nav').classList.toggle('scrolled',s.scroll()>60);}});
+
+/* REVEALS */
+gsap.utils.toArray('.rv').forEach(function(el,i){
+  gsap.to(el,{scrollTrigger:{trigger:el,start:'top 88%'},opacity:1,y:0,duration:.9,delay:(i%4)*.07,ease:'power3.out'});
+});
+
+/* TITLE word reveal */
+document.querySelectorAll('.s-title,.contact h2').forEach(function(el){
+  if(el.classList.contains('rv'))el.style.opacity='',el.style.transform='';
+  var html=el.innerHTML;
+  el.innerHTML=html.replace(/(<[^>]+>)|([^<]+)/g,function(m,tag,txt){if(tag)return tag;return txt.replace(/\S+/g,function(w){return '<span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding:0.09em 0.07em 0.2em;margin:-0.09em -0.07em -0.2em;"><span class="w" style="display:inline-block">'+w+'</span></span> ';});});
+  gsap.from(el.querySelectorAll('.w'),{scrollTrigger:{trigger:el,start:'top 88%'},y:'110%',duration:1,stagger:.05,ease:'expo.out'});
+});
+
+/* COUNT UP */
+document.querySelectorAll('.stat').forEach(function(c){
+  var el=c.querySelector('.stat-n'),end=+c.dataset.count,pre=c.dataset.pre||'',suf=c.dataset.suf||'',done=false;
+  ScrollTrigger.create({trigger:c,start:'top 88%',onEnter:function(){if(done)return;done=true;var o={v:0};gsap.to(o,{v:end,duration:2,ease:'power2.out',onUpdate:function(){var v=Math.round(o.v);el.textContent=pre+(v>=1000?v.toLocaleString():v)+suf;}});}});
+});
+
+/* TIMELINE entries */
+gsap.utils.toArray('.rv-e').forEach(function(c){
+  gsap.from(c,{scrollTrigger:{trigger:c,start:'top 86%'},opacity:0,y:46,duration:.9,ease:'power3.out'});
+  var ch=c.querySelectorAll('.chip');
+  if(ch.length)gsap.from(ch,{scrollTrigger:{trigger:c,start:'top 84%'},opacity:0,y:12,stagger:.06,duration:.45,delay:.15,ease:'back.out(1.8)'});
+  var li=c.querySelectorAll('.bul li');
+  if(li.length)gsap.from(li,{scrollTrigger:{trigger:c,start:'top 82%'},opacity:0,x:-14,stagger:.035,duration:.5,delay:.2,ease:'power3.out'});
+});
+
+/* SPINE GLOW */
+(function(){
+  var g=document.getElementById('tlGlow'),w=document.querySelector('.tl');if(!g||!w)return;
+  ScrollTrigger.create({trigger:w,start:'top 55%',end:'bottom 75%',scrub:.7,onUpdate:function(s){g.style.height=(s.progress*100)+'%';}});
+  gsap.utils.toArray('.entry').forEach(function(c){ScrollTrigger.create({trigger:c,start:'top 60%',onEnter:function(){c.classList.add('lit');}});});
+})();
+
+/* PORTRAIT PARALLAX */
+gsap.to('#portrait',{scrollTrigger:{trigger:'.hero',start:'top top',end:'bottom top',scrub:1.5},y:60,ease:'none'});
+</script>
+</body>
+</html>

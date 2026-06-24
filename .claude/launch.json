@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "personal-website",
+      "runtimeExecutable": "powershell",
+      "runtimeArgs": ["-ExecutionPolicy", "Bypass", "-File", "C:\\Users\\cagheda\\Desktop\\CHintan Noon\\CHintan\\Chintan\\ChintanAgheda.Com\\PersonalWebsite\\server.ps1"],
+      "port": 3000
+    }
+  ]
+}
