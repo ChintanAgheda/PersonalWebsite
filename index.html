@@ -307,8 +307,8 @@ nav{
   overflow:hidden; white-space:nowrap;
 }
 .marquee-track{ display:inline-flex; animation:marqueeScroll 24s linear infinite; }
-.marquee-item{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:rgba(255,255,255,.3); padding:0 36px; }
-.marquee-item .sep{ color:var(--gold); margin:0 8px; }
+.marquee-item{ display:inline-flex; align-items:center; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:rgba(255,255,255,.3); padding:0; }
+.marquee-item .sep{ display:inline-flex; align-items:center; justify-content:center; line-height:0; color:var(--gold); margin:0 30px; font-size:14px; }
 @keyframes marqueeScroll{ 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
 
 /* ── SECTIONS ── */
@@ -330,6 +330,22 @@ nav{
   max-width:1000px;
 }
 
+/* Rocket launch (Results heading) */
+.rocket-launch{
+  position:relative; display:inline-block;
+  width:.42em; margin-left:.22em; vertical-align:-.12em;
+  pointer-events:none;
+}
+.rocket-svg{ position:relative; z-index:2; width:100%; height:auto; display:block; will-change:transform; }
+.rocket-flame{ transform-box:fill-box; transform-origin:center top; }
+.rocket-trail{
+  position:absolute; left:50%; bottom:.1em; z-index:1;
+  width:3px; height:140px;
+  transform:translateX(-50%) scaleY(0); transform-origin:bottom center;
+  background:linear-gradient(to top, rgba(199,167,106,0), var(--gold) 26%, rgba(199,167,106,0));
+  filter:blur(1.2px); opacity:0;
+}
+
 /* ── STATS ── */
 .stats{ max-width:1300px; margin:auto; display:grid; grid-template-columns:repeat(4,1fr); gap:24px; }
 .stat{
@@ -341,7 +357,7 @@ nav{
   content:''; position:absolute; top:0; left:0; width:2px; height:0;
   background:var(--gold); transition:.4s ease;
 }
-.stat:hover{ transform:translateY(-6px); border-color:rgba(199,167,106,.2); }
+.stat:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(199,167,106,.3); }
 .stat:hover::before{ height:100%; }
 .stat-number{ font-family:'Manrope',sans-serif; font-size:56px; font-weight:800; letter-spacing:-.06em; margin-bottom:12px; }
 .stat-label{ font-size:14px; line-height:1.8; color:var(--muted); }
@@ -373,7 +389,7 @@ nav{
   border-radius:26px;
   background:rgba(255,255,255,.022);
   border:1px solid rgba(255,255,255,.06);
-  transition:transform .4s cubic-bezier(.23,1,.32,1), border-color .4s, background .4s, box-shadow .4s;
+  transition:padding .5s cubic-bezier(.23,1,.32,1), border-color .5s, background .5s, box-shadow .5s, transform .5s;
 }
 .timeline-item:last-child{ margin-bottom:0; }
 
@@ -398,9 +414,9 @@ nav{
 }
 
 .timeline-item:hover{
-  transform:translateX(8px);
+  padding-left:60px;
   border-color:rgba(199,167,106,.25);
-  background:rgba(199,167,106,.03);
+  background:rgba(199,167,106,.04);
   box-shadow:-12px 0 40px rgba(0,0,0,.4);
 }
 .timeline-item:hover::before{
@@ -454,8 +470,14 @@ nav{
   width:54px; height:54px; border-radius:15px;
   display:flex; align-items:center; justify-content:center;
   font-weight:800; font-size:13px; flex-shrink:0; overflow:hidden;
-  transition:transform .4s cubic-bezier(.23,1,.32,1);
+  text-decoration:none;
+  transition:transform .4s cubic-bezier(.23,1,.32,1), box-shadow .4s;
 }
+/* Drop brand images at the src paths below; if missing, the brand-coloured box shows (no text) */
+.company-logo-img{ width:100%; height:100%; object-fit:cover; display:block; }
+/* Clickable logos (anchors) get a subtle cue */
+a.company-logo{ cursor:pointer; }
+a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
 .timeline-item:hover .company-logo{ transform:rotate(-6deg) scale(1.06); }
 .logo-noon{ background:#FFC200; color:#000; }
 .logo-zepto{ background:#6B2FE3; color:#fff; }
@@ -478,9 +500,9 @@ nav{
 }
 
 /* Collapsible bullets */
-.timeline-bullets{ list-style:none; display:flex; flex-direction:column; gap:11px; }
-.timeline-bullets li{ display:flex; gap:13px; align-items:flex-start; font-size:13.5px; line-height:1.75; color:var(--muted); }
-.timeline-bullets li::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:8px; opacity:.7; }
+.timeline-bullets{ list-style:none; display:flex; flex-direction:column; gap:6px; }
+.timeline-bullets li{ display:flex; gap:13px; align-items:flex-start; font-size:13.5px; line-height:1.5; color:var(--muted); }
+.timeline-bullets li::before{ content:''; width:5px; height:5px; border-radius:50%; background:var(--gold); flex-shrink:0; margin-top:7px; opacity:.7; }
 .role-block{ margin-bottom:26px; }
 .role-block:last-child{ margin-bottom:0; }
 .role-divider{ height:1px; background:rgba(255,255,255,.06); margin:22px 0; }
@@ -568,6 +590,7 @@ footer{
   .hero-actions{ flex-direction:column; align-items:flex-start; }
   .contact-box{ padding:40px 28px; }
   .timeline-item{ padding:28px; }
+  .timeline-item:hover{ padding-left:48px; }
   .timeline h3{ font-size:28px; }
   .loader-line{ width:260px; }
 }
@@ -682,7 +705,7 @@ footer{
 <section class="section" id="results">
   <div class="section-head">
     <div class="section-label reveal"><h1>Selected Results</h1></div>
-    <h2 class="section-title reveal">Building finance systems for companies moving at startup speed.</h2>
+    <h2 class="section-title reveal">Building finance systems for companies moving at startup speed.<span class="rocket-launch" id="rocketLaunch" aria-hidden="true"><span class="rocket-trail"></span><svg class="rocket-svg" viewBox="0 0 40 78" fill="none" xmlns="http://www.w3.org/2000/svg"><g class="rocket-flame"><path d="M20 54 C13 64 15 78 20 78 C25 78 27 64 20 54 Z" fill="url(#flameG)"/><path d="M20 56 C16 62 17 70 20 70 C23 70 24 62 20 56 Z" fill="#fff3d6"/></g><path d="M11 38 L3 56 L11 49 Z" fill="#9a7a44"/><path d="M29 38 L37 56 L29 49 Z" fill="#9a7a44"/><path d="M20 2 C28 12 30 27 30 40 C30 50 26 56 20 56 C14 56 10 50 10 40 C10 27 12 12 20 2 Z" fill="url(#bodyG)" stroke="#efdcb4" stroke-width="1"/><circle cx="20" cy="26" r="6.2" fill="#0b0b0b" stroke="#efdcb4" stroke-width="1.6"/><circle cx="20" cy="26" r="2.6" fill="#c7a76a" opacity=".55"/><defs><linearGradient id="bodyG" x1="10" y1="2" x2="30" y2="56" gradientUnits="userSpaceOnUse"><stop stop-color="#f3e6c8"/><stop offset="1" stop-color="#b9924f"/></linearGradient><linearGradient id="flameG" x1="20" y1="54" x2="20" y2="78" gradientUnits="userSpaceOnUse"><stop stop-color="#ffd27a"/><stop offset="1" stop-color="#ff6a3d"/></linearGradient></defs></svg></span></h2>
   </div>
   <div class="stats">
     <div class="stat reveal" data-count="13" data-suffix="+"><div class="stat-number">13+</div><div class="stat-label">Years building finance operations and commercial systems.</div></div>
@@ -704,7 +727,7 @@ footer{
     <div class="timeline-item current tl-reveal">
       <div class="timeline-year">Aug 2024 — Present</div>
       <div class="company-header">
-        <div class="company-logo logo-noon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="10" stroke="#000" stroke-width="3.5" fill="none"/><path d="M18 8 A10 10 0 0 1 28 18" stroke="#000" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg></div>
+        <a href="https://www.noon.com/uae-en/" target="_blank" rel="noopener noreferrer" class="company-logo logo-noon" aria-label="Visit noon"><img class="company-logo-img" src="assets/img/Noon.png" alt="noon" onerror="this.style.display='none';"></a>
         <div>
           <h3>noon <span class="now-tag"><span class="nd"></span>Now</span></h3>
           <div class="timeline-sub-role">UAE · KSA · EGY · QAT · BAH · IRAQ</div>
@@ -764,7 +787,7 @@ footer{
     <div class="timeline-item tl-reveal">
       <div class="timeline-year">Apr 2023 — Aug 2024</div>
       <div class="company-header">
-        <div class="company-logo logo-zepto"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><path d="M5 22L14 8H5V6H25V8L16 22H25V24H5V22Z" fill="white"/></svg></div>
+        <a href="https://zepto.com/" target="_blank" rel="noopener noreferrer" class="company-logo logo-zepto" aria-label="Visit Zepto"><img class="company-logo-img" src="assets/img/Zepto Logo.png" alt="Zepto" onerror="this.style.display='none';"></a>
         <div>
           <h3>Zepto</h3>
           <div class="timeline-role">Finance Manager · Mumbai</div>
@@ -791,7 +814,7 @@ footer{
     <div class="timeline-item tl-reveal">
       <div class="timeline-year">Jul 2022 — Mar 2023</div>
       <div class="company-header">
-        <div class="company-logo logo-chalo"><svg width="30" height="30" viewBox="0 0 30 30" fill="none"><circle cx="15" cy="10" r="4" fill="white"/><path d="M8 24 Q15 14 22 24" stroke="white" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg></div>
+      <a href="https://chalo.com/" target="_blank" rel="noopener noreferrer" class="company-logo logo-chalo" aria-label="Visit Chalo"><img class="company-logo-img" src="assets/img/CHALO.jpg " alt="Chalo" onerror="this.style.display='none';"></a>
         <div>
           <h3>Chalo</h3>
           <div class="timeline-role">Finance Manager · Navi Mumbai</div>
@@ -814,7 +837,7 @@ footer{
     <div class="timeline-item tl-reveal">
       <div class="timeline-year">Nov 2020 — Jul 2022</div>
       <div class="company-header">
-        <div class="company-logo logo-igp"><svg width="30" height="18" viewBox="0 0 30 18" fill="none"><text x="0" y="15" font-family="serif" font-weight="800" font-size="16" fill="white">igp</text></svg></div>
+        <a href="https://www.igp.com/" target="_blank" rel="noopener noreferrer" class="company-logo logo-igp" aria-label="Visit IGP.com"><img class="company-logo-img" src="assets/img/IGP - Copy.png" alt="IGP.com" onerror="this.style.display='none';"></a>
         <div>
           <h3>IGP.com</h3>
           <div class="timeline-role">Assistant Manager Finance · Mumbai</div>
@@ -837,7 +860,7 @@ footer{
     <div class="timeline-item tl-reveal">
       <div class="timeline-year">Apr 2019 — Nov 2020</div>
       <div class="company-header">
-        <div class="company-logo logo-supr"><svg width="30" height="28" viewBox="0 0 30 28" fill="none"><path d="M5 8 Q15 2 25 8 L22 22 Q15 26 8 22Z" fill="none" stroke="white" stroke-width="2"/><circle cx="15" cy="14" r="3" fill="white"/></svg></div>
+        <a href="https://www.linkedin.com/company/suprdailybyswiggy/" target="_blank" rel="noopener noreferrer" class="company-logo logo-supr" aria-label="Visit SuprDaily"><img class="company-logo-img" src="assets/img/Supr Daily.png" alt="SuprDaily" onerror="this.style.display='none';"></a>
         <div>
           <h3>SuprDaily by SWIGGY</h3>
           <div class="timeline-role">Finance Executive · Mumbai</div>
@@ -860,7 +883,7 @@ footer{
     <div class="timeline-item tl-reveal">
       <div class="timeline-year">Oct 2018 — Apr 2019</div>
       <div class="company-header">
-        <div class="company-logo logo-padhi"><span style="font-family:'IBM Plex Mono',monospace;font-size:11px;color:rgba(255,255,255,.7);">SSP</span></div>
+        <div class="company-logo logo-padhi"><img class="company-logo-img" src="assets/img/S S Padhi.png" alt="S S Padhi" onerror="this.style.display='none';"></div>
         <div><h3>S S Padhi</h3><div class="timeline-role">Finance Associate</div></div>
       </div>
       <ul class="timeline-bullets">
@@ -872,7 +895,7 @@ footer{
     <div class="timeline-item tl-reveal">
       <div class="timeline-year">May 2017 — Oct 2018 &amp; Aug 2013 — Apr 2017</div>
       <div class="company-header">
-        <div class="company-logo logo-ham"><span style="font-family:'IBM Plex Mono',monospace;font-size:10px;color:rgba(255,255,255,.7);">CA</span></div>
+        <a href="https://hamca.co.in/" target="_blank" rel="noopener noreferrer" class="company-logo logo-ham" aria-label="Visit HAM &amp; Co"><img class="company-logo-img" src="assets/img/HAM.png" alt="HAM &amp; Co" onerror="this.style.display='none';"></a>
         <div>
           <h3>HAM &amp; Co</h3>
           <div class="timeline-role">Accounts Manager &amp; Article Trainee · Chartered Accountants</div>
@@ -1195,6 +1218,56 @@ document.querySelectorAll('.section-title').forEach(function(el){
 });
 
 /* ─────────────────────────────
+   ROCKET LAUNCH (Results — "startup speed")
+───────────────────────────── */
+(function(){
+  var wrap = document.getElementById('rocketLaunch');
+  if(!wrap) return;
+  var rocket = wrap.querySelector('.rocket-svg');
+  var trail  = wrap.querySelector('.rocket-trail');
+  var flame  = wrap.querySelector('.rocket-flame');
+  if(!rocket) return;
+
+  /* Respect reduced-motion: keep the rocket as a quiet static mark, no launch */
+  if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches){
+    gsap.set(rocket,{ opacity:1 }); return;
+  }
+
+  /* Resting state on the launch pad — a rocket is always visible next to "speed." */
+  gsap.set(rocket,{ y:0, rotation:0, scale:1, opacity:1, transformOrigin:'50% 100%' });
+  gsap.set(trail,{ scaleY:0, opacity:0 });
+  gsap.set(flame,{ scaleY:.45, opacity:.5, transformOrigin:'50% 0%' });
+
+  var tl = gsap.timeline({ paused:true, onComplete:function(){
+    /* bring a fresh rocket back onto the pad so one is always sitting at "speed." */
+    gsap.set(rocket,{ y:0, rotation:0, scale:1, opacity:0 });
+    gsap.set(trail,{ scaleY:0, opacity:0 });
+    gsap.set(flame,{ scaleY:.45, opacity:.5 });
+    gsap.to(rocket,{ opacity:1, duration:.5, delay:.3, ease:'power2.out' });
+  }});
+  tl.set(rocket,{ y:0, rotation:0, scale:1, opacity:1, transformOrigin:'50% 100%' })
+    .set(trail,{ scaleY:0, opacity:0 })
+    .set(flame,{ scaleY:.45, opacity:.5 })
+    /* ignition — flame flares, rocket dips slightly */
+    .to(flame,{ scaleY:1.8, opacity:1, duration:.26, ease:'power1.out', yoyo:true, repeat:1 })
+    .to(rocket,{ y:6, duration:.26, ease:'power1.inOut' }, 0)
+    /* launch up + trail */
+    .to(rocket,{ y:-230, duration:1.05, ease:'power3.in' }, 0.52)
+    .to(rocket,{ rotation:-7, duration:1.05, ease:'sine.inOut' }, 0.52)
+    .to(trail,{ scaleY:1, opacity:.7, duration:.6, ease:'power2.out' }, 0.56)
+    .to(rocket,{ opacity:0, duration:.4, ease:'power1.in' }, 1.3)
+    .to(trail,{ opacity:0, duration:.45, ease:'power1.in' }, 1.35);
+
+  var trigger = document.querySelector('#results .section-title');
+  ScrollTrigger.create({
+    trigger: trigger,
+    start: 'top 62%',
+    onEnter:     function(){ tl.restart(); },
+    onEnterBack: function(){ tl.restart(); }
+  });
+})();
+
+/* ─────────────────────────────
    REVAMPED TIMELINE
 ───────────────────────────── */
 
@@ -1203,7 +1276,8 @@ gsap.utils.toArray('.tl-reveal').forEach(function(card){
   gsap.from(card,{
     scrollTrigger:{ trigger:card, start:'top 86%' },
     opacity:0, y:50, scale:.97,
-    duration:.9, ease:'power3.out'
+    duration:.9, ease:'power3.out',
+    clearProps:'transform'
   });
   /* chips pop in */
   var chips = card.querySelectorAll('.tl-chip');
