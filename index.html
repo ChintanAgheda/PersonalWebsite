@@ -18,6 +18,8 @@
   --text:#f5f5f5;
   --muted:#9d9d9d;
   --line:rgba(255,255,255,.08);
+  --line-soft:rgba(255,255,255,.08);
+  --ink-soft:#9d9d9d;
 }
 
 html{ scroll-behavior:smooth; }
@@ -84,23 +86,10 @@ body{
 .loader-title{
   font-family:'Manrope',sans-serif;
   font-size:clamp(4rem,10vw,9rem);
-  line-height:1;
-  font-weight:800;
-  letter-spacing:-.06em;
-  margin-bottom:22px;
+  line-height:1.05; font-weight:800; letter-spacing:-.08em;
+  overflow:hidden; margin-bottom:22px;
 }
-
-.loader-title .mask{
-    display:block;
-    overflow:hidden;
-    padding-bottom:.18em;
-}AAAAA
-.loader-title span{
-    display:block;
-    transform:translateY(115%);
-    will-change:transform;
-    backface-visibility:hidden;
-}
+.loader-title span{ display:block; transform:translateY(120%); }
 .loader-sub{
   font-family:'IBM Plex Mono',monospace; font-size:11px;
   letter-spacing:.4em; text-transform:uppercase;
@@ -143,21 +132,105 @@ nav{
 .hero{ min-height:100vh; display:flex; align-items:center; padding:90px 80px 80px; }
 .hero-grid{ max-width:1400px; margin:auto; display:grid; grid-template-columns:1.1fr .9fr; gap:100px; align-items:center; width:100%; }
 
-/* ════════ EDUCATION ════════ */
-.edu{max-width:1040px;margin:auto;border-top:1px solid var(--line-soft);}
-.edu-item{display:grid;grid-template-columns:1fr auto;gap:36px;align-items:flex-start;padding:36px 10px 36px 0;border-bottom:1px solid var(--line-soft);position:relative;transition:padding .5s,background .5s;}
-.edu-item::before{content:'';position:absolute;left:0;top:0;width:0;height:1px;background:var(--gold);transition:width .6s cubic-bezier(.23,1,.32,1);}
+/* ════════ EDUCATION (GLOWING SPINE — matches Experience) ════════ */
+.edu{max-width:1040px;margin:auto;position:relative;padding-left:60px;}
+/* Background spine track */
+.edu::before{
+  content:'';position:absolute;
+  left:20px;top:8px;bottom:8px;width:2px;
+  background:rgba(255,255,255,.07);
+}
+/* Glowing fill that grows on scroll */
+.edu-spine-fill{
+  position:absolute;left:20px;top:8px;width:2px;height:0;
+  background:linear-gradient(180deg, var(--gold), rgba(199,167,106,.3));
+  box-shadow:0 0 16px rgba(199,167,106,.6);
+  z-index:1;border-radius:2px;
+}
+
+.edu-item{
+  display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:flex-start;
+  padding:34px 10px 34px 0;border-bottom:1px solid var(--line-soft);
+  position:relative;transition:padding .5s,background .5s;
+}
+
+/* Connector node on the spine */
+.edu-item::before{
+  content:'';position:absolute;
+  left:-47px;top:42px;
+  width:14px;height:14px;border-radius:50%;
+  background:var(--bg);
+  border:2px solid rgba(255,255,255,.2);
+  transition:.4s;z-index:2;
+}
+/* Branch line from spine to row */
+.edu-item::after{
+  content:'';position:absolute;
+  left:-33px;top:48px;
+  width:30px;height:2px;
+  background:rgba(255,255,255,.08);
+  transition:.4s;z-index:1;
+}
 .edu-item:hover{background:rgba(200,164,90,.03);padding-left:20px;}
-.edu-item:hover::before{width:100%;}
-.edu-inst{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:clamp(21px,2.6vw,30px);line-height:1.12;}
-.edu-field{font-size:13px;color:var(--ink-soft);font-weight:300;margin-top:9px;letter-spacing:.01em;line-height:1.6;}
+.edu-item:hover::before{
+  border-color:var(--gold);background:var(--gold);
+  box-shadow:0 0 16px rgba(199,167,106,.7);transform:scale(1.15);
+}
+.edu-item:hover::after{background:rgba(199,167,106,.4);}
+/* Lit node when scrolled into view */
+.edu-item.lit::before{
+  border-color:var(--gold);background:var(--gold);
+  box-shadow:0 0 16px rgba(199,167,106,.6);
+}
+.edu-item.lit::after{background:rgba(199,167,106,.3);}
+/* Ongoing programme — pulsing node */
+.edu-item.current::before{
+  border-color:var(--gold);background:var(--gold);
+  box-shadow:0 0 0 0 rgba(199,167,106,.6);
+  animation:nodePulse 2.2s ease-in-out infinite;
+}
+
+/* Logo provision — drop your images at the paths in the <img src>; falls back to initials */
+.edu-logo{
+  width:52px;height:52px;border-radius:13px;flex-shrink:0;
+  background:rgba(255,255,255,.05);
+  border:1px solid rgba(255,255,255,.08);
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;position:relative;margin-top:2px;
+  transition:transform .4s cubic-bezier(.23,1,.32,1), border-color .4s;
+}
+.edu-item:hover .edu-logo{transform:scale(1.06) rotate(-4deg);border-color:rgba(199,167,106,.3);}
+.edu-logo-img{width:100%;height:100%;object-fit:contain;padding:8px;}
+.edu-logo-fallback{
+  display:none;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
+  letter-spacing:.04em;color:var(--gold);text-align:center;line-height:1.1;padding:4px;
+}
+
+.edu-inst{font-family:'Manrope',sans-serif;font-weight:700;font-size:clamp(19px,2.3vw,26px);letter-spacing:-.02em;line-height:1.15;}
+.edu-field{font-size:13px;color:var(--ink-soft);font-weight:400;margin-top:9px;letter-spacing:.01em;line-height:1.6;}
 .edu-skills{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;}
-.edu-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;text-align:right;}
+.chip{
+  font-family:'IBM Plex Mono',monospace;font-size:10px;
+  letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gold);background:rgba(199,167,106,.08);
+  border:1px solid rgba(199,167,106,.18);
+  padding:5px 11px;border-radius:100px;
+}
+.edu-right{display:flex;flex-direction:column;align-items:flex-end;gap:10px;text-align:right;margin-top:4px;}
 .edu-period{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
 .edu-grade{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);border:1px solid var(--line);padding:6px 13px;border-radius:2px;white-space:nowrap;}
 .edu-ongoing{font-family:'IBM Plex Mono',monospace;font-size:9px;letter-spacing:.18em;text-transform:uppercase;color:#0a0908;background:var(--gold);padding:5px 12px;border-radius:2px;display:inline-flex;align-items:center;gap:6px;white-space:nowrap;}
-.edu-ongoing i{width:4px;height:4px;border-radius:50%;background:#0a0908;animation:np 2s infinite;}
-@media(max-width:680px){.edu-item{grid-template-columns:1fr;gap:14px;}.edu-right{align-items:flex-start;text-align:left;}}
+.edu-ongoing i{width:4px;height:4px;border-radius:50%;background:#0a0908;animation:pulse 2s infinite;}
+@media(max-width:680px){
+  .edu-item{grid-template-columns:auto 1fr;gap:16px;}
+  .edu-right{grid-column:1 / -1;align-items:flex-start;text-align:left;margin-top:6px;}
+}
+@media(max-width:700px){
+  .edu{padding-left:42px;}
+  .edu::before,.edu-spine-fill{left:12px;}
+  .edu-item::before{left:-37px;}
+  .edu-item::after{left:-25px;width:24px;}
+}
 
 .hero-tag{
   display:inline-flex; align-items:center; gap:12px;
@@ -253,7 +326,7 @@ nav{
 .section-title{
   font-family:'Manrope',sans-serif;
   font-size:clamp(3rem,6vw,6rem);
-  line-height:1.2; letter-spacing:-.07em; font-weight:800;
+  line-height:1.12; letter-spacing:-.07em; font-weight:800;
   max-width:1000px;
 }
 
@@ -417,6 +490,38 @@ nav{
   color:rgba(255,255,255,.35); margin-bottom:12px;
 }
 
+/* Promotion within the same company */
+.role-period-row{
+  display:flex; justify-content:space-between; align-items:baseline;
+  gap:16px; flex-wrap:wrap; margin-bottom:14px;
+}
+.role-title{
+  font-family:'Manrope',sans-serif; font-size:18px; font-weight:700;
+  letter-spacing:-.02em; color:rgba(255,255,255,.92); line-height:1.25;
+}
+.role-period{
+  font-family:'IBM Plex Mono',monospace; font-size:10px;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--gold);
+  white-space:nowrap;
+}
+.role-context{
+  font-family:'IBM Plex Mono',monospace; font-size:11px;
+  letter-spacing:.04em; color:var(--muted); margin:-6px 0 14px;
+}
+.promo-divider{
+  position:relative; height:1px; margin:28px 0;
+  background:rgba(255,255,255,.07);
+}
+.promo-badge{
+  position:absolute; left:0; top:50%; transform:translateY(-50%);
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:'IBM Plex Mono',monospace; font-size:9.5px;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--gold);
+  background:#0e0d0b; border:1px solid rgba(199,167,106,.3);
+  padding:6px 13px; border-radius:100px;
+}
+.promo-badge svg{ width:11px; height:11px; flex-shrink:0; }
+
 @media(max-width:700px){
   .timeline{ padding-left:42px; }
   .timeline::before, .spine-fill{ left:12px; }
@@ -479,15 +584,7 @@ footer{
   <div class="loader-grid"></div>
   <div class="loader-content">
     <div class="loader-label">Commercial Finance Systems</div>
-<h1 class="loader-title">
-    <div class="mask">
-        <span>CHINTAN</span>
-    </div>
-
-    <div class="mask">
-        <span>AGHEDA</span>
-    </div>
-</h1>
+    <h1 class="loader-title"><span>CHINTAN</span><span>AGHEDA</span></h1>
     <div class="loader-sub">Finance Leader</div>
     <div class="loader-line"><div class="loader-progress" id="lp"></div></div>
     <div class="loader-bottom">
@@ -523,15 +620,15 @@ footer{
       <span class="line"><span class="line-inner"><span class="hypergrowth">hypergrowth<svg viewBox="0 0 800 70" preserveAspectRatio="none"><path id="wavePath" d="M10 40 Q 120 10 230 30 T 450 32 T 790 28"/></svg></span></span></span>
     </h1>
     <div class="rolling-line" id="rollingLine">
-    I specialise in —
+      I specialise in —
       <span class="rolling-wrap">
         <span class="rolling-inner" id="rollingInner">
-          <span>Finance Operations at Scale</span>
-          <span>Process &amp; Automation</span>
-          <span>Crafting Finance Strategies</span>
+          <span>AP at Scale</span>
+          <span>Automation</span>
+          <span>Due Diligence</span>
           <span>MIS &amp; FP&amp;A</span>
-          <span>P &amp; L Optimization</span>
-          <span>Business Partnering</span>
+          <span>Vendor Ops</span>
+          <span>AP at Scale</span>
         </span>
       </span>
     </div>
@@ -547,7 +644,7 @@ footer{
     </div>
     <div class="floating-card">
       <div class="floating-label">Operational Markets</div>
-      <div class="floating-value"> GCC · India </div>
+      <div class="floating-value">India · UAE · KSA</div>
     </div>
   </div>
 </div>
@@ -556,14 +653,16 @@ footer{
 <!-- MARQUEE -->
 <div class="marquee-strip">
   <div class="marquee-track">
-    <span class="marquee-item">Q-Commerce<span class="sep">·</span></span>
-    <span class="marquee-item">E-Commerce<span class="sep">·</span></span>
-    <span class="marquee-item">StartUps<span class="sep">·</span></span>    
-    <span class="marquee-item">Funding Round Series F · $665M @ Zepto<span class="sep">·</span></span>
-    <span class="marquee-item">Funding Round Series E · $232M @ Zepto<span class="sep">·</span></span>
-    <span class="marquee-item">GCC<span class="sep">·</span></span>
-    <span class="marquee-item">India<span class="sep">·</span></span>
-    <span class="marquee-item">1500+ GCC + International Vendors<span class="sep">·</span></span>
+    <span class="marquee-item">Zepto<span class="sep">·</span></span>
+    <span class="marquee-item">noon<span class="sep">·</span></span>
+    <span class="marquee-item">Chalo<span class="sep">·</span></span>
+    <span class="marquee-item">IGP.com<span class="sep">·</span></span>
+    <span class="marquee-item">SuprDaily<span class="sep">·</span></span>
+    <span class="marquee-item">HAM &amp; Co<span class="sep">·</span></span>
+    <span class="marquee-item">Series F · $665M<span class="sep">·</span></span>
+    <span class="marquee-item">Series E · $232M<span class="sep">·</span></span>
+    <span class="marquee-item">40+ Cities AP<span class="sep">·</span></span>
+    <span class="marquee-item">1500+ Vendors GCC<span class="sep">·</span></span>
     <span class="marquee-item">13+ Years<span class="sep">·</span></span>
     <span class="marquee-item">Zepto<span class="sep">·</span></span>
     <span class="marquee-item">noon<span class="sep">·</span></span>
@@ -603,51 +702,63 @@ footer{
     <div class="spine-fill" id="spineFill"></div>
 
     <div class="timeline-item current tl-reveal">
-      <div class="timeline-year">Jan 2026 — Present</div>
+      <div class="timeline-year">Aug 2024 — Present</div>
       <div class="company-header">
         <div class="company-logo logo-noon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="10" stroke="#000" stroke-width="3.5" fill="none"/><path d="M18 8 A10 10 0 0 1 28 18" stroke="#000" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg></div>
         <div>
           <h3>noon <span class="now-tag"><span class="nd"></span>Now</span></h3>
-          <div class="timeline-role">Senior Manager | Head of Commercial Finance · GCC</div>
           <div class="timeline-sub-role">UAE · KSA · EGY · QAT · BAH · IRAQ</div>
         </div>
       </div>
-      <div class="tl-chips">
-        <span class="tl-chip">AED xBn+ Volume</span>
-        <span class="tl-chip">1500+ Vendors</span>
-        <span class="tl-chip">Team 2 → 20+</span>
-        <span class="tl-chip">6 Markets</span>
-      </div>
-      <ul class="timeline-bullets">
-        <li>End-to-end financial operations across GCC, managing annual business volume of AED xBn+</li>
-        <li>Finance strategy — formulation and execution across markets</li>
-        <li>P&amp;L ownership, budgeting, reporting and optimization</li>
-        <li>Process development, revamp and automation; SOP creation and implementation</li>
-        <li>Stakeholder management with Group CXOs, HODs and GMs</li>
-        <li>Working directly with Product and Tech teams to build scalable, structured finance tools</li>
-        <li>Cashflow optimization and working capital management</li>
-        <li>Governance, compliance and internal controls</li>
-        <li>Team management: built a team from 2 to 20+</li>
-        <li>P2P, R2R, SOP adherence; leveraging finance with FinTech and AI tools</li>
-        <li>Collaborating with Commercial, Ops, Instock, Pricing, Marketing and AdMon teams</li>
-      </ul>
-    </div>
 
-    <div class="timeline-item tl-reveal">
-      <div class="timeline-year">Aug 2024 — Dec 2025</div>
-      <div class="company-header">
-        <div class="company-logo logo-noon"><svg width="36" height="36" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="10" stroke="#000" stroke-width="3.5" fill="none"/><path d="M18 8 A10 10 0 0 1 28 18" stroke="#000" stroke-width="3.5" stroke-linecap="round" fill="none"/></svg></div>
-        <div>
-          <h3>noon</h3>
-          <div class="timeline-role">Manager · Commercial Finance · GCC</div>
-          <div class="timeline-sub-role">GCC's Biggest and Fastest Growing Quick Commerce</div>
+      <!-- Current role (promoted into) -->
+      <div class="role-block">
+        <div class="role-period-row">
+          <span class="role-title">Senior Manager · Head of Commercial Finance · GCC</span>
+          <span class="role-period">Jan 2026 — Present</span>
         </div>
+        <div class="tl-chips">
+          <span class="tl-chip">AED xBn+ Volume</span>
+          <span class="tl-chip">1500+ Vendors</span>
+          <span class="tl-chip">Team 2 → 20+</span>
+          <span class="tl-chip">6 Markets</span>
+        </div>
+        <ul class="timeline-bullets">
+          <li>End-to-end financial operations across GCC, managing annual business volume of AED xBn+</li>
+          <li>Finance strategy — formulation and execution across markets</li>
+          <li>P&amp;L ownership, budgeting, reporting and optimization</li>
+          <li>Process development, revamp and automation; SOP creation and implementation</li>
+          <li>Stakeholder management with Group CXOs, HODs and GMs</li>
+          <li>Working directly with Product and Tech teams to build scalable, structured finance tools</li>
+          <li>Cashflow optimization and working capital management</li>
+          <li>Governance, compliance and internal controls</li>
+          <li>Team management: built a team from 2 to 20+</li>
+          <li>P2P, R2R, SOP adherence; leveraging finance with FinTech and AI tools</li>
+          <li>Collaborating with Commercial, Ops, Instock, Pricing, Marketing and AdMon teams</li>
+        </ul>
       </div>
-      <ul class="timeline-bullets">
-        <li>Built and scaled commercial finance processes for noon Minutes across GCC markets</li>
-        <li>Drove cross-functional alignment with Ops, Instock, Pricing and Commercial teams</li>
-        <li>Developed finance infrastructure to support rapid expansion</li>
-      </ul>
+
+      <!-- Promotion connector -->
+      <div class="promo-divider">
+        <span class="promo-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+          Promoted
+        </span>
+      </div>
+
+      <!-- Previous role (promoted from) -->
+      <div class="role-block">
+        <div class="role-period-row">
+          <span class="role-title">Manager · Commercial Finance · GCC</span>
+          <span class="role-period">Aug 2024 — Dec 2025</span>
+        </div>
+        <div class="role-context">GCC's Biggest and Fastest Growing Quick Commerce</div>
+        <ul class="timeline-bullets">
+          <li>Built and scaled commercial finance processes for noon Minutes across GCC markets</li>
+          <li>Drove cross-functional alignment with Ops, Instock, Pricing and Commercial teams</li>
+          <li>Developed finance infrastructure to support rapid expansion</li>
+        </ul>
+      </div>
     </div>
 
     <div class="timeline-item tl-reveal">
@@ -793,14 +904,20 @@ footer{
 </section>
 
 <!-- EDUCATION -->
+<section class="section" id="education">
   <div class="section-head">
     <div class="section-label reveal"><h1>Academic Foundation</h1></div>
-    <h2 class="section-title reveal">Built on rigorous <br>financial training.</h4>
+    <h2 class="section-title reveal">Built on rigorous <br>financial training.</h2>
   </div>
-<section class="section" id="education">
   <div class="edu">
+    <div class="edu-spine-fill" id="eduSpineFill"></div>
+
     <div class="edu-item rv">
-      <div>
+      <div class="edu-logo">
+        <img class="edu-logo-img" src="assets/img/icai-logo.png" alt="ICAI" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="edu-logo-fallback">ICAI</span>
+      </div>
+      <div class="edu-text">
         <div class="edu-inst">The Institute of Chartered Accountants of India</div>
         <div class="edu-field">Finance · Auditing · Accounting · Taxation · Compliance</div>
       </div>
@@ -809,8 +926,12 @@ footer{
       </div>
     </div>
 
-    <div class="edu-item rv">
-      <div>
+    <div class="edu-item current rv">
+      <div class="edu-logo">
+        <img class="edu-logo-img" src="assets/img/iim-calcutta-logo.png" alt="IIM Calcutta" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="edu-logo-fallback">IIM<br>C</span>
+      </div>
+      <div class="edu-text">
         <div class="edu-inst">Indian Institute of Management, Calcutta</div>
         <div class="edu-field">Executive Programme in FinTech and AI</div>
         <div class="edu-skills">
@@ -824,7 +945,11 @@ footer{
     </div>
 
     <div class="edu-item rv">
-      <div>
+      <div class="edu-logo">
+        <img class="edu-logo-img" src="assets/img/mumbai-university-logo.png" alt="University of Mumbai" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="edu-logo-fallback">MU</span>
+      </div>
+      <div class="edu-text">
         <div class="edu-inst">University of Mumbai</div>
         <div class="edu-field">Bachelor of Commerce (B.Com), Commerce</div>
       </div>
@@ -834,7 +959,11 @@ footer{
     </div>
 
     <div class="edu-item rv">
-      <div>
+      <div class="edu-logo">
+        <img class="edu-logo-img" src="assets/img/msbshse-logo.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="edu-logo-fallback">MSB</span>
+      </div>
+      <div class="edu-text">
         <div class="edu-inst">Maharashtra State Board (MSBSHSE)</div>
         <div class="edu-field">HSC (12th), Commerce</div>
       </div>
@@ -844,7 +973,11 @@ footer{
     </div>
 
     <div class="edu-item rv">
-      <div>
+      <div class="edu-logo">
+        <img class="edu-logo-img" src="assets/img/msbshse-logo.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <span class="edu-logo-fallback">MSB</span>
+      </div>
+      <div class="edu-text">
         <div class="edu-inst">Maharashtra State Board (MSBSHSE)</div>
         <div class="edu-field">SSC (10th)</div>
       </div>
@@ -864,8 +997,8 @@ footer{
     <div class="contact-links">
       <a href="https://www.linkedin.com/in/chintanagheda/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
     LinkedIn</a>
-      <a href="mailto:chintanagheda@gmail.com?subject=Let's%20Connect" class="btn btn-secondary">
-    Email</a>
+      <a href="mailto:YOUR_EMAIL@example.com?subject=Leadership%20Opportunity&body=Hi%20Chintan,%0D%0A%0D%0AI%20came%20across%20your%20website%20and%20would%20like%20to%20connect."
+   class="btn btn-secondary">Email</a>
     </div>
   </div>
 </section>
@@ -924,7 +1057,7 @@ gsap.registerPlugin(ScrollTrigger);
 (function(){
   var tl = gsap.timeline();
 
-  tl.to('.loader-title span',{ y:0, duration:1.2, stagger:.14, ease:'expo.out',force3D:true,clearProps:"transform"})
+  tl.to('.loader-title span',{ y:0, duration:1.15, stagger:.12, ease:'expo.out' })
     .to('.loader-label',{ opacity:1, duration:.6 },'-=.8')
     .to('.loader-sub',{ opacity:1, duration:.6 },'-=.6')
     .to('#lp',{
@@ -932,7 +1065,7 @@ gsap.registerPlugin(ScrollTrigger);
       onUpdate:function(){ document.getElementById('lpct').textContent = Math.round(this.progress()*100)+'%'; }
     },'-=.5')
     .to('.loader',{ delay:.15, onComplete:function(){ document.querySelector('.loader').classList.add('open'); } })
-    .to('.loader',{ opacity:0, pointerEvents:'none', duration:0.9 },'+=1.2')
+    .to('.loader',{ opacity:0, pointerEvents:'none', duration:.7 },'+=.9')
 
     /* NAV */
     .fromTo('#mainNav',{ y:-70, opacity:0 },{ y:0, opacity:1, duration:.8, ease:'power3.out' },'-=.5')
@@ -1044,7 +1177,7 @@ document.querySelectorAll('.section-title').forEach(function(el){
   var wrapped = raw.replace(/(<[^>]+>)|([^<]+)/g, function(m, tag, text){
     if(tag) return tag;
     return text.replace(/\S+/g, function(word){
-      return '<span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.25em;">'
+      return '<span class="sw-wrap" style="display:inline-block;overflow:hidden;vertical-align:bottom;padding:0 .08em .22em;margin:0 -.08em -.22em">'
            + '<span class="sw" style="display:inline-block">' + word + '</span></span>';
     });
   });
@@ -1053,7 +1186,11 @@ document.querySelectorAll('.section-title').forEach(function(el){
   gsap.from(el.querySelectorAll('.sw'),{
     scrollTrigger:{ trigger:el, start:'top 88%' },
     y:'105%', opacity:0,
-    duration:1, stagger:.06, ease:'expo.out'
+    duration:1, stagger:.06, ease:'expo.out',
+    onComplete:function(){
+      /* clip only needed during reveal — release it so descenders/last letters aren't cut */
+      el.querySelectorAll('.sw-wrap').forEach(function(w){ w.style.overflow='visible'; });
+    }
   });
 });
 
@@ -1108,6 +1245,46 @@ gsap.utils.toArray('.timeline-item').forEach(function(card){
     end: 'bottom 45%',
     onEnter:     function(){ card.classList.add('lit'); },
     onEnterBack: function(){ card.classList.add('lit'); }
+  });
+});
+
+/* ─────────────────────────────
+   EDUCATION — GLOWING SPINE (mirrors Experience)
+───────────────────────────── */
+
+/* Item reveal — rise + fade */
+gsap.utils.toArray('.edu-item').forEach(function(item){
+  gsap.from(item,{
+    scrollTrigger:{ trigger:item, start:'top 88%' },
+    opacity:0, y:40, duration:.8, ease:'power3.out'
+  });
+});
+
+/* Glowing spine fill — grows as you scroll through education */
+(function(){
+  var fill = document.getElementById('eduSpineFill');
+  var edu  = document.querySelector('.edu');
+  if(!fill || !edu) return;
+
+  ScrollTrigger.create({
+    trigger: edu,
+    start: 'top 60%',
+    end: 'bottom 80%',
+    scrub: 0.6,
+    onUpdate: function(self){
+      fill.style.height = (self.progress * 100) + '%';
+    }
+  });
+})();
+
+/* Light up each node as its row enters view */
+gsap.utils.toArray('.edu-item').forEach(function(item){
+  ScrollTrigger.create({
+    trigger: item,
+    start: 'top 60%',
+    end: 'bottom 45%',
+    onEnter:     function(){ item.classList.add('lit'); },
+    onEnterBack: function(){ item.classList.add('lit'); }
   });
 });
 
