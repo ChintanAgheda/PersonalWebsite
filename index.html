@@ -253,7 +253,7 @@ nav{
 .section-title{
   font-family:'Manrope',sans-serif;
   font-size:clamp(3rem,6vw,6rem);
-  line-height:1.12; letter-spacing:-.07em; font-weight:800;
+  line-height:1.2; letter-spacing:-.07em; font-weight:800;
   max-width:1000px;
 }
 
@@ -1044,7 +1044,7 @@ document.querySelectorAll('.section-title').forEach(function(el){
   var wrapped = raw.replace(/(<[^>]+>)|([^<]+)/g, function(m, tag, text){
     if(tag) return tag;
     return text.replace(/\S+/g, function(word){
-      return '<span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.15em;margin-bottom:-.15em">'
+      return '<span style="display:inline-block;overflow:hidden;vertical-align:bottom;padding-bottom:.25em;">'
            + '<span class="sw" style="display:inline-block">' + word + '</span></span>';
     });
   });
