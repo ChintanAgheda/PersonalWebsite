@@ -162,7 +162,7 @@ nav{
 .edu-item{
   display:grid;grid-template-columns:auto 1fr auto;gap:26px;align-items:flex-start;
   padding:34px 10px 34px 0;border-bottom:1px solid var(--line-soft);
-  position:relative;transition:padding .5s,background .5s;
+  position:relative;transition:padding .45s cubic-bezier(.23,1,.32,1),background .45s,box-shadow .45s,border-radius .45s;
 }
 
 /* Connector node on the spine */
@@ -182,12 +182,13 @@ nav{
   background:rgba(255,255,255,.08);
   transition:.4s;z-index:1;
 }
-.edu-item:hover{background:rgba(255,255,255,.025);padding-left:20px;}
+.edu-item:hover{background:rgba(255,255,255,.06);padding-left:24px;border-radius:18px;box-shadow:inset 0 0 0 1px rgba(255,255,255,.1), 0 14px 40px rgba(0,0,0,.45);}
 .edu-item:hover::before{
   border-color:var(--gold);background:var(--gold);
-  box-shadow:0 0 8px rgba(216,184,127,.35);transform:scale(1.15);
+  box-shadow:0 0 12px rgba(216,184,127,.5);transform:scale(1.25);
 }
-.edu-item:hover::after{background:rgba(255,255,255,.2);}
+.edu-item:hover::after{background:rgba(216,184,127,.5);}
+.edu-item:hover .edu-logo{transform:scale(1.08) rotate(-4deg);border-color:rgba(216,184,127,.4);}
 /* Lit node when scrolled into view */
 .edu-item.lit::before{
   border-color:var(--gold);background:var(--gold);
@@ -203,15 +204,15 @@ nav{
 
 /* Logo provision — drop your images at the paths in the <img src>; falls back to initials */
 .edu-logo{
-  width:52px;height:52px;border-radius:13px;flex-shrink:0;
-  background:rgba(255,255,255,.05);
-  border:1px solid rgba(255,255,255,.08);
+  width:76px;height:76px;border-radius:16px;flex-shrink:0;
+  background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1);
   display:flex;align-items:center;justify-content:center;
   overflow:hidden;position:relative;margin-top:2px;
   transition:transform .4s cubic-bezier(.23,1,.32,1), border-color .4s;
 }
-.edu-item:hover .edu-logo{transform:scale(1.06) rotate(-4deg);border-color:rgba(199,167,106,.3);}
-.edu-logo-img{width:100%;height:100%;object-fit:contain;padding:8px;}
+.edu-item:hover .edu-logo{transform:scale(1.08) rotate(-4deg);border-color:rgba(216,184,127,.4);}
+.edu-logo-img{width:100%;height:100%;object-fit:cover;padding:0;}
 .edu-logo-fallback{
   display:none;font-family:'IBM Plex Mono',monospace;font-size:11px;font-weight:600;
   letter-spacing:.04em;color:var(--label-strong);text-align:center;line-height:1.1;padding:4px;
@@ -314,12 +315,12 @@ nav{
 /* ── MARQUEE ── */
 .marquee-strip{
   border-top:1px solid var(--line); border-bottom:1px solid var(--line);
-  padding:18px 0; background:rgba(255,255,255,.015);
+  padding:22px 0; background:rgba(255,255,255,.03);
   overflow:hidden; white-space:nowrap;
 }
 .marquee-track{ display:inline-flex; animation:marqueeScroll 24s linear infinite; }
-.marquee-item{ display:inline-flex; align-items:center; font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.3em; text-transform:uppercase; color:rgba(255,255,255,.3); padding:0; }
-.marquee-item .sep{ display:inline-flex; align-items:center; justify-content:center; line-height:0; color:var(--gold); margin:0 30px; font-size:14px; }
+.marquee-item{ display:inline-flex; align-items:center; font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:rgba(255,255,255,.62); padding:0; }
+.marquee-item .sep{ display:inline-flex; align-items:center; justify-content:center; line-height:0; color:var(--gold); margin:0 30px; font-size:15px; }
 @keyframes marqueeScroll{ 0%{ transform:translateX(0); } 100%{ transform:translateX(-50%); } }
 
 /* ── LOGO MARQUEE (Software / ERP / Tools) ── */
@@ -399,12 +400,18 @@ nav{
   border:1px solid rgba(255,255,255,.06);
   border-radius:28px; transition:.35s; position:relative; overflow:hidden;
 }
+/* Animated full-box border that draws around on hover */
 .stat::before{
-  content:''; position:absolute; top:0; left:0; width:2px; height:0;
-  background:var(--gold); transition:.4s ease;
+  content:''; position:absolute; inset:0;
+  border-radius:28px; padding:1.5px;
+  background:linear-gradient(135deg, var(--gold), rgba(216,184,127,.15) 45%, transparent 70%);
+  -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite:xor; mask-composite:exclude;
+  opacity:0; transition:opacity .4s ease;
+  pointer-events:none;
 }
-.stat:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(199,167,106,.3); }
-.stat:hover::before{ height:100%; }
+.stat:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(216,184,127,.35); box-shadow:0 18px 50px rgba(0,0,0,.45); }
+.stat:hover::before{ opacity:1; }
 .stat-number{ font-family:'Manrope',sans-serif; font-size:56px; font-weight:800; letter-spacing:-.06em; margin-bottom:12px; }
 .stat-label{ font-size:14px; line-height:1.8; color:var(--muted); }
 
@@ -461,17 +468,18 @@ nav{
 
 .timeline-item:hover{
   padding-left:60px;
-  border-color:rgba(255,255,255,.14);
-  background:rgba(255,255,255,.035);
-  box-shadow:-12px 0 40px rgba(0,0,0,.4);
+  border-color:rgba(255,255,255,.22);
+  background:rgba(255,255,255,.06);
+  box-shadow:-12px 0 50px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.07);
+  transform:translateY(-3px);
 }
 .timeline-item:hover::before{
   border-color:var(--gold);
   background:var(--gold);
-  box-shadow:0 0 8px rgba(216,184,127,.35);
-  transform:scale(1.15);
+  box-shadow:0 0 12px rgba(216,184,127,.5);
+  transform:scale(1.25);
 }
-.timeline-item:hover::after{ background:rgba(255,255,255,.2); }
+.timeline-item:hover::after{ background:rgba(216,184,127,.5); }
 
 /* Active node (lit when in view) */
 .timeline-item.lit::before{
@@ -533,7 +541,7 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
 .logo-padhi,.logo-ham{ background:#fff; color:rgba(255,255,255,.7); }
 .timeline h3{ font-family:'Manrope',sans-serif; font-size:34px; font-weight:800; letter-spacing:-.04em; line-height:1; display:flex; align-items:center; flex-wrap:wrap; }
 .timeline-role{ font-size:15px; margin-bottom:5px; color:rgba(255,255,255,.75); margin-top:8px; }
-.timeline-sub-role{ font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace; letter-spacing:.05em; }
+.timeline-sub-role{ font-size:13px; color:var(--muted); font-family:'Inter',sans-serif; letter-spacing:.01em; font-weight:400; }
 
 /* Highlight chips for key metrics */
 .tl-chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
@@ -584,11 +592,36 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   position:absolute; left:0; top:50%; transform:translateY(-50%);
   display:inline-flex; align-items:center; gap:7px;
   font-family:'IBM Plex Mono',monospace; font-size:9.5px;
-  letter-spacing:.18em; text-transform:uppercase; color:var(--label-strong);
-  background:#0e0d0b; border:1px solid rgba(255,255,255,.12);
-  padding:6px 13px; border-radius:100px;
+  letter-spacing:.18em; text-transform:uppercase; color:#0e0d0b; font-weight:600;
+  background:linear-gradient(135deg, #e9cd92, var(--gold));
+  border:1px solid rgba(216,184,127,.6);
+  padding:6px 14px; border-radius:100px;
+  box-shadow:0 0 0 0 rgba(216,184,127,.5);
+  animation:promoGlow 2.4s ease-in-out infinite;
+  overflow:hidden;
 }
-.promo-badge svg{ width:11px; height:11px; flex-shrink:0; }
+/* Shine sweep across the pill */
+.promo-badge::after{
+  content:''; position:absolute; top:0; left:-60%;
+  width:50%; height:100%;
+  background:linear-gradient(100deg, transparent, rgba(255,255,255,.55), transparent);
+  transform:skewX(-18deg);
+  animation:promoShine 2.8s ease-in-out infinite;
+}
+.promo-badge svg{ width:11px; height:11px; flex-shrink:0; position:relative; z-index:1; animation:promoArrow 1.6s ease-in-out infinite; }
+.promo-text{ position:relative; z-index:1; }
+@keyframes promoGlow{
+  0%,100%{ box-shadow:0 0 0 0 rgba(216,184,127,.45); }
+  50%{ box-shadow:0 0 16px 2px rgba(216,184,127,.55); }
+}
+@keyframes promoArrow{
+  0%,100%{ transform:translateY(1px); }
+  50%{ transform:translateY(-2px); }
+}
+@keyframes promoShine{
+  0%{ left:-60%; }
+  55%,100%{ left:130%; }
+}
 
 @media(max-width:700px){
   .timeline{ padding-left:42px; }
@@ -643,6 +676,18 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   cursor:pointer;
   border:1px solid rgba(255,255,255,.06);
   box-shadow:0 20px 50px rgba(0,0,0,.35);
+  background:linear-gradient(110deg, #141414 8%, #1e1e1e 18%, #141414 33%);
+  background-size:200% 100%;
+  animation:galleryShimmer 1.4s linear infinite;
+}
+/* Once the image has actually loaded, stop the shimmer */
+.gallery-row img.loaded{
+  animation:none;
+  background:#111;
+}
+@keyframes galleryShimmer{
+  0%{ background-position:200% 0; }
+  100%{ background-position:-200% 0; }
 }
 
 .gallery-row img:hover{
@@ -933,7 +978,7 @@ footer{
       <div class="promo-divider">
         <span class="promo-badge">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-          Promoted
+          <span class="promo-text">Promoted</span>
         </span>
       </div>
 
@@ -1136,7 +1181,7 @@ footer{
 
     <div class="edu-item rv">
       <div class="edu-logo">
-        <img class="edu-logo-img" src="assets/img/mumbai-university-logo.png" alt="University of Mumbai" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <img class="edu-logo-img" src="assets/img/Logos/Mumbai University.png" alt="University of Mumbai" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
         <span class="edu-logo-fallback">MU</span>
       </div>
       <div class="edu-text">
@@ -1150,7 +1195,7 @@ footer{
 
     <div class="edu-item rv">
       <div class="edu-logo">
-        <img class="edu-logo-img" src="assets/img/msbshse-logo.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <img class="edu-logo-img" src="assets/img/Logos/Maharashtra Board.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
         <span class="edu-logo-fallback">MSB</span>
       </div>
       <div class="edu-text">
@@ -1164,7 +1209,7 @@ footer{
 
     <div class="edu-item rv">
       <div class="edu-logo">
-        <img class="edu-logo-img" src="assets/img/msbshse-logo.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <img class="edu-logo-img" src="assets/img/Logos/Maharashtra Board.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
         <span class="edu-logo-fallback">MSB</span>
       </div>
       <div class="edu-text">
@@ -1563,6 +1608,23 @@ gsap.to('#heroImg',{
   scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:1.5 },
   y:80, ease:'none'
 });
+
+/* ─────────────────────────────
+   GALLERY — eager load + remove shimmer once loaded
+───────────────────────────── */
+(function(){
+  var imgs = document.querySelectorAll('.gallery-row img');
+  imgs.forEach(function(img){
+    img.setAttribute('loading','eager');
+    img.setAttribute('decoding','async');
+    if(img.complete && img.naturalWidth > 0){
+      img.classList.add('loaded');
+    }else{
+      img.addEventListener('load', function(){ img.classList.add('loaded'); });
+      img.addEventListener('error', function(){ img.classList.add('loaded'); });
+    }
+  });
+})();
 </script>
 </body>
 </html>
