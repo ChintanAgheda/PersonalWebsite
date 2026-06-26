@@ -119,26 +119,19 @@ body{
 
 /* ── NAV ── */
 nav{
-  position:fixed; top:0; width:100%; padding:28px 70px;
-  display:flex; justify-content:space-between; align-items:center;
+  position:fixed; top:0; width:100%; padding:26px 70px;
+  display:flex; justify-content:center; align-items:center;
   z-index:1000; backdrop-filter:blur(12px);
   background:rgba(7,7,7,.5);
   border-bottom:1px solid rgba(255,255,255,.04);
 }
-.logo{ display:flex; align-items:center; gap:14px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; letter-spacing:.12em; text-transform:uppercase; }
-.logo-box{ width:36px; height:36px; background:var(--gold); color:black; display:flex; align-items:center; justify-content:center; border-radius:10px; font-weight:700; font-size:11px; }
-.nav-links{ display:flex; gap:40px; }
-.nav-links a{ text-decoration:none; font-size:14px; color:rgba(255,255,255,.5); transition:.3s; }
-.nav-links a:hover{ color:white; }
-.gallery-link{
-    color:rgba(255,255,255,.5) !important;
+.nav-name{
+  font-family:'Manrope',sans-serif; font-weight:700;
+  font-size:14px; letter-spacing:.34em; text-transform:uppercase;
+  color:var(--text); text-decoration:none;
+  transition:color .3s, letter-spacing .4s ease;
 }
-
-.gallery-link:hover{
-    color:#fff !important;
-}
-.nav-btn{ padding:12px 22px; border-radius:100px; background:var(--gold); color:black; font-size:13px; font-weight:700; text-decoration:none; transition:.3s; }
-.nav-btn:hover{ transform:translateY(-2px); }
+.nav-name:hover{ color:var(--gold); letter-spacing:.4em; }
 
 /* ── HERO ── */
 .hero{ min-height:100vh; display:flex; align-items:center; padding:90px 80px 80px; }
@@ -960,12 +953,55 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
 .contact-box p{ max-width:700px; margin:auto auto 40px; line-height:1.9; color:var(--muted); }
 .contact-links{ display:flex; justify-content:center; gap:18px; flex-wrap:wrap; }
 
-/* ── FOOTER ── */
+/* ── FOOTER (long-read end section) ── */
 footer{
-  padding:50px 80px; display:flex; justify-content:space-between; align-items:center;
-  border-top:1px solid rgba(255,255,255,.05);
-  font-family:'Manrope',sans-serif; font-weight:600; font-size:11px;
-  letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.3);
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:0;
+}
+.footer-main{
+  max-width:1400px; margin:auto;
+  padding:120px 80px 60px;
+  display:grid; grid-template-columns:1.3fr 1fr .8fr; gap:50px;
+  align-items:start;
+}
+.footer-name{
+  font-family:'Manrope',sans-serif; font-weight:800;
+  font-size:clamp(3rem,6vw,6.5rem); line-height:.92;
+  letter-spacing:-.06em; color:var(--text);
+}
+.footer-name .fn-gold{ color:var(--gold); }
+.footer-col-head{
+  font-family:'Manrope',sans-serif; font-size:10px;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--label); margin-bottom:26px;
+}
+.footer-list{ list-style:none; display:flex; flex-direction:column; gap:15px; }
+.footer-list a{
+  display:inline-flex; align-items:baseline; gap:10px;
+  text-decoration:none; color:rgba(255,255,255,.7);
+  font-family:'Manrope',sans-serif; font-size:15px; font-weight:600;
+  letter-spacing:.01em; transition:color .3s, transform .3s;
+  width:fit-content;
+}
+.footer-list a .fl-num{
+  font-size:11px; color:var(--label); font-weight:500; letter-spacing:.1em;
+}
+.footer-list a .fl-arrow{
+  font-size:12px; color:var(--gold); opacity:0;
+  transform:translate(-4px,2px); transition:opacity .3s, transform .3s;
+}
+.footer-list a:hover{ color:var(--gold); transform:translateX(4px); }
+.footer-list a:hover .fl-arrow{ opacity:1; transform:translate(0,0); }
+.footer-meta{
+  max-width:1400px; margin:auto;
+  padding:26px 80px; border-top:1px solid rgba(255,255,255,.06);
+  display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;
+  font-family:'Manrope',sans-serif; font-weight:600; font-size:10.5px;
+  letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.3);
+}
+@media(max-width:900px){
+  .footer-main{ grid-template-columns:1fr; gap:48px; padding:80px 22px 40px; }
+  .footer-meta{ padding:22px; flex-direction:column; align-items:flex-start; gap:10px; }
 }
 
 /* ── SCROLL REVEAL BASE STATES ── */
@@ -1021,17 +1057,7 @@ footer{
 
 <!-- NAV -->
 <nav id="mainNav">
-  <div class="logo"><div class="logo-box">CA</div>CHINTAN AGHEDA</div>
-  <div class="nav-links">
-    <a href="#about">About</a>
-    <a href="#results">Results</a>
-    <a href="#philosophy">Principles</a>
-    <a href="#experience">Experience</a>
-    <a href="#education">Education</a>
-    <a href="#gallery" class="gallery-link">Gallery</a>
-    <a href="#contact">Contact</a>
-  </div>
-  <a href="#contact" class="nav-btn">Start Conversation</a>
+  <a href="#about" class="nav-name">CHINTAN AGHEDA</a>
 </nav>
 
 <!-- HERO -->
@@ -1605,8 +1631,38 @@ Building Businesses Across Borders.✈️
 </section>
 
 <footer>
-  <div>© 2026 Chintan Agheda</div>
-  <div>Finance Leader</div>
+  <div class="footer-main">
+
+    <div class="footer-name reveal">Chintan<br><span class="fn-gold">Agheda.</span></div>
+
+    <div>
+      <div class="footer-col-head">Navigate</div>
+      <ul class="footer-list">
+        <li><a href="#results"><span class="fl-num">01</span>Results</a></li>
+        <li><a href="#philosophy"><span class="fl-num">02</span>Principles</a></li>
+        <li><a href="#experience"><span class="fl-num">03</span>Experience</a></li>
+        <li><a href="#education"><span class="fl-num">04</span>Education</a></li>
+        <li><a href="#gallery"><span class="fl-num">05</span>Gallery</a></li>
+        <li><a href="#contact"><span class="fl-num">06</span>Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-head">Elsewhere</div>
+      <ul class="footer-list">
+        <li><a href="https://www.linkedin.com/in/chintanagheda/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="fl-arrow">↗</span></a></li>
+        <li><a href="mailto:chintanagheda@noon.com">Email<span class="fl-arrow">↗</span></a></li>
+        <!-- Drop your CV file at the path below (e.g. assets/Chintan-Agheda-CV.pdf) -->
+        <li><a href="assets/Chintan-Agheda-CV.pdf" download>Download CV<span class="fl-arrow">↗</span></a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-meta">
+    <span>© 2026 Chintan Agheda · All Rights Reserved</span>
+    <span>Finance Leader · GCC — India</span>
+  </div>
 </footer>
 
 <script>
@@ -1772,36 +1828,8 @@ gsap.registerPlugin(ScrollTrigger);
 })();
 
 /* ─────────────────────────────
-   NAV HIDE ON SCROLL DOWN
+   NAV — pinned at top (no hide on scroll)
 ───────────────────────────── */
-(function () {
-  let last = window.pageYOffset;
-  const nav = document.getElementById("mainNav");
-
-  window.addEventListener(
-    "scroll",
-    function () {
-      const y = window.pageYOffset;
-
-      if (y > last && y > 20) {
-        gsap.to(nav, {
-          y: -100,
-          duration: 0.15,
-          ease: "power1.out"
-        });
-      } else {
-        gsap.to(nav, {
-          y: 0,
-          duration: 0.2,
-          ease: "power1.out"
-        });
-      }
-
-      last = y;
-    },
-    { passive: true }
-  );
-})();
 
 /* ─────────────────────────────
    SCROLL REVEALS
