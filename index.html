@@ -426,7 +426,7 @@ nav{
 .stat::before{
   content:''; position:absolute; inset:0;
   border-radius:28px; padding:1.5px;
-  background:linear-gradient(135deg, var(--gold), rgba(216,184,127,.15) 45%, transparent 70%);
+  background:linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.15) 45%, transparent 70%);
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite:exclude;
@@ -434,7 +434,7 @@ nav{
   opacity:0; transition:opacity .4s ease;
   pointer-events:none;
 }
-.stat:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(216,184,127,.35); box-shadow:0 18px 50px rgba(0,0,0,.45); }
+.stat:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(255,255,255,.4); box-shadow:0 18px 50px rgba(0,0,0,.45), 0 0 52px -4px rgba(255,255,255,.45); }
 .stat:hover::before{ opacity:1; }
 .stat-number{ font-family:'Manrope',sans-serif; font-size:56px; font-weight:800; letter-spacing:-.06em; margin-bottom:12px; }
 .stat-label{ font-size:14px; line-height:1.8; color:var(--muted); }
@@ -450,13 +450,13 @@ nav{
 .philo::before{
   content:''; position:absolute; inset:0;
   border-radius:28px; padding:1.5px;
-  background:linear-gradient(135deg, var(--gold), rgba(216,184,127,.15) 45%, transparent 70%);
+  background:linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.15) 45%, transparent 70%);
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite:xor; mask-composite:exclude;
   opacity:0; transition:opacity .4s ease; pointer-events:none;
 }
-.philo:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(216,184,127,.35); box-shadow:0 18px 50px rgba(0,0,0,.45); }
+.philo:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(255,255,255,.4); box-shadow:0 18px 50px rgba(0,0,0,.45), 0 0 52px -4px rgba(255,255,255,.45); }
 .philo:hover::before{ opacity:1; }
 .philo-num{
   font-family:'Manrope',sans-serif; font-size:12px; letter-spacing:.18em;
@@ -688,6 +688,20 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   color:var(--label-strong); background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.1);
   padding:5px 11px; border-radius:100px;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), border-color .3s, box-shadow .3s, background .3s;
+}
+/* Chip hover — same brand sweep + glow as the company name */
+.tl-chip:hover{
+  transform:scale(1.12);
+  border-color:color-mix(in srgb, var(--bc,#d8b87f) 55%, transparent);
+  box-shadow:0 0 18px color-mix(in srgb, var(--bc,#d8b87f) 45%, transparent);
+  background:linear-gradient(100deg,
+    var(--bc,#d8b87f) 0%, var(--bc,#d8b87f) 30%, #ffffff 48%,
+    var(--bc,#d8b87f) 66%, var(--bc,#d8b87f) 100%);
+  background-size:240% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:nameSweep 1.5s linear infinite;
 }
 
 /* Collapsible bullets */
@@ -773,6 +787,8 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   overflow:hidden;
   margin-top:80px;
   position:relative;
+  -webkit-user-select:none; user-select:none;
+  touch-action:pan-y;
 }
 
 .gallery-wrap::before,
@@ -828,9 +844,18 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
 }
 
 .gallery-row img:hover{
-  transform:scale(1.05);
-  box-shadow:0 35px 90px rgba(0,0,0,.55);
+  transform:scale(1.12);
+  box-shadow:0 38px 100px rgba(0,0,0,.6);
+  z-index:4;
 }
+
+/* Grab-to-drag affordance + clean dragging state (per row, independent) */
+.gallery-wrap{ touch-action:pan-y; }
+.gallery-row{ cursor:grab; }
+.gallery-row.dragging, .gallery-row.dragging img{ cursor:grabbing; }
+.gallery-wrap img{ -webkit-user-drag:none; user-select:none; }
+/* while dragging a row, suppress that row's per-image hover zoom for a smooth slide */
+.gallery-row.dragging img{ pointer-events:none; transition:none; }
 
 /* Wrapper + editable caption label (write 1–2 words per photo) */
 .gallery-card{ position:relative; flex-shrink:0; line-height:0; border-radius:28px; }
@@ -842,9 +867,19 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   border:1px solid rgba(216,184,127,.35);
   padding:6px 12px; border-radius:100px; line-height:1;
   pointer-events:none; opacity:.85; transform:translateY(2px);
-  transition:opacity .35s, transform .35s, background .35s;
+  transition:opacity .4s ease,
+             transform .5s cubic-bezier(.34,1.56,.64,1),
+             left .5s cubic-bezier(.34,1.56,.64,1),
+             bottom .5s cubic-bezier(.34,1.56,.64,1),
+             background .35s;
 }
-.gallery-card:hover .gallery-cap{ opacity:1; transform:translateY(0); background:rgba(7,7,7,.78); }
+/* On hover the caption glides to the bottom-centre of the photo */
+.gallery-card:hover .gallery-cap{
+  opacity:1;
+  left:50%; bottom:18px;
+  transform:translate(-50%, 0) scale(1.1);
+  background:rgba(7,7,7,.82);
+}
 .gallery-cap:empty{ display:none; }
 
 .row1{
@@ -1157,7 +1192,7 @@ footer{
 
 <!-- INTRO STATEMENT -->
 <section class="intro-statement">
-  <h2 class="intro-line reveal">Systems that run <span class="gold">silently</span>, scale <span class="gold">violently</span>.</h2>
+  <h2 class="intro-line reveal">Systems that runs <span class="gold">silently</span>, scales <span class="gold">rapidly</span>.</h2>
 </section>
 
 <!-- RESULTS -->
@@ -1236,37 +1271,31 @@ footer{
   <div class="philo-grid">
 
     <div class="philo reveal">
-      <div class="philo-num">01</div>
       <h3 class="philo-title">Finance is leverage, not reporting</h3>
       <p class="philo-desc">Numbers exist to move decisions, not just record the past. Every system I build is meant to make the business faster — not to file what already happened.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">02</div>
       <h3 class="philo-title">Automate the repeatable</h3>
       <p class="philo-desc">If a task runs every month, it should learn to run itself. Manual effort is reserved for judgment and exceptions — never for data entry.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">03</div>
       <h3 class="philo-title">Build the system before you need it</h3>
       <p class="philo-desc">Infrastructure laid during calm scales silently through chaos. Hypergrowth rewards the rails that were set up early, not the ones improvised mid-sprint.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">04</div>
       <h3 class="philo-title">Clean books are a growth asset</h3>
       <p class="philo-desc">Reconciled, current accounting isn't hygiene — it's the foundation that diligence, funding rounds and fast decisions all stand on.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">05</div>
       <h3 class="philo-title">Finance works at the seams</h3>
       <p class="philo-desc">Real impact lives where finance meets Ops, Product, Pricing and Tech — not inside a closed ledger. Cross-functional is the default, not the exception.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">06</div>
       <h3 class="philo-title">Control and speed aren't a trade-off</h3>
       <p class="philo-desc">Governance and velocity coexist when controls are designed into the process — not bolted on after something breaks.</p>
     </div>
@@ -1820,12 +1849,18 @@ gsap.registerPlugin(ScrollTrigger);
     /* HERO entrance */
     .fromTo('#mainNav',{ y:-70, opacity:0 },{ y:0, opacity:1, duration:.8, ease:'power3.out' },'-=.5')
     .to('#heroTag',{ opacity:1, y:0, duration:.6, ease:'power3.out' },'-=.4')
-    .to('.hero h1 .line-inner',{ y:'0%', duration:1, stagger:.12, ease:'expo.out' },'-=.3')
-    .to('#wavePath',{ strokeDashoffset:0, duration:2.4, ease:'power2.out' },'-=.8')
+    .to('.hero h1 .line-inner',{ y:'0%', duration:1, stagger:.12, ease:'expo.out',
+      onComplete:function(){
+        /* release the clip so descenders (g, y, p) + the underline aren't cut */
+        document.querySelectorAll('.hero h1 .line').forEach(function(l){ l.style.overflow='visible'; });
+      }
+    },'-=.3')
+    .to('#wavePath',{ strokeDashoffset:0, duration:.9, ease:'power2.out' },'-=.8')
+    /* hero photo loads AT THE SAME TIME as the underline draws */
+    .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'<')
     .to('#rollingLine',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
     .to('#heroP',{ opacity:1, y:0, duration:.8, ease:'power3.out' },'-=.5')
-    .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
-    .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'-=.9');
+    .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6');
 })();
 
 /* ─────────────────────────────
@@ -2041,8 +2076,11 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
     scrub: 0.6,
     onUpdate: function(self){
       var p = self.progress;
-      strike.style.transform = 'translateY(-50%) scaleX(' + p + ')';
-      if(p > 0.55){ word.classList.add('cut'); }
+      /* line draws to FULL by p=0.6, then holds complete */
+      var lineP = Math.min(p / 0.6, 1);
+      strike.style.transform = 'translateY(-50%) scaleX(' + lineP + ')';
+      /* glow ONLY after the line has fully struck Distr (small buffer past completion) */
+      if(p >= 0.66){ word.classList.add('cut'); }
       else { word.classList.remove('cut'); }
     }
   });
@@ -2140,19 +2178,133 @@ gsap.to('#heroImg',{
 });
 
 /* ─────────────────────────────
-   GALLERY — lazy load + remove shimmer once loaded
+   GALLERY — each row is INDEPENDENT
+   • Top row  (row1): auto right → left
+   • Bottom row(row2): auto left  → right
+   Hover a row → only that row stops (and its photo zooms).
+   Grab a row → drag it left/right (only that row); release → fling.
+   Cursor leaves that row → it resumes its OWN original direction.
 ───────────────────────────── */
 (function(){
-  var imgs = document.querySelectorAll('.gallery-row img');
-  imgs.forEach(function(img){
+  /* shimmer removal once each image loads */
+  document.querySelectorAll('.gallery-row img').forEach(function(img){
     img.setAttribute('decoding','async');
-    if(img.complete && img.naturalWidth > 0){
-      img.classList.add('loaded');
-    }else{
-      img.addEventListener('load', function(){ img.classList.add('loaded'); });
+    img.setAttribute('draggable','false');
+    if(img.complete && img.naturalWidth > 0){ img.classList.add('loaded'); }
+    else{
+      img.addEventListener('load',  function(){ img.classList.add('loaded'); });
       img.addEventListener('error', function(){ img.classList.add('loaded'); });
     }
   });
+
+  var wrap = document.querySelector('#gallery .gallery-wrap');
+  if(!wrap) return;
+  var rows = wrap.querySelectorAll('.gallery-row');
+  if(!rows.length) return;
+
+  var autoSpeed  = 0.5;     /* px per frame */
+  var activeDrag = null;    /* the single row currently being dragged */
+  var states     = [];
+
+  rows.forEach(function(row, i){
+    row.style.animation  = 'none';
+    row.style.willChange = 'transform';
+
+    var s = {
+      el: row,
+      offset: 0,
+      half: 0,
+      dir: (i % 2 === 0) ? -1 : 1,   /* row1 → right-to-left, row2 → left-to-right */
+      vel: 0,
+      hovering: false,
+      dragging: false,
+      startX: 0,
+      lastX: 0,
+      startOffset: 0
+    };
+    states.push(s);
+
+    /* hover pauses ONLY this row */
+    row.addEventListener('mouseenter', function(){ s.hovering = true;  });
+    row.addEventListener('mouseleave', function(){ s.hovering = false; });
+
+    /* drag start (mouse) — only this row */
+    row.addEventListener('mousedown', function(e){
+      e.preventDefault();
+      s.dragging = true; s.vel = 0;
+      s.startX = e.clientX; s.lastX = e.clientX; s.startOffset = s.offset;
+      activeDrag = s;
+      row.classList.add('dragging');
+    });
+
+    /* drag (touch) — only this row */
+    row.addEventListener('touchstart', function(e){
+      var x = e.touches[0].clientX;
+      s.hovering = true;            /* touch = hold/pause this row */
+      s.dragging = true; s.vel = 0;
+      s.startX = x; s.lastX = x; s.startOffset = s.offset;
+      activeDrag = s;
+      row.classList.add('dragging');
+    }, {passive:true});
+    row.addEventListener('touchmove', function(e){
+      if(!s.dragging) return;
+      moveDrag(s, e.touches[0].clientX);
+    }, {passive:true});
+    row.addEventListener('touchend',    function(){ s.hovering = false; endDrag(s); });
+    row.addEventListener('touchcancel', function(){ s.hovering = false; endDrag(s); });
+  });
+
+  function moveDrag(s, x){
+    s.offset = s.startOffset + (x - s.startX);
+    s.vel    = x - s.lastX;
+    s.lastX  = x;
+  }
+  function endDrag(s){
+    if(!s.dragging) return;
+    s.dragging = false;
+    if(activeDrag === s) activeDrag = null;
+    s.el.classList.remove('dragging');
+    /* vel carries into momentum, then this row resumes its own direction */
+  }
+
+  /* global mouse move/up so a drag keeps going outside the row's bounds */
+  window.addEventListener('mousemove', function(e){ if(activeDrag) moveDrag(activeDrag, e.clientX); });
+  window.addEventListener('mouseup',   function(){ if(activeDrag) endDrag(activeDrag); });
+
+  function measure(){ states.forEach(function(s){ s.half = s.el.scrollWidth / 2; }); }
+  measure();
+  window.addEventListener('resize', measure);
+  window.addEventListener('load', measure);
+  wrap.querySelectorAll('img').forEach(function(img){
+    if(!(img.complete && img.naturalWidth > 0)){
+      img.addEventListener('load', measure);
+      img.addEventListener('error', measure);
+    }
+  });
+
+  function wrapOffset(s){
+    if(s.half <= 0) return;
+    while(s.offset <= -s.half) s.offset += s.half;
+    while(s.offset > 0)        s.offset -= s.half;
+  }
+
+  function frame(){
+    states.forEach(function(s){
+      if(s.dragging){
+        /* offset driven by the move handlers */
+      } else if(Math.abs(s.vel) > 0.05){
+        s.offset += s.vel;        /* momentum fling after release */
+        s.vel *= 0.92;
+      } else {
+        s.vel = 0;
+        if(!s.hovering) s.offset += s.dir * autoSpeed;   /* resume this row's own auto */
+      }
+      wrapOffset(s);
+      s.el.style.transform = 'translateX(' + s.offset + 'px)';
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 
 /* ─────────────────────────────
