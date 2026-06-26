@@ -81,7 +81,7 @@ body{
   background-size:60px 60px;
   mask-image:radial-gradient(circle at center, black 20%, transparent 80%);
 }
-.loader-content{ position:relative; z-index:3; text-align:center; }
+.loader-content{ position:relative; z-index:20; text-align:center; }
 .loader-label{
   font-family:'Manrope',sans-serif; font-size:11px;
   letter-spacing:.35em; text-transform:uppercase;
@@ -1074,7 +1074,7 @@ footer{
     <div class="loader-line"><div class="loader-progress" id="lp"></div></div>
     <div class="loader-bottom">
       <span>GCC · India</span>
-      <span class="loader-percent" id="lpct">10%</span>
+      <span class="loader-percent" id="lpct">0%</span>
     </div>
   </div>
   <div class="loader-doors-top"></div>
@@ -1784,42 +1784,47 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ─────────────────────────────
    LOADER → HERO ENTRANCE
+   (0→100% fully visible BEFORE doors open)
 ───────────────────────────── */
 (function(){
+  var lp     = document.getElementById('lp');
+  var lpct   = document.getElementById('lpct');
+  var loader = document.getElementById('loader');
+  var prog   = { v:0 };
+
   var tl = gsap.timeline();
 
-  tl.to('.loader-title span',{ y:0, duration:1.15, stagger:.12, ease:'expo.out' })
-    .to('.loader-label',{ opacity:1, duration:.6 },'-=.8')
-    .to('.loader-sub',{ opacity:1, duration:.6 },'-=.6')
-    .to('#lp',{
-      width:'100%', duration:1.6, ease:'power4.out',
-      onUpdate:function(){ document.getElementById('lpct').textContent = Math.round(this.progress()*100)+'%'; }
-    },'-=.5')
-    .to('.loader',{ delay:.15, onComplete:function(){ document.querySelector('.loader').classList.add('open'); } })
-    .to('.loader',{ opacity:0, pointerEvents:'none', duration:0.7 },'+=1.5')
+  tl.to('.loader-title span',{ y:0, duration:1.05, stagger:.12, ease:'expo.out' })
+    .to('.loader-label',{ opacity:1, duration:.5 },'-=.7')
+    .to('.loader-sub',{ opacity:1, duration:.5 },'-=.5')
 
-    /* NAV */
+    /* 0 → 100% — real tween, timeline waits for it to complete */
+    .to(prog,{
+      v:100, duration:1.7, ease:'power1.inOut',
+      onUpdate:function(){
+        var val = Math.round(prog.v);
+        lp.style.width = val + '%';
+        lpct.textContent = val + '%';
+      }
+    },'-=.2')
+
+    /* hold for a beat at 100% */
+    .to({}, { duration:.35 })
+
+    /* now open the doors */
+    .add(function(){ loader.classList.add('open'); })
+
+    /* fade the whole loader out */
+    .to(loader,{ opacity:0, pointerEvents:'none', duration:.8, ease:'power2.inOut' },'+=1.1')
+
+    /* HERO entrance */
     .fromTo('#mainNav',{ y:-70, opacity:0 },{ y:0, opacity:1, duration:.8, ease:'power3.out' },'-=.5')
-
-    /* HERO tag */
     .to('#heroTag',{ opacity:1, y:0, duration:.6, ease:'power3.out' },'-=.4')
-
-    /* H1 lines slam in */
     .to('.hero h1 .line-inner',{ y:'0%', duration:1, stagger:.12, ease:'expo.out' },'-=.3')
-
-    /* wave draw */
     .to('#wavePath',{ strokeDashoffset:0, duration:2.4, ease:'power2.out' },'-=.8')
-
-    /* rolling line */
     .to('#rollingLine',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
-
-    /* para */
     .to('#heroP',{ opacity:1, y:0, duration:.8, ease:'power3.out' },'-=.5')
-
-    /* actions */
     .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
-
-    /* image */
     .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'-=.9');
 })();
 
