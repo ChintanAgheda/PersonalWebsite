@@ -89,12 +89,12 @@ body{
 }
 .loader-title{
   font-family:'Manrope',sans-serif;
-  font-size:clamp(4rem,10vw,9rem);
-  line-height:1.18; font-weight:800; letter-spacing:-.06em;
-  overflow:visible; margin-bottom:22px;
+  font-size:clamp(1.6rem,6.5vw,5.5rem);
+  line-height:1.05; font-weight:800; letter-spacing:.3em;
+  text-transform:uppercase; white-space:nowrap;
+  overflow:hidden; margin-bottom:30px;
 }
-.loader-title span{ display:block; transform:translateY(120%); } .loader-title span:first-child{
-  margin-bottom:0.22em;}
+.loader-title .lt-line{ display:inline-block; transform:translateY(120%); }
 .loader-sub{
   font-family:'Manrope',sans-serif; font-size:11px;
   letter-spacing:.4em; text-transform:uppercase;
@@ -126,8 +126,8 @@ nav{
   border-bottom:1px solid rgba(255,255,255,.04);
 }
 .nav-name{
-  font-family:'Manrope',sans-serif; font-weight:700;
-  font-size:17px; letter-spacing:.32em; text-transform:uppercase;
+  font-family:'Manrope',sans-serif; font-weight:800;
+  font-size:17px; letter-spacing:.3em; text-transform:uppercase;
   color:var(--text); text-decoration:none;
   transition:color .3s, letter-spacing .4s ease;
 }
@@ -303,8 +303,6 @@ nav{
 
 /* Hypergrowth underline */
 .hypergrowth{ position:relative; display:inline-block; color:#15382c; background:white; padding:0 .08em; }
-.hypergrowth svg{ position:absolute; left:-1%; bottom:-7px; width:102%; height:18px; overflow:visible; }
-.hypergrowth path{ fill:none; stroke:#a07c3c; stroke-width:5; stroke-linecap:round; stroke-dasharray:600; stroke-dashoffset:600; }
 
 /* ── MARQUEE ── */
 .marquee-strip{
@@ -324,7 +322,7 @@ nav{
   font-size:15px; letter-spacing:.22em; text-transform:uppercase;
   color:#fff; margin-bottom:42px;
 }
-.logos-wrap{ overflow:hidden; position:relative; width:100%; }
+.logos-wrap{ overflow-x:clip; overflow-y:visible; position:relative; width:100%; }
 .logos-wrap::before, .logos-wrap::after{
   content:''; position:absolute; top:0; width:160px; height:100%; z-index:5; pointer-events:none;
 }
@@ -337,11 +335,24 @@ nav{
 .logos-wrap{ -webkit-user-select:none; user-select:none; touch-action:pan-y; }
 .logos-wrap:hover .logos-track{ animation-play-state:paused; }
 .logo-item{
+  position:relative;
   height:76px; display:inline-flex; align-items:center; justify-content:center;
   flex-shrink:0; opacity:.62; transition:opacity .35s, filter .35s, transform .4s cubic-bezier(.34,1.56,.64,1); filter:grayscale(.15);
 }
 .logo-item:hover{ opacity:1; filter:grayscale(0); }
-.logo-item img{ height:100%; width:auto; max-width:200px; object-fit:contain; display:block; }
+.logo-item img{ height:100%; width:auto; max-width:200px; object-fit:contain; display:block; transition:transform .4s cubic-bezier(.34,1.56,.64,1); }
+/* halka zoom on hover */
+.logo-item:hover img{ transform:scale(1.12); }
+/* tool name appears below on hover */
+.logo-name{
+  position:absolute; top:100%; left:50%; margin-top:14px;
+  transform:translate(-50%, 6px);
+  font-family:'Manrope',sans-serif; font-size:12px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--label-strong);
+  white-space:nowrap; opacity:0; pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease;
+}
+.logo-item:hover .logo-name{ opacity:1; transform:translate(-50%, 0); }
 /* Fallback when a logo image is missing — shows the tool name */
 .logo-fallback{
   font-family:'Manrope',sans-serif; font-size:14px; font-weight:500;
@@ -390,7 +401,7 @@ nav{
 }
 /* container that holds smoke + glitter puffs behind the rocket — sits at the exhaust (bottom-left of the 🚀 glyph) */
 .rocket-fx{
-  position:absolute; left:26%; bottom:9px;
+  position:absolute; left:15%; bottom:7px;
   width:0; height:0; z-index:1; pointer-events:none;
 }
 .rocket-puff{
@@ -858,7 +869,9 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
 .gallery-row.dragging img{ pointer-events:none; transition:none; }
 
 /* Wrapper + editable caption label (write 1–2 words per photo) */
-.gallery-card{ position:relative; flex-shrink:0; line-height:0; border-radius:28px; }
+.gallery-card{ position:relative; flex-shrink:0; line-height:0; border-radius:28px; z-index:1; transition:transform .45s cubic-bezier(.34,1.56,.64,1); }
+/* hovered card lifts above its neighbours so they never paint over it */
+.gallery-card:hover{ z-index:6; }
 .gallery-cap{
   position:absolute; left:14px; bottom:14px; z-index:3;
   font-family:'Manrope',sans-serif; font-size:10px;
@@ -974,6 +987,11 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   color:#ecd3a0;
   font-weight:800;
   text-shadow:0 0 26px rgba(236,211,160,.28);
+  transition:color .3s ease, text-shadow .3s ease;
+}
+.intro-line .gold:hover{
+  color:#ffe2a6;
+  text-shadow:0 0 18px rgba(255,221,150,.75), 0 0 44px rgba(255,221,150,.5), 0 0 80px rgba(255,221,150,.3);
 }
 @media(max-width:700px){ .intro-statement{ padding:90px 22px 20px; } }
 
@@ -1104,7 +1122,7 @@ footer{
   <div class="loader-grid"></div>
   <div class="loader-content">
     <div class="loader-label">Commercial Finance Systems</div>
-    <h1 class="loader-title"><span>CHINTAN</span><span>AGHEDA</span></h1>
+    <h1 class="loader-title"><span class="lt-line">CHINTAN AGHEDA</span></h1>
     <div class="loader-sub">Finance Leader</div>
     <div class="loader-line"><div class="loader-progress" id="lp"></div></div>
     <div class="loader-bottom">
@@ -1129,10 +1147,10 @@ footer{
     <h1>
       <span class="line"><span class="line-inner">Finance</span></span>
       <span class="line"><span class="line-inner">Built For</span></span>
-      <span class="line"><span class="line-inner"><span class="hypergrowth">hypergrowth<svg viewBox="0 0 800 70" preserveAspectRatio="none"><path id="wavePath" d="M10 40 Q 120 10 230 30 T 450 32 T 790 28"/></svg></span></span></span>
+      <span class="line"><span class="line-inner"><span class="hypergrowth">hypergrowth</span></span></span>
     </h1>
     <div class="rolling-line" id="rollingLine">
-      Core Expertise in —
+      Core Experience in —
       <span class="rolling-wrap">
         <span class="rolling-inner" id="rollingInner">
           <span>AP at Scale</span>
@@ -1519,7 +1537,7 @@ footer{
 <section class="section" id="education">
   <div class="section-head">
     <div class="section-label reveal"><h1>Academic Foundation</h1></div>
-    <h2 class="section-title reveal">Built on rigorous <br> financial training.</h2>
+    <h2 class="section-title reveal">Built on rigorous <br>financial training.</h2>
   </div>
   <div class="edu">
     <div class="edu-spine-fill" id="eduSpineFill"></div>
@@ -1816,18 +1834,21 @@ gsap.registerPlugin(ScrollTrigger);
    (0→100% fully visible BEFORE doors open)
 ───────────────────────────── */
 (function(){
-  var lp     = document.getElementById('lp');
-  var lpct   = document.getElementById('lpct');
-  var loader = document.getElementById('loader');
-  var prog   = { v:0 };
+  var lp      = document.getElementById('lp');
+  var lpct    = document.getElementById('lpct');
+  var loader  = document.getElementById('loader');
+  var nav     = document.getElementById('mainNav');
+  var navName = nav ? nav.querySelector('.nav-name') : null;
+  var title   = document.querySelector('.loader-title');
+  var prog    = { v:0 };
 
   var tl = gsap.timeline();
 
-  tl.to('.loader-title span',{ y:0, duration:1.05, stagger:.12, ease:'expo.out' })
+  tl.to('.loader-title .lt-line',{ y:0, duration:1.05, ease:'expo.out' })
     .to('.loader-label',{ opacity:1, duration:.5 },'-=.7')
     .to('.loader-sub',{ opacity:1, duration:.5 },'-=.5')
 
-    /* 0 → 100% — real tween, timeline waits for it to complete */
+    /* 0 → 100% */
     .to(prog,{
       v:100, duration:1.7, ease:'power1.inOut',
       onUpdate:function(){
@@ -1837,30 +1858,72 @@ gsap.registerPlugin(ScrollTrigger);
       }
     },'-=.2')
 
-    /* hold for a beat at 100% */
-    .to({}, { duration:.35 })
+    /* hold ~0.5s at 100% */
+    .to({}, { duration:.5 })
 
-    /* now open the doors */
-    .add(function(){ loader.classList.add('open'); })
+    /* MAGIC MOVE — the loader title flies up and merges into the nav name */
+    .add(magicMerge);
 
-    /* fade the whole loader out */
-    .to(loader,{ opacity:0, pointerEvents:'none', duration:.8, ease:'power2.inOut' },'+=1.1')
+  function magicMerge(){
+    /* everything in the loader except the title fades away */
+    gsap.to(['.loader-grid','.loader-label','.loader-sub','.loader-line','.loader-bottom','.loader-doors-top','.loader-doors-bottom'],
+      { opacity:0, duration:.45, ease:'power2.out' });
 
-    /* HERO entrance */
-    .fromTo('#mainNav',{ y:-70, opacity:0 },{ y:0, opacity:1, duration:.8, ease:'power3.out' },'-=.5')
-    .to('#heroTag',{ opacity:1, y:0, duration:.6, ease:'power3.out' },'-=.4')
-    .to('.hero h1 .line-inner',{ y:'0%', duration:1, stagger:.12, ease:'expo.out',
+    if(!navName || !title){
+      gsap.to(loader,{ opacity:0, pointerEvents:'none', duration:.7,
+        onComplete:function(){ if(loader) loader.style.display='none'; } });
+      runHero(.2);
+      return;
+    }
+
+    /* raise the nav above the loader so the flying name stays visible */
+    nav.style.zIndex = '100001';
+    gsap.set(nav,     { opacity:1, y:0 });
+    gsap.set(navName, { clearProps:'transform' });
+
+    /* FLIP — measure the small (nav) + big (loader title) states */
+    var navRect   = navName.getBoundingClientRect();
+    var titleRect = title.getBoundingClientRect();
+    var s  = titleRect.width / navRect.width;
+    var dx = (titleRect.left + titleRect.width/2)  - (navRect.left + navRect.width/2);
+    var dy = (titleRect.top  + titleRect.height/2) - (navRect.top  + navRect.height/2);
+
+    /* drop the nav name exactly over the big loader title, then hide the loader's own title */
+    gsap.set(navName, { x:dx, y:dy, scale:s, transformOrigin:'center center' });
+    gsap.set(title,   { opacity:0 });
+
+    /* fly the name up into the nav bar */
+    gsap.to(navName, {
+      x:0, y:0, scale:1, duration:1.15, ease:'power3.inOut',
       onComplete:function(){
-        /* release the clip so descenders (g, y, p) + the underline aren't cut */
-        document.querySelectorAll('.hero h1 .line').forEach(function(l){ l.style.overflow='visible'; });
+        nav.style.zIndex = '';
+        gsap.set(navName, { clearProps:'transform' });
       }
-    },'-=.3')
-    .to('#wavePath',{ strokeDashoffset:0, duration:.9, ease:'power2.out' },'-=.8')
-    /* hero photo loads AT THE SAME TIME as the underline draws */
-    .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'<')
-    .to('#rollingLine',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
-    .to('#heroP',{ opacity:1, y:0, duration:.8, ease:'power3.out' },'-=.5')
-    .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6');
+    });
+
+    /* fade the loader backdrop out while the name travels */
+    gsap.to(loader, {
+      opacity:0, duration:.7, delay:.4, ease:'power2.inOut',
+      onComplete:function(){ loader.style.display='none'; }
+    });
+
+    /* bring the rest of the hero in, just behind the merge */
+    runHero(.55);
+  }
+
+  function runHero(delay){
+    var h = gsap.timeline({ delay:delay });
+    h.to('.hero h1 .line-inner',{ y:'0%', duration:1, stagger:.12, ease:'expo.out',
+        onComplete:function(){
+          /* release the clip so descenders (g, y, p) aren't cut */
+          document.querySelectorAll('.hero h1 .line').forEach(function(l){ l.style.overflow='visible'; });
+        }
+      })
+     .to('#rollingLine',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.5')
+     .to('#heroP',{ opacity:1, y:0, duration:.8, ease:'power3.out' },'-=.5')
+     .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
+     .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'-=.9');
+  }
 })();
 
 /* ─────────────────────────────
@@ -2197,6 +2260,22 @@ gsap.to('#heroImg',{
     }
   });
 
+  /* "make way" — hovering a photo nudges its immediate neighbours aside */
+  document.querySelectorAll('#gallery .gallery-card').forEach(function(card){
+    card.addEventListener('mouseenter', function(){
+      var prev = card.previousElementSibling;
+      var next = card.nextElementSibling;
+      if(prev && prev.classList.contains('gallery-card')) prev.style.transform = 'translateX(-26px)';
+      if(next && next.classList.contains('gallery-card')) next.style.transform = 'translateX(26px)';
+    });
+    card.addEventListener('mouseleave', function(){
+      var prev = card.previousElementSibling;
+      var next = card.nextElementSibling;
+      if(prev && prev.classList.contains('gallery-card')) prev.style.transform = '';
+      if(next && next.classList.contains('gallery-card')) next.style.transform = '';
+    });
+  });
+
   var wrap = document.querySelector('#gallery .gallery-wrap');
   if(!wrap) return;
   var rows = wrap.querySelectorAll('.gallery-row');
@@ -2314,6 +2393,20 @@ gsap.to('#heroImg',{
   var wrap  = document.querySelector('.logos-wrap');
   var track = document.querySelector('.logos-track');
   if(!wrap || !track) return;
+
+  /* add a hover name label to each logo (read from its alt / fallback text) */
+  track.querySelectorAll('.logo-item').forEach(function(item){
+    if(item.querySelector('.logo-name')) return;
+    var img = item.querySelector('img');
+    var fb  = item.querySelector('.logo-fallback');
+    var name = (img && img.getAttribute('alt')) || (fb && fb.textContent) || '';
+    name = name.trim();
+    if(!name) return;
+    var label = document.createElement('span');
+    label.className = 'logo-name';
+    label.textContent = name;
+    item.appendChild(label);
+  });
 
   /* Take over from the CSS animation so JS can drive translateX */
   track.style.animation = 'none';
