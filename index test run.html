@@ -81,7 +81,7 @@ body{
   background-size:60px 60px;
   mask-image:radial-gradient(circle at center, black 20%, transparent 80%);
 }
-.loader-content{ position:relative; z-index:3; text-align:center; }
+.loader-content{ position:relative; z-index:20; text-align:center; }
 .loader-label{
   font-family:'Manrope',sans-serif; font-size:11px;
   letter-spacing:.35em; text-transform:uppercase;
@@ -89,12 +89,12 @@ body{
 }
 .loader-title{
   font-family:'Manrope',sans-serif;
-  font-size:clamp(4rem,10vw,9rem);
-  line-height:1.18; font-weight:800; letter-spacing:-.06em;
-  overflow:visible; margin-bottom:22px;
+  font-size:clamp(1.6rem,6.5vw,5.5rem);
+  line-height:1.05; font-weight:800; letter-spacing:.3em;
+  text-transform:uppercase; white-space:nowrap;
+  overflow:hidden; margin-bottom:30px;
 }
-.loader-title span{ display:block; transform:translateY(120%); } .loader-title span:first-child{
-  margin-bottom:0.22em;}
+.loader-title .lt-line{ display:inline-block; transform:translateY(120%); }
 .loader-sub{
   font-family:'Manrope',sans-serif; font-size:11px;
   letter-spacing:.4em; text-transform:uppercase;
@@ -119,26 +119,19 @@ body{
 
 /* ── NAV ── */
 nav{
-  position:fixed; top:0; width:100%; padding:28px 70px;
-  display:flex; justify-content:space-between; align-items:center;
+  position:fixed; top:0; width:100%; padding:26px 70px;
+  display:flex; justify-content:center; align-items:center;
   z-index:1000; backdrop-filter:blur(12px);
   background:rgba(7,7,7,.5);
   border-bottom:1px solid rgba(255,255,255,.04);
 }
-.logo{ display:flex; align-items:center; gap:14px; font-family:'Manrope',sans-serif; font-weight:700; font-size:13px; letter-spacing:.12em; text-transform:uppercase; }
-.logo-box{ width:36px; height:36px; background:var(--gold); color:black; display:flex; align-items:center; justify-content:center; border-radius:10px; font-weight:700; font-size:11px; }
-.nav-links{ display:flex; gap:40px; }
-.nav-links a{ text-decoration:none; font-size:14px; color:rgba(255,255,255,.5); transition:.3s; }
-.nav-links a:hover{ color:white; }
-.gallery-link{
-    color:rgba(255,255,255,.5) !important;
+.nav-name{
+  font-family:'Manrope',sans-serif; font-weight:800;
+  font-size:17px; letter-spacing:.3em; text-transform:uppercase;
+  color:var(--text); text-decoration:none;
+  transition:color .3s, letter-spacing .4s ease;
 }
-
-.gallery-link:hover{
-    color:#fff !important;
-}
-.nav-btn{ padding:12px 22px; border-radius:100px; background:var(--gold); color:black; font-size:13px; font-weight:700; text-decoration:none; transition:.3s; }
-.nav-btn:hover{ transform:translateY(-2px); }
+.nav-name:hover{ color:var(--gold); letter-spacing:.38em; }
 
 /* ── HERO ── */
 .hero{ min-height:100vh; display:flex; align-items:center; padding:90px 80px 80px; }
@@ -310,8 +303,6 @@ nav{
 
 /* Hypergrowth underline */
 .hypergrowth{ position:relative; display:inline-block; color:#15382c; background:white; padding:0 .08em; }
-.hypergrowth svg{ position:absolute; left:-1%; bottom:-18px; width:102%; height:18px; overflow:visible; }
-.hypergrowth path{ fill:none; stroke:var(--gold); stroke-width:5; stroke-linecap:round; stroke-dasharray:600; stroke-dashoffset:600; }
 
 /* ── MARQUEE ── */
 .marquee-strip{
@@ -331,7 +322,7 @@ nav{
   font-size:15px; letter-spacing:.22em; text-transform:uppercase;
   color:#fff; margin-bottom:42px;
 }
-.logos-wrap{ overflow:hidden; position:relative; width:100%; }
+.logos-wrap{ overflow-x:clip; overflow-y:visible; position:relative; width:100%; }
 .logos-wrap::before, .logos-wrap::after{
   content:''; position:absolute; top:0; width:160px; height:100%; z-index:5; pointer-events:none;
 }
@@ -344,11 +335,24 @@ nav{
 .logos-wrap{ -webkit-user-select:none; user-select:none; touch-action:pan-y; }
 .logos-wrap:hover .logos-track{ animation-play-state:paused; }
 .logo-item{
+  position:relative;
   height:76px; display:inline-flex; align-items:center; justify-content:center;
   flex-shrink:0; opacity:.62; transition:opacity .35s, filter .35s, transform .4s cubic-bezier(.34,1.56,.64,1); filter:grayscale(.15);
 }
 .logo-item:hover{ opacity:1; filter:grayscale(0); }
-.logo-item img{ height:100%; width:auto; max-width:200px; object-fit:contain; display:block; }
+.logo-item img{ height:100%; width:auto; max-width:200px; object-fit:contain; display:block; transition:transform .4s cubic-bezier(.34,1.56,.64,1); }
+/* halka zoom on hover */
+.logo-item:hover img{ transform:scale(1.12); }
+/* tool name appears below on hover */
+.logo-name{
+  position:absolute; top:100%; left:50%; margin-top:14px;
+  transform:translate(-50%, 6px);
+  font-family:'Manrope',sans-serif; font-size:12px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--label-strong);
+  white-space:nowrap; opacity:0; pointer-events:none;
+  transition:opacity .3s ease, transform .3s ease;
+}
+.logo-item:hover .logo-name{ opacity:1; transform:translate(-50%, 0); }
 /* Fallback when a logo image is missing — shows the tool name */
 .logo-fallback{
   font-family:'Manrope',sans-serif; font-size:14px; font-weight:500;
@@ -395,10 +399,9 @@ nav{
   50%{ transform:translateY(0) rotate(-3deg); }
   75%{ transform:translateY(1px) rotate(-1.5deg); }
 }
-/* faster high-frequency tremble layer */
-/* container that holds smoke + glitter puffs behind the rocket */
+/* container that holds smoke + glitter puffs behind the rocket — sits at the exhaust (bottom-left of the 🚀 glyph) */
 .rocket-fx{
-  position:absolute; left:50%; bottom:-2px;
+  position:absolute; left:15%; bottom:7px;
   width:0; height:0; z-index:1; pointer-events:none;
 }
 .rocket-puff{
@@ -434,7 +437,7 @@ nav{
 .stat::before{
   content:''; position:absolute; inset:0;
   border-radius:28px; padding:1.5px;
-  background:linear-gradient(135deg, var(--gold), rgba(216,184,127,.15) 45%, transparent 70%);
+  background:linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.15) 45%, transparent 70%);
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask-composite:exclude;
@@ -442,7 +445,7 @@ nav{
   opacity:0; transition:opacity .4s ease;
   pointer-events:none;
 }
-.stat:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(216,184,127,.35); box-shadow:0 18px 50px rgba(0,0,0,.45); }
+.stat:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(255,255,255,.4); box-shadow:0 18px 50px rgba(0,0,0,.45), 0 0 52px -4px rgba(255,255,255,.45); }
 .stat:hover::before{ opacity:1; }
 .stat-number{ font-family:'Manrope',sans-serif; font-size:56px; font-weight:800; letter-spacing:-.06em; margin-bottom:12px; }
 .stat-label{ font-size:14px; line-height:1.8; color:var(--muted); }
@@ -458,13 +461,13 @@ nav{
 .philo::before{
   content:''; position:absolute; inset:0;
   border-radius:28px; padding:1.5px;
-  background:linear-gradient(135deg, var(--gold), rgba(216,184,127,.15) 45%, transparent 70%);
+  background:linear-gradient(135deg, rgba(255,255,255,.9), rgba(255,255,255,.15) 45%, transparent 70%);
   -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
   -webkit-mask-composite:xor; mask-composite:exclude;
   opacity:0; transition:opacity .4s ease; pointer-events:none;
 }
-.philo:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(216,184,127,.35); box-shadow:0 18px 50px rgba(0,0,0,.45); }
+.philo:hover{ transform:translateY(-6px) scale(1.05) !important; border-color:rgba(255,255,255,.4); box-shadow:0 18px 50px rgba(0,0,0,.45), 0 0 52px -4px rgba(255,255,255,.45); }
 .philo:hover::before{ opacity:1; }
 .philo-num{
   font-family:'Manrope',sans-serif; font-size:12px; letter-spacing:.18em;
@@ -696,6 +699,20 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   color:var(--label-strong); background:rgba(255,255,255,.04);
   border:1px solid rgba(255,255,255,.1);
   padding:5px 11px; border-radius:100px;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), border-color .3s, box-shadow .3s, background .3s;
+}
+/* Chip hover — same brand sweep + glow as the company name */
+.tl-chip:hover{
+  transform:scale(1.12);
+  border-color:color-mix(in srgb, var(--bc,#d8b87f) 55%, transparent);
+  box-shadow:0 0 18px color-mix(in srgb, var(--bc,#d8b87f) 45%, transparent);
+  background:linear-gradient(100deg,
+    var(--bc,#d8b87f) 0%, var(--bc,#d8b87f) 30%, #ffffff 48%,
+    var(--bc,#d8b87f) 66%, var(--bc,#d8b87f) 100%);
+  background-size:240% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:nameSweep 1.5s linear infinite;
 }
 
 /* Collapsible bullets */
@@ -781,6 +798,8 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   overflow:hidden;
   margin-top:80px;
   position:relative;
+  -webkit-user-select:none; user-select:none;
+  touch-action:pan-y;
 }
 
 .gallery-wrap::before,
@@ -836,12 +855,23 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
 }
 
 .gallery-row img:hover{
-  transform:scale(1.05);
-  box-shadow:0 35px 90px rgba(0,0,0,.55);
+  transform:scale(1.12);
+  box-shadow:0 38px 100px rgba(0,0,0,.6);
+  z-index:4;
 }
 
+/* Grab-to-drag affordance + clean dragging state (per row, independent) */
+.gallery-wrap{ touch-action:pan-y; }
+.gallery-row{ cursor:grab; }
+.gallery-row.dragging, .gallery-row.dragging img{ cursor:grabbing; }
+.gallery-wrap img{ -webkit-user-drag:none; user-select:none; }
+/* while dragging a row, suppress that row's per-image hover zoom for a smooth slide */
+.gallery-row.dragging img{ pointer-events:none; transition:none; }
+
 /* Wrapper + editable caption label (write 1–2 words per photo) */
-.gallery-card{ position:relative; flex-shrink:0; line-height:0; border-radius:28px; }
+.gallery-card{ position:relative; flex-shrink:0; line-height:0; border-radius:28px; z-index:1; transition:transform .45s cubic-bezier(.34,1.56,.64,1); }
+/* hovered card lifts above its neighbours so they never paint over it */
+.gallery-card:hover{ z-index:6; }
 .gallery-cap{
   position:absolute; left:14px; bottom:14px; z-index:3;
   font-family:'Manrope',sans-serif; font-size:10px;
@@ -850,9 +880,19 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   border:1px solid rgba(216,184,127,.35);
   padding:6px 12px; border-radius:100px; line-height:1;
   pointer-events:none; opacity:.85; transform:translateY(2px);
-  transition:opacity .35s, transform .35s, background .35s;
+  transition:opacity .4s ease,
+             transform .5s cubic-bezier(.34,1.56,.64,1),
+             left .5s cubic-bezier(.34,1.56,.64,1),
+             bottom .5s cubic-bezier(.34,1.56,.64,1),
+             background .35s;
 }
-.gallery-card:hover .gallery-cap{ opacity:1; transform:translateY(0); background:rgba(7,7,7,.78); }
+/* On hover the caption glides to the bottom-centre of the photo */
+.gallery-card:hover .gallery-cap{
+  opacity:1;
+  left:50%; bottom:18px;
+  transform:translate(-50%, 0) scale(1.1);
+  background:rgba(7,7,7,.82);
+}
 .gallery-cap:empty{ display:none; }
 
 .row1{
@@ -896,7 +936,7 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
 .distraction-word{
   font-family:'Manrope',sans-serif;
   font-weight:800; letter-spacing:-.07em; line-height:1;
-  font-size:clamp(2.7rem,9vw,9rem);
+  font-size:clamp(2.3rem,7vw,7rem);
   display:inline-flex; align-items:baseline; flex-wrap:nowrap;
   white-space:nowrap;
 }
@@ -944,28 +984,103 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   color:#fff;
 }
 .intro-line .gold{
-  color:var(--gold);
-  font-style:italic;
-  font-weight:700;
+  color:#ecd3a0;
+  font-weight:800;
+  text-shadow:0 0 26px rgba(236,211,160,.28);
+  transition:color .3s ease, text-shadow .3s ease;
+}
+.intro-line .gold:hover{
+  color:#ffe2a6;
+  text-shadow:0 0 18px rgba(255,221,150,.75), 0 0 44px rgba(255,221,150,.5), 0 0 80px rgba(255,221,150,.3);
 }
 @media(max-width:700px){ .intro-statement{ padding:90px 22px 20px; } }
 
 /* ── CONTACT ── */
+#contact{ position:relative; }
 .contact-box{
   max-width:1200px; margin:auto; padding:70px;
   background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
   border-radius:40px; text-align:center;
 }
-.contact-box h2{ font-family:'Manrope',sans-serif; font-size:clamp(3rem,6vw,5rem); line-height:1; letter-spacing:-.07em; font-weight:800; margin-bottom:24px; }
+.contact-box h2{ font-family:'Manrope',sans-serif; font-size:clamp(3rem,6vw,5rem); line-height:1.05; letter-spacing:-.05em; font-weight:800; margin-bottom:24px; }
+/* gold accent words in the contact heading */
+.contact-box h2 .c-gold{
+  color:var(--gold); font-weight:800;
+  padding:0 .04em;
+  text-shadow:0 0 22px rgba(216,184,127,.22);
+}
 .contact-box p{ max-width:700px; margin:auto auto 40px; line-height:1.9; color:var(--muted); }
-.contact-links{ display:flex; justify-content:center; gap:18px; flex-wrap:wrap; }
+/* "Let's Connect" — a bit larger, gold */
+.contact-cta{
+  font-family:'Manrope',sans-serif; font-weight:600;
+  font-size:clamp(20px,2.4vw,28px); letter-spacing:.02em;
+  color:var(--gold); margin:0 auto 40px !important;
+  max-width:none !important;
+}
 
-/* ── FOOTER ── */
+/* Separator between contact and footer — single glowing white line */
+.contact-end{
+  position:relative; height:220px; margin-top:30px;
+  display:flex; align-items:flex-end; justify-content:center;
+  pointer-events:none;
+}
+.contact-end::before{
+  content:''; position:absolute; left:50%; bottom:24px;
+  transform:translateX(-50%);
+  width:min(820px,78%); height:1px;
+  background:linear-gradient(90deg, transparent, rgba(255,255,255,.65) 50%, transparent);
+  box-shadow:0 0 12px rgba(255,255,255,.45), 0 0 4px rgba(255,255,255,.6);
+}
+
+/* ── FOOTER (long-read end section) ── */
 footer{
-  padding:50px 80px; display:flex; justify-content:space-between; align-items:center;
-  border-top:1px solid rgba(255,255,255,.05);
-  font-family:'Manrope',sans-serif; font-weight:600; font-size:11px;
-  letter-spacing:.14em; text-transform:uppercase; color:rgba(255,255,255,.3);
+  border-top:1px solid rgba(255,255,255,.06);
+  padding:0;
+}
+.footer-main{
+  max-width:1400px; margin:auto;
+  padding:120px 80px 60px;
+  display:grid; grid-template-columns:1.3fr 1fr .8fr; gap:50px;
+  align-items:start;
+}
+.footer-name{
+  font-family:'Manrope',sans-serif; font-weight:800;
+  font-size:clamp(3rem,6vw,6.5rem); line-height:.92;
+  letter-spacing:-.06em; color:var(--text);
+}
+.footer-name .fn-gold{ color:var(--gold); }
+.footer-col-head{
+  font-family:'Manrope',sans-serif; font-size:10px;
+  letter-spacing:.24em; text-transform:uppercase;
+  color:var(--label); margin-bottom:26px;
+}
+.footer-list{ list-style:none; display:flex; flex-direction:column; gap:15px; }
+.footer-list a{
+  display:inline-flex; align-items:baseline; gap:10px;
+  text-decoration:none; color:rgba(255,255,255,.7);
+  font-family:'Manrope',sans-serif; font-size:15px; font-weight:600;
+  letter-spacing:.01em; transition:color .3s, transform .3s;
+  width:fit-content;
+}
+.footer-list a .fl-num{
+  font-size:11px; color:var(--label); font-weight:500; letter-spacing:.1em;
+}
+.footer-list a .fl-arrow{
+  font-size:12px; color:var(--gold); opacity:0;
+  transform:translate(-4px,2px); transition:opacity .3s, transform .3s;
+}
+.footer-list a:hover{ color:var(--gold); transform:translateX(4px); }
+.footer-list a:hover .fl-arrow{ opacity:1; transform:translate(0,0); }
+.footer-meta{
+  max-width:1400px; margin:auto;
+  padding:26px 80px; border-top:1px solid rgba(255,255,255,.06);
+  display:flex; justify-content:space-between; align-items:center; gap:20px; flex-wrap:wrap;
+  font-family:'Manrope',sans-serif; font-weight:600; font-size:10.5px;
+  letter-spacing:.16em; text-transform:uppercase; color:rgba(255,255,255,.3);
+}
+@media(max-width:900px){
+  .footer-main{ grid-template-columns:1fr; gap:48px; padding:80px 22px 40px; }
+  .footer-meta{ padding:22px; flex-direction:column; align-items:flex-start; gap:10px; }
 }
 
 /* ── SCROLL REVEAL BASE STATES ── */
@@ -994,6 +1109,102 @@ footer{
   .loader-line{ width:260px; }
   .distraction-section{ padding:130px 22px; }
 }
+
+/* ════════ STRENGTHS & EXPERTISE — editorial index ════════ */
+#strengths{ padding-top:110px; padding-bottom:110px; }
+#strengths .section-head{ margin-bottom:34px; }
+
+/* Experience — typographic band (no cards) */
+.xp-band{
+  max-width:1300px; margin:0 auto 46px;
+  display:flex; align-items:center; gap:46px; flex-wrap:wrap;
+  padding:30px 2px;
+  border-top:1px solid rgba(255,255,255,.1);
+  border-bottom:1px solid rgba(255,255,255,.1);
+}
+.xp-fig{ display:flex; align-items:center; gap:26px; }
+.xp-numwrap{ display:flex; flex-direction:column; align-items:center; }
+.xp-unit{
+  font-family:'Manrope',sans-serif; font-size:13px; font-weight:600;
+  letter-spacing:.05em; color:var(--muted); margin-top:4px;
+}
+.xp-of{ text-transform:none; }
+.xp-val{
+  font-family:'Manrope',sans-serif; font-weight:800;
+  font-size:clamp(46px,5.5vw,72px); letter-spacing:-.06em; line-height:.9;
+  color:#f28533; text-shadow:0 0 32px rgba(242,133,51,.32);
+  display:inline-block; min-width:1.9em; text-align:center;
+  font-variant-numeric:tabular-nums; font-feature-settings:"tnum";
+}
+.xp-cap{
+  font-family:'Manrope',sans-serif; font-size:12.5px; font-weight:600;
+  letter-spacing:.14em; text-transform:uppercase; color:var(--muted);
+  line-height:1.5; max-width:140px;
+}
+.xp-rule{ width:1px; height:62px; background:rgba(255,255,255,.14); flex-shrink:0; }
+.xp-note{
+  margin-left:auto;
+  font-family:'Manrope',sans-serif; font-size:12px; font-weight:500;
+  letter-spacing:.06em; color:var(--muted); text-align:right; line-height:1.6;
+}
+
+/* Strengths — numbered index, 2 columns, hairline rows */
+.xp-index{
+  max-width:1300px; margin:auto;
+  display:grid; grid-auto-flow:column;
+  grid-template-rows:repeat(4,auto);
+  grid-template-columns:repeat(3,1fr); column-gap:52px;
+}
+.xp-row{
+  position:relative; display:flex; align-items:center; gap:16px;
+  padding:18px 8px 18px 6px;
+  border-top:1px solid rgba(255,255,255,.08);
+  overflow:hidden;
+  transition:padding .45s cubic-bezier(.23,1,.32,1);
+}
+.xp-row:nth-child(4), .xp-row:nth-child(8), .xp-row:nth-child(12){ border-bottom:1px solid rgba(255,255,255,.08); }
+/* sweep fill on hover */
+.xp-row::before{
+  content:''; position:absolute; left:0; top:0; bottom:0; width:0;
+  background:linear-gradient(90deg, rgba(255,255,255,.07), transparent);
+  transition:width .5s cubic-bezier(.23,1,.32,1); pointer-events:none; z-index:0;
+}
+.xp-row:hover::before{ width:100%; }
+.xp-row:hover{ padding-left:18px; }
+.xp-dot{
+  position:relative; z-index:1; flex-shrink:0;
+  width:6px; height:6px; border-radius:50%;
+  background:rgba(255,255,255,.3);
+  transition:background .35s, box-shadow .35s, transform .4s cubic-bezier(.23,1,.32,1);
+}
+.xp-row:hover .xp-dot{ background:var(--text); box-shadow:0 0 10px rgba(255,255,255,.55); transform:scale(1.3); }
+.xp-label{
+  position:relative; z-index:1; flex:1;
+  font-family:'Manrope',sans-serif; font-weight:600; font-size:15.5px;
+  letter-spacing:-.01em; color:rgba(255,255,255,.8);
+  transform-origin:left center;
+  transition:color .35s, transform .4s cubic-bezier(.34,1.56,.64,1);
+}
+.xp-row:hover .xp-label{ color:#fff; transform:scale(1.07); }
+.xp-mark{
+  position:relative; z-index:1; font-size:15px; color:var(--text);
+  opacity:0; transform:translateX(-8px);
+  transition:opacity .35s, transform .4s cubic-bezier(.23,1,.32,1);
+}
+.xp-row:hover .xp-mark{ opacity:1; transform:translateX(0); }
+
+@media(max-width:1000px){
+  .xp-index{ grid-template-rows:repeat(6,auto); grid-template-columns:repeat(2,1fr); column-gap:48px; }
+  .xp-row:nth-child(4), .xp-row:nth-child(8){ border-bottom:none; }
+  .xp-row:nth-child(6), .xp-row:nth-child(12){ border-bottom:1px solid rgba(255,255,255,.08); }
+}
+@media(max-width:640px){
+  .xp-index{ grid-auto-flow:row; grid-template-rows:none; grid-template-columns:1fr; column-gap:0; }
+  .xp-row:nth-child(4), .xp-row:nth-child(6), .xp-row:nth-child(8){ border-bottom:none; }
+  .xp-row:nth-child(12){ border-bottom:1px solid rgba(255,255,255,.08); }
+  .xp-band{ gap:26px; }
+  .xp-note{ width:100%; margin-left:0; text-align:left; }
+}
 </style>
 </head>
 <body>
@@ -1006,13 +1217,13 @@ footer{
 <div class="loader" id="loader">
   <div class="loader-grid"></div>
   <div class="loader-content">
-    <div class="loader-label">Commercial Finance Systems</div>
-    <h1 class="loader-title"><span>CHINTAN</span><span>AGHEDA</span></h1>
+    <div class="loader-label"></div>
+    <h1 class="loader-title"><span class="lt-line">CHINTAN AGHEDA</span></h1>
     <div class="loader-sub">Finance Leader</div>
     <div class="loader-line"><div class="loader-progress" id="lp"></div></div>
     <div class="loader-bottom">
       <span>GCC · India</span>
-      <span class="loader-percent" id="lpct">10%</span>
+      <span class="loader-percent" id="lpct">0%</span>
     </div>
   </div>
   <div class="loader-doors-top"></div>
@@ -1021,17 +1232,7 @@ footer{
 
 <!-- NAV -->
 <nav id="mainNav">
-  <div class="logo"><div class="logo-box">CA</div>CHINTAN AGHEDA</div>
-  <div class="nav-links">
-    <a href="#about">About</a>
-    <a href="#results">Results</a>
-    <a href="#philosophy">Principles</a>
-    <a href="#experience">Experience</a>
-    <a href="#education">Education</a>
-    <a href="#gallery" class="gallery-link">Gallery</a>
-    <a href="#contact">Contact</a>
-  </div>
-  <a href="#contact" class="nav-btn">Start Conversation</a>
+  <a href="CHINTAN AGHEDA" class="nav-name">CHINTAN AGHEDA</a>
 </nav>
 
 <!-- HERO -->
@@ -1042,17 +1243,18 @@ footer{
     <h1>
       <span class="line"><span class="line-inner">Finance</span></span>
       <span class="line"><span class="line-inner">Built For</span></span>
-      <span class="line"><span class="line-inner"><span class="hypergrowth">hypergrowth<svg viewBox="0 0 800 70" preserveAspectRatio="none"><path id="wavePath" d="M10 40 Q 120 10 230 30 T 450 32 T 790 28"/></svg></span></span></span>
+      <span class="line"><span class="line-inner"><span class="hypergrowth">hypergrowth</span></span></span>
     </h1>
     <div class="rolling-line" id="rollingLine">
-      Core Experience in —
+      Core Expertise in —
       <span class="rolling-wrap">
         <span class="rolling-inner" id="rollingInner">
-          <span>AP at Scale</span>
-          <span>Automation</span>
-          <span>Due Diligence</span>
-          <span>MIS &amp; FP&amp;A</span>
-          <span>Vendor Ops</span>
+          <span>Building Systems, Structures &amp; Shields</span>
+          <span>Finance Operation</span>
+          <span>Process and Automation</span>
+          <span>P&amp;L Optimization</span>
+          <span>Stakeholder Management</span>
+          <span>Team Building</span>
           <span>AP at Scale</span>
         </span>
       </span>
@@ -1105,24 +1307,68 @@ footer{
 
 <!-- INTRO STATEMENT -->
 <section class="intro-statement">
-  <h2 class="intro-line reveal">Systems that run <span class="gold">silently</span>, scale <span class="gold">violently</span>.</h2>
+  <h2 class="intro-line reveal">Systems that runs <span class="gold">silently</span>, scales <span class="gold">rapidly</span>.</h2>
+</section>
+
+<!-- STRENGTHS & EXPERTISE -->
+<section class="section" id="strengths">
+  <div class="section-head">
+    <div class="section-label reveal"><h1>Capabilities</h1></div>
+    <h2 class="section-title reveal">Strengths &amp; Expertise.</h2>
+  </div>
+
+  <!-- Experience — typographic band -->
+  <div class="xp-band reveal">
+    <div class="xp-fig" data-count="14" data-suffix="+">
+      <div class="xp-numwrap">
+        <div class="xp-val">14+</div>
+        <div class="xp-unit">Years</div>
+      </div>
+      <div class="xp-cap"><span class="xp-of">of</span> Overall<br>experience</div>
+    </div>
+    <div class="xp-rule"></div>
+    <div class="xp-fig" data-count="8" data-suffix="+">
+      <div class="xp-numwrap">
+        <div class="xp-val">8+</div>
+        <div class="xp-unit">Years</div>
+      </div>
+      <div class="xp-cap"><span class="xp-of">of</span> Startup<br>experience</div>
+    </div>
+    <div class="xp-note">Simplifying finance across<br>GCC &amp; India</div>
+  </div>
+
+  <!-- Strengths — numbered index (reads down each column) -->
+  <div class="xp-index">
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">End-to-End Finance Operations</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Vendor Partnering &amp; Management</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Strategic Business Decisions</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Dynamic Leadership</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Funding Due Diligence</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">SOP Preparation &amp; Adherence</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Fin Ops Process &amp; Automation</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Internal Control &amp; Compliance</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Accounts Payable &amp; Accounts Receivable</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Stakeholder Management</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Leveraging AI Tools &amp; Optimizing Operations</span><span class="xp-mark">→</span></div>
+    <div class="xp-row reveal"><span class="xp-dot"></span><span class="xp-label">Team Management &amp; Team Leading</span><span class="xp-mark">→</span></div>
+  </div>
 </section>
 
 <!-- RESULTS -->
 <section class="section" id="results">
   <div class="section-head">
-    <div class="section-label reveal"><h1>Selected Results</h1></div>
+    <div class="section-label reveal"><h1>Results</h1></div>
     <h2 class="section-title reveal">Building finance systems for companies moving at startup speed.<span class="rocket-static" aria-hidden="true">🚀</span></h2>
   </div>
   <div class="stats">
-    <div class="stat reveal" data-count="13" data-suffix="+"><div class="stat-number">13+</div><div class="stat-label">Years building finance operations and commercial systems.</div></div>
+    <div class="stat reveal" data-count="3" data-prefix="$" data-suffix="Bn+"><div class="stat-number">$3B+</div><div class="stat-label">Business volume handled in last 6 years.</div></div>
     <div class="stat reveal" data-count="897" data-prefix="$" data-suffix="M"><div class="stat-number">$897M</div><div class="stat-label">Series E + F due diligence and hypergrowth finance exposure.</div></div>
     <div class="stat reveal" data-count="2500" data-suffix="+"><div class="stat-number">2500+</div><div class="stat-label">Vendor relationships and finance operations managed.</div></div>
-    <div class="stat reveal" data-count="40" data-suffix="+"><div class="stat-number">40+</div><div class="stat-label">Cities under AP operations and commercial workflows.</div></div>
+    <div class="stat reveal" data-count="40" data-suffix="+"><div class="stat-number">40+</div><div class="stat-label">Cities handled in India at Chalo.</div></div>
     <div class="stat reveal" data-count="6" data-suffix=""><div class="stat-number">6</div><div class="stat-label">GCC markets operated across — UAE, KSA, Egypt, Qatar, Bahrain, Iraq.</div></div>
     <div class="stat reveal" data-count="20" data-suffix="+"><div class="stat-number">20+</div><div class="stat-label">Finance professionals hired, mentored and led across teams.</div></div>
-    <div class="stat reveal" data-count="98" data-suffix="%"><div class="stat-number">98%</div><div class="stat-label">Accounting backlog cleared — ₹136 Cr resolved and reconciled.</div></div>
-    <div class="stat reveal" data-count="10" data-prefix="$" data-suffix="M"><div class="stat-number">$10M</div><div class="stat-label">Advertising income recovered and collected from top brands.</div></div>
+    <div class="stat reveal" data-count="98" data-suffix="%"><div class="stat-number">98%</div><div class="stat-label">Accounting backlog cleared at Zepto.</div></div>
+    <div class="stat reveal" data-count="250" data-prefix="$" data-suffix="M+"><div class="stat-number">$250M+</div><div class="stat-label">Advertising income recovered and collected from top brands.</div></div>
   </div>
 </section>
 
@@ -1132,47 +1378,46 @@ footer{
   <div class="logos-wrap">
     <div class="logos-track">
       <!-- Drop logo images at assets/img/logos/*.png ; if missing, the tool name shows -->
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/SAP.png" alt="SAP" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">SAP</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Zoho.png" alt="Zoho" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Zoho</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Excel.png" alt="Excel" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Excel</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Word 2.png" alt="Word" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Word</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Powerpoint.png" alt="PowerPoint" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Gsheet.png" alt="Gsheet" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Tally.png" alt="Tally" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Canva.png" alt="Canva" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Forms.png" alt="Forms" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Jira.png" alt="Jira" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Looker.png" alt="Looker" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Notion.png" alt="Notion" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/VSC CHATGPT.png" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Claude Code.webp" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/SQL.png" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/SAP.webp" alt="SAP" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">SAP</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Zoho.webp" alt="Zoho" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Zoho</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Excel.webp" alt="Excel" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Excel</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Word 2.webp" alt="Word" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Word</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Powerpoint.webp" alt="PowerPoint" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Gsheet.webp" alt="Gsheet" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Tally.webp" alt="Tally" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Canva.webp" alt="Canva" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Forms.webp" alt="Forms" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Jira.webp" alt="Jira" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Looker.webp" alt="Looker" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Notion.webp" alt="Notion" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/VSC CHATGPT.webp" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Claude Code.webp" alt="Claude Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/SQL.webp" alt="SQL" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
       <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/QB.svg" alt="QuickBooks" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">QuickBooks</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/ChatGPTCodex.png" alt="Codex" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Superset</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/POWERBI 1.webp" alt="Power BI" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Microsoft Navision.png" alt="Navison" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/ChatGPTCodex.webp" alt="Codex" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Superset</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/POWERBI 1.webp" alt="Power BI" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Microsoft Navision.webp" alt="Navison" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>
 
       <!-- Duplicate set for seamless loop -->
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/SAP.png" alt="SAP" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">SAP</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Zoho.png" alt="Zoho" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Zoho</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Excel.png" alt="Excel" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Excel</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Word 2.png" alt="Word" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Word</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Powerpoint.png" alt="PowerPoint" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Gsheet.png" alt="Gsheet" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Tally.png" alt="Tally" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Canva.png" alt="Canva" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Forms.png" alt="Forms" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Jira.png" alt="Jira" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Looker.png" alt="Looker" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Notion.png" alt="Notion" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/VSC CHATGPT.png" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Claude Code.webp" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/SQL.png" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/SAP.webp" alt="SAP" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">SAP</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Zoho.webp" alt="Zoho" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Zoho</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Excel.webp" alt="Excel" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Excel</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Word 2.webp" alt="Word" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Word</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Powerpoint.webp" alt="PowerPoint" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Gsheet.webp" alt="Gsheet" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">PowerPoint</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Tally.webp" alt="Tally" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Canva.webp" alt="Canva" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Forms.webp" alt="Forms" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Jira.webp" alt="Jira" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Looker.webp" alt="Looker" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Notion.webp" alt="Notion" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Tally</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/VSC CHATGPT.webp" alt="VS Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Claude Code.webp" alt="Claude Code" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/SQL.webp" alt="SQL" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">VS Code</span></span>
       <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/QB.svg" alt="QuickBooks" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">QuickBooks</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/ChatGPTCodex.png" alt="Codex" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Superset</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/POWERBI 1.webp" alt="Power BI" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>
-      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/logos/Microsoft Navision.png" alt="Navison" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>
-    </div>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/ChatGPTCodex.webp" alt="Codex" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Superset</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/POWERBI 1.webp" alt="Power BI" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>
+      <span class="logo-item"><img loading="lazy" decoding="async" src="assets/img/Logos/System/WebP/Microsoft Navision.webp" alt="Navison" onerror="this.style.display='none';this.nextElementSibling.style.display='inline';"><span class="logo-fallback" style="display:none">Power BI</span></span>    </div>
   </div>
 </section>
 
@@ -1185,39 +1430,33 @@ footer{
   <div class="philo-grid">
 
     <div class="philo reveal">
-      <div class="philo-num">01</div>
       <h3 class="philo-title">Finance is leverage, not reporting</h3>
-      <p class="philo-desc">Numbers exist to move decisions, not just record the past. Every system I build is meant to make the business faster — not to file what already happened.</p>
+      <p class="philo-desc">Numbers exist to move decisions, not just record the past. Every system I build is meant to make the business faster, not to file what already happened.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">02</div>
       <h3 class="philo-title">Automate the repeatable</h3>
-      <p class="philo-desc">If a task runs every month, it should learn to run itself. Manual effort is reserved for judgment and exceptions — never for data entry.</p>
+      <p class="philo-desc">If a task runs every month, it should learn to run itself. Manual effort is reserved for judgment and exceptions, never for data entry.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">03</div>
       <h3 class="philo-title">Build the system before you need it</h3>
       <p class="philo-desc">Infrastructure laid during calm scales silently through chaos. Hypergrowth rewards the rails that were set up early, not the ones improvised mid-sprint.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">04</div>
       <h3 class="philo-title">Clean books are a growth asset</h3>
-      <p class="philo-desc">Reconciled, current accounting isn't hygiene — it's the foundation that diligence, funding rounds and fast decisions all stand on.</p>
+      <p class="philo-desc">Reconciled, current accounting isn't hygiene, it's the foundation that diligence, funding rounds and fast decisions all stand on.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">05</div>
       <h3 class="philo-title">Finance works at the seams</h3>
-      <p class="philo-desc">Real impact lives where finance meets Ops, Product, Pricing and Tech — not inside a closed ledger. Cross-functional is the default, not the exception.</p>
+      <p class="philo-desc">Real impact lives where finance meets Ops, Product, Pricing and Tech, not inside a closed ledger. Cross-functional is the default, not the exception.</p>
     </div>
 
     <div class="philo reveal">
-      <div class="philo-num">06</div>
       <h3 class="philo-title">Control and speed aren't a trade-off</h3>
-      <p class="philo-desc">Governance and velocity coexist when controls are designed into the process — not bolted on after something breaks.</p>
+      <p class="philo-desc">Governance and velocity coexist when controls are designed into the process, not bolted on after something breaks.</p>
     </div>
 
   </div>
@@ -1226,8 +1465,8 @@ footer{
 <!-- EXPERIENCE -->
 <section class="section" id="experience">
   <div class="section-head">
-    <div class="section-label reveal"><h1>Track Record</h1></div>
-    <h2 class="section-title reveal">Finance as operational leverage — not reporting.</h2>
+    <div class="section-label reveal"><h1>Work Experience</h1></div>
+    <h2 class="section-title reveal">Finance as strategic leverage.</h2>
   </div>
   <div class="timeline">
     <div class="spine-fill" id="spineFill"></div>
@@ -1239,9 +1478,8 @@ footer{
           <h3>noon <span class="now-tag"><span class="nd"></span>Now</span></h3>
           <div class="timeline-sub-role">UAE · KSA · EGY · QAT · BAH · IRAQ</div>
         </div>
-        <a href="https://www.noon.com/uae-en/" target="_blank" rel="noopener noreferrer" class="exp-logo" aria-label="Visit noon"><img class="exp-logo-img" loading="lazy" decoding="async" src="assets/img/noon Minutes.PNG" alt="noon" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="exp-logo-fallback">noon</span></a>
+        <a href="https://www.noon.com/uae-en/" target="_blank" rel="noopener noreferrer" class="exp-logo" aria-label="Visit noon"><img class="exp-logo-img" loading="lazy" decoding="async" src="assets/img/Noon Minutes Logo.png" alt="noon" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"><span class="exp-logo-fallback">noon</span></a>
       </div>
-
       <!-- Current role (promoted into) -->
       <div class="role-block">
         <div class="role-period-row">
@@ -1257,7 +1495,7 @@ footer{
         </div>
         <ul class="timeline-bullets">
           <li>End-to-end financial operations across GCC, managing annual business volume of AED xBn+</li>
-          <li>Finance strategy — formulation and execution across markets</li>
+          <li>Finance strategy: Formulation and execution across markets</li>
           <li>P&amp;L ownership, budgeting, reporting and optimization</li>
           <li>Process development, revamp and automation; SOP creation and implementation</li>
           <li>Stakeholder management with Group CXOs, HODs and GMs</li>
@@ -1446,7 +1684,7 @@ footer{
 
     <div class="edu-item rv">
       <div class="edu-logo">
-        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/ICAI Logo Square.jpg" alt="ICAI" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/Logos/Education/WebP/ICAI Logo Square.webp" alt="ICAI" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
         <span class="edu-logo-fallback">ICAI</span>
       </div>
       <div class="edu-text">
@@ -1460,7 +1698,7 @@ footer{
 
     <div class="edu-item current rv">
       <div class="edu-logo">
-        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/IIM C Logo.png" alt="IIM Calcutta" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/Logos/Education/WebP/IIM C Logo.webp" alt="IIM Calcutta" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
         <span class="edu-logo-fallback">IIM<br>C</span>
       </div>
       <div class="edu-text">
@@ -1478,7 +1716,7 @@ footer{
 
     <div class="edu-item rv">
       <div class="edu-logo">
-        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/Logos/Mumbai University.png" alt="University of Mumbai" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
+        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/Logos/Education/WebP/Maharashtra Board.webp" alt="University of Mumbai" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
         <span class="edu-logo-fallback">MU</span>
       </div>
       <div class="edu-text">
@@ -1487,34 +1725,6 @@ footer{
       </div>
       <div class="edu-right">
         <span class="edu-period">Graduate</span>
-      </div>
-    </div>
-
-    <div class="edu-item rv">
-      <div class="edu-logo">
-        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/Logos/Maharashtra Board.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="edu-logo-fallback">MSB</span>
-      </div>
-      <div class="edu-text">
-        <div class="edu-inst">Maharashtra State Board (MSBSHSE)</div>
-        <div class="edu-field">HSC (12th), Commerce</div>
-      </div>
-      <div class="edu-right">
-        <span class="edu-period">Higher Secondary</span>
-      </div>
-    </div>
-
-    <div class="edu-item rv">
-      <div class="edu-logo">
-        <img class="edu-logo-img" loading="lazy" decoding="async" src="assets/img/Logos/Maharashtra Board.png" alt="Maharashtra State Board" onerror="this.style.display='none';this.nextElementSibling.style.display='block';">
-        <span class="edu-logo-fallback">MSB</span>
-      </div>
-      <div class="edu-text">
-        <div class="edu-inst">Maharashtra State Board (MSBSHSE)</div>
-        <div class="edu-field">SSC (10th)</div>
-      </div>
-      <div class="edu-right">
-        <span class="edu-period">Secondary</span>
       </div>
     </div>
 
@@ -1527,7 +1737,7 @@ footer{
 <span class="section-label reveal"><h1>Beyond Finance</h1></span>
 
 <h2 class="section-title reveal">
-Building Businesses Across Borders.✈️
+Building Businesses Globally.✈️
 </h2>
 
 </div>
@@ -1536,41 +1746,41 @@ Building Businesses Across Borders.✈️
 
 <div class="gallery-row row1">
 
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/1. BKC Bhawan.jfif"><figcaption class="gallery-cap">BKC</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/2. Team.jfif"><figcaption class="gallery-cap">Team</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/3. Dubai New.jpg"><figcaption class="gallery-cap">Dubai</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/4. Egypt New.jpg"><figcaption class="gallery-cap">Egypt</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/5. Egypt1.png"><figcaption class="gallery-cap">Egypt</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/6. IMG_7907A.png"><figcaption class="gallery-cap">GCC</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/1. BKC Bhawan.webp"><figcaption class="gallery-cap">ICAI Bhawan, India</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/2. Team.webp"><figcaption class="gallery-cap">Team at Noon</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/3. Dubai New.webp"><figcaption class="gallery-cap">Noon HQ, Dubai</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/4. Egypt New.webp"><figcaption class="gallery-cap">Noon Egypt Team</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/5. Egypt1.webp"><figcaption class="gallery-cap">Egypt</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/6. IMG_7907A.webp"><figcaption class="gallery-cap">Leadership Team at Zepto</figcaption></figure>
 
 <!-- Duplicate (keep captions identical to the set above) -->
 
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/1. BKC Bhawan.jfif"><figcaption class="gallery-cap">BKC</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/2. Team.jfif"><figcaption class="gallery-cap">Team</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/3. Dubai New.jpg"><figcaption class="gallery-cap">Dubai</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/4. Egypt New.jpg"><figcaption class="gallery-cap">Egypt</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/5. Egypt1.png"><figcaption class="gallery-cap">Egypt</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/6. IMG_7907A.png"><figcaption class="gallery-cap">GCC</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/1. BKC Bhawan.webp"><figcaption class="gallery-cap">ICAI Bhawan, India</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/2. Team.webp"><figcaption class="gallery-cap">Team at Noon</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/3. Dubai New.webp"><figcaption class="gallery-cap">Noon HQ, Dubai</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/4. Egypt New.webp"><figcaption class="gallery-cap">Noon Egypt Team</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/5. Egypt1.webp"><figcaption class="gallery-cap">Egypt</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/6. IMG_7907A.webp"><figcaption class="gallery-cap">Leadership Team at Zepto</figcaption></figure>
 
 </div>
 
 <div class="gallery-row row2">
 
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/7. KSA.jfif"><figcaption class="gallery-cap">KSA</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/8. Dubai GCC Finance.jfif"><figcaption class="gallery-cap">Dubai</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/9. Zepto Aadit New.jpg"><figcaption class="gallery-cap">Zepto</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/10. Dubai Summit.jfif"><figcaption class="gallery-cap">Summit</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/11. IMG_9747.jpeg"><figcaption class="gallery-cap">Team</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/KSA.png"><figcaption class="gallery-cap">KSA</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/7. KSA.webp"><figcaption class="gallery-cap">Noon Office, KSA</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/8. Dubai GCC Finance.webp"><figcaption class="gallery-cap">Finance Summit, Dubai</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/9. Zepto Aadit New.webp"><figcaption class="gallery-cap">With Aadit Palicha, Founder of Zepto</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/10. Dubai Summit.webp"><figcaption class="gallery-cap">Finance Summit, Dubai</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/11. IMG_9747.webp"><figcaption class="gallery-cap">Core Finance Team at Zepto</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/KSA.webp"><figcaption class="gallery-cap">KSA</figcaption></figure>
 
 <!-- Duplicate (keep captions identical to the set above) -->
 
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/7. KSA.jfif"><figcaption class="gallery-cap">KSA</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/8. Dubai GCC Finance.jfif"><figcaption class="gallery-cap">Dubai</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/9. Zepto Aadit New.jpg"><figcaption class="gallery-cap">Zepto</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/10. Dubai Summit.jfif"><figcaption class="gallery-cap">Summit</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/11. IMG_9747.jpeg"><figcaption class="gallery-cap">Team</figcaption></figure>
-<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/KSA.png"><figcaption class="gallery-cap">KSA</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/7. KSA.webp"><figcaption class="gallery-cap">Noon Office, KSA</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/8. Dubai GCC Finance.webp"><figcaption class="gallery-cap">Finance Summit, Dubai</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/9. Zepto Aadit New.webp"><figcaption class="gallery-cap">With Aadit Palicha, Founder of Zepto</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/10. Dubai Summit.webp"><figcaption class="gallery-cap">Finance Summit, Dubai</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/11. IMG_9747.webp"><figcaption class="gallery-cap">Core Finance Team at Zepto</figcaption></figure>
+<figure class="gallery-card"><img loading="lazy" decoding="async" src="assets/img/Gallery/WebP/KSA.webp"><figcaption class="gallery-cap">KSA</figcaption></figure>
 
 </div>
 
@@ -1593,20 +1803,50 @@ Building Businesses Across Borders.✈️
 <!-- CONTACT -->
 <section class="section" id="contact">
   <div class="contact-box reveal-scale">
-    <h2>I make the hard parts look handled.</h2>
-    <p style="color:var(--gold);font-family:'Manrope',sans-serif;letter-spacing:.04em;font-weight:600;margin-bottom:36px;">Let's Connect</p>
+    <h2>I make the <span class="c-gold">hard</span> parts look <span class="c-gold">handled</span>.</h2>
+    <p class="contact-cta">Let's Connect</p>
     <div class="contact-links">
       <a href="https://www.linkedin.com/in/chintanagheda/" target="_blank" rel="noopener noreferrer" class="btn btn-primary">
     LinkedIn</a>
-      <a href="mailto:chintanagheda@noon.com?subject=Leadership%20Opportunity&body=Hi%20Chintan,%0D%0A%0D%0AI%20came%20across%20your%20website%20and%20would%20like%20to%20connect."
+      <a href="mailto:chintanagheda@gmail.com?subject=Leadership%20Opportunity&body=Hi%20Chintan,%0D%0A%0D%0AI%20came%20across%20your%20website%20and%20would%20like%20to%20connect."
    class="btn btn-secondary">Email</a>
     </div>
   </div>
+  <div class="contact-end"></div>
 </section>
 
 <footer>
-  <div>© 2026 Chintan Agheda</div>
-  <div>Finance Leader</div>
+  <div class="footer-main">
+
+    <div class="footer-name reveal">Chintan<br><span class="fn-gold">Agheda.</span></div>
+
+    <div>
+      <div class="footer-col-head">Navigate</div>
+      <ul class="footer-list">
+        <li><a href="#strengths"><span class="fl-num">01</span>Expertise</a></li>
+        <li><a href="#results"><span class="fl-num">02</span>Results</a></li>
+        <li><a href="#philosophy"><span class="fl-num">03</span>Principles</a></li>
+        <li><a href="#experience"><span class="fl-num">04</span>Experience</a></li>
+        <li><a href="#education"><span class="fl-num">05</span>Education</a></li>
+        <li><a href="#gallery"><span class="fl-num">06</span>Gallery</a></li>
+        <li><a href="#contact"><span class="fl-num">07</span>Contact</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-head">Elsewhere</div>
+      <ul class="footer-list">
+        <li><a href="https://www.linkedin.com/in/chintanagheda/" target="_blank" rel="noopener noreferrer">LinkedIn<span class="fl-arrow">↗</span></a></li>
+        <li><a href="mailto:chintanagheda@gmail.com">Email<span class="fl-arrow">↗</span></a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <div class="footer-meta">
+    <span>© 2026 Chintan Agheda · All Rights Reserved</span>
+    <span>Website Designed and Built by Chintan Agheda</span>
+  </div>
 </footer>
 
 <script>
@@ -1732,76 +1972,108 @@ gsap.registerPlugin(ScrollTrigger);
 
 /* ─────────────────────────────
    LOADER → HERO ENTRANCE
+   (0→100% fully visible BEFORE doors open)
 ───────────────────────────── */
 (function(){
+  var lp      = document.getElementById('lp');
+  var lpct    = document.getElementById('lpct');
+  var loader  = document.getElementById('loader');
+  var nav     = document.getElementById('mainNav');
+  var navName = nav ? nav.querySelector('.nav-name') : null;
+  var title   = document.querySelector('.loader-title');
+  var prog    = { v:0 };
+
   var tl = gsap.timeline();
 
-  tl.to('.loader-title span',{ y:0, duration:1.15, stagger:.12, ease:'expo.out' })
-    .to('.loader-label',{ opacity:1, duration:.6 },'-=.8')
-    .to('.loader-sub',{ opacity:1, duration:.6 },'-=.6')
-    .to('#lp',{
-      width:'100%', duration:1.6, ease:'power4.out',
-      onUpdate:function(){ document.getElementById('lpct').textContent = Math.round(this.progress()*100)+'%'; }
-    },'-=.5')
-    .to('.loader',{ delay:.15, onComplete:function(){ document.querySelector('.loader').classList.add('open'); } })
-    .to('.loader',{ opacity:0, pointerEvents:'none', duration:0.7 },'+=1.5')
+  tl.to('.loader-title .lt-line',{ y:0, duration:1.05, ease:'expo.out' })
+    .to('.loader-label',{ opacity:1, duration:.5 },'-=.7')
+    .to('.loader-sub',{ opacity:1, duration:.5 },'-=.5')
 
-    /* NAV */
-    .fromTo('#mainNav',{ y:-70, opacity:0 },{ y:0, opacity:1, duration:.8, ease:'power3.out' },'-=.5')
+    /* 0 → 100% */
+    .to(prog,{
+      v:100, duration:1.7, ease:'power1.inOut',
+      onUpdate:function(){
+        var val = Math.round(prog.v);
+        lp.style.width = val + '%';
+        lpct.textContent = val + '%';
+      }
+    },'-=.2')
 
-    /* HERO tag */
-    .to('#heroTag',{ opacity:1, y:0, duration:.6, ease:'power3.out' },'-=.4')
+    /* hold ~0.5s at 100% */
+    .to({}, { duration:.5 })
 
-    /* H1 lines slam in */
-    .to('.hero h1 .line-inner',{ y:'0%', duration:1, stagger:.12, ease:'expo.out' },'-=.3')
+    /* MAGIC MOVE — the loader title flies up and merges into the nav name */
+    .add(magicMerge);
 
-    /* wave draw */
-    .to('#wavePath',{ strokeDashoffset:0, duration:1.1, ease:'power3.out' },'-=.8')
+  function magicMerge(){
+    /* everything in the loader except the title fades away */
+    gsap.to(['.loader-grid','.loader-label','.loader-sub','.loader-line','.loader-bottom','.loader-doors-top','.loader-doors-bottom'],
+      { opacity:0, duration:.45, ease:'power2.out' });
 
-    /* rolling line */
-    .to('#rollingLine',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
+    if(!navName || !title){
+      gsap.to(loader,{ opacity:0, pointerEvents:'none', duration:.7,
+        onComplete:function(){ if(loader) loader.style.display='none'; } });
+      runHero(.2);
+      return;
+    }
 
-    /* para */
-    .to('#heroP',{ opacity:1, y:0, duration:.8, ease:'power3.out' },'-=.5')
+    /* raise the nav above the loader so the flying name stays visible */
+    nav.style.zIndex = '100001';
+    gsap.set(nav,     { opacity:1, y:0 });
+    gsap.set(navName, { clearProps:'transform' });
 
-    /* actions */
-    .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
+    /* FLIP — measure the small (nav) + big (loader title) states */
+    var navRect   = navName.getBoundingClientRect();
+    var titleRect = title.getBoundingClientRect();
+    var s  = titleRect.width / navRect.width;
+    var dx = (titleRect.left + titleRect.width/2)  - (navRect.left + navRect.width/2);
+    var dy = (titleRect.top  + titleRect.height/2) - (navRect.top  + navRect.height/2);
 
-    /* image */
-    .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'-=.9');
+    /* drop the nav name exactly over the big loader title, then hide the loader's own title */
+    gsap.set(navName, { x:dx, y:dy, scale:s, transformOrigin:'center center' });
+    gsap.set(title,   { opacity:0 });
+
+    /* fly the name up into the nav bar */
+    gsap.to(navName, {
+      x:0, y:0, scale:1, duration:1.15, ease:'power3.inOut',
+      onComplete:function(){
+        nav.style.zIndex = '';
+        gsap.set(navName, { clearProps:'transform' });
+      }
+    });
+
+    /* fade the loader backdrop out while the name travels */
+    gsap.to(loader, {
+      opacity:0, duration:.7, delay:.4, ease:'power2.inOut',
+      onComplete:function(){
+        loader.style.display='none';
+        /* recalc all scroll positions now that loader is gone + hero settled */
+        if(window.ScrollTrigger) ScrollTrigger.refresh();
+      }
+    });
+
+    /* bring the rest of the hero in, just behind the merge */
+    runHero(.55);
+  }
+
+  function runHero(delay){
+    var h = gsap.timeline({ delay:delay });
+    h.to('.hero h1 .line-inner',{ y:'0%', duration:1, stagger:.12, ease:'expo.out',
+        onComplete:function(){
+          /* release the clip so descenders (g, y, p) aren't cut */
+          document.querySelectorAll('.hero h1 .line').forEach(function(l){ l.style.overflow='visible'; });
+        }
+      })
+     .to('#rollingLine',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.5')
+     .to('#heroP',{ opacity:1, y:0, duration:.8, ease:'power3.out' },'-=.5')
+     .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
+     .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'-=.9');
+  }
 })();
 
 /* ─────────────────────────────
-   NAV HIDE ON SCROLL DOWN
+   NAV — pinned at top (no hide on scroll)
 ───────────────────────────── */
-(function () {
-  let last = window.pageYOffset;
-  const nav = document.getElementById("mainNav");
-
-  window.addEventListener(
-    "scroll",
-    function () {
-      const y = window.pageYOffset;
-
-      if (y > last && y > 20) {
-        gsap.to(nav, {
-          y: -100,
-          duration: 0.15,
-          ease: "power1.out"
-        });
-      } else {
-        gsap.to(nav, {
-          y: 0,
-          duration: 0.2,
-          ease: "power1.out"
-        });
-      }
-
-      last = y;
-    },
-    { passive: true }
-  );
-})();
 
 /* ─────────────────────────────
    SCROLL REVEALS
@@ -2012,8 +2284,11 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
     scrub: 0.6,
     onUpdate: function(self){
       var p = self.progress;
-      strike.style.transform = 'translateY(-50%) scaleX(' + p + ')';
-      if(p > 0.55){ word.classList.add('cut'); }
+      /* line draws to FULL by p=0.6, then holds complete */
+      var lineP = Math.min(p / 0.6, 1);
+      strike.style.transform = 'translateY(-50%) scaleX(' + lineP + ')';
+      /* glow ONLY after the line has fully struck Distr (small buffer past completion) */
+      if(p >= 0.66){ word.classList.add('cut'); }
       else { word.classList.remove('cut'); }
     }
   });
@@ -2038,19 +2313,22 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
   function spawnSmoke(){
     var p = document.createElement('span');
     p.className = 'rocket-puff';
-    var size = 7 + Math.random()*9;
+    var size = 6 + Math.random()*7;
     p.style.width = size + 'px';
     p.style.height = size + 'px';
-    p.style.background = 'radial-gradient(circle, rgba(190,190,190,.5), rgba(150,150,150,0) 70%)';
-    p.style.filter = 'blur(1px)';
+    p.style.background = 'radial-gradient(circle, rgba(200,200,200,.5), rgba(160,160,160,0) 70%)';
+    p.style.filter = 'blur(1.2px)';
     fx.appendChild(p);
-    var dx = (Math.random()-0.5)*16;
-    var dy = 14 + Math.random()*22;   /* drifts downward/out from tail */
-    var sc = 1.6 + Math.random()*1.4;
+    /* exhaust runs along the rocket's axis → emit diagonally DOWN-LEFT (~45°) */
+    var dist = 16 + Math.random()*16;
+    var dx = -dist * (0.7 + Math.random()*0.25);   /* leftward */
+    var dy =  dist * (0.7 + Math.random()*0.25);   /* downward */
+    var sc = 1.7 + Math.random()*1.1;
     p.animate([
-      { transform:'translate(-50%,-50%) scale(.5)', opacity:.55 },
+      { transform:'translate(-50%,-50%) scale(.45)', opacity:.5 },
+      { transform:'translate(calc(-50% + '+(dx*0.5)+'px), calc(-50% + '+(dy*0.5)+'px)) scale('+(sc*0.75)+')', opacity:.32, offset:.5 },
       { transform:'translate(calc(-50% + '+dx+'px), calc(-50% + '+dy+'px)) scale('+sc+')', opacity:0 }
-    ], { duration: 900 + Math.random()*500, easing:'ease-out' })
+    ], { duration: 950 + Math.random()*350, easing:'ease-out' })
      .onfinish = function(){ p.remove(); };
   }
 
@@ -2064,8 +2342,9 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
     s.style.borderRadius = '50%';
     s.style.boxShadow = '0 0 6px var(--gold)';
     fx.appendChild(s);
-    var dx = (Math.random()-0.5)*30;
-    var dy = 6 + Math.random()*26;
+    var dist = 10 + Math.random()*22;
+    var dx = -dist * (0.55 + Math.random()*0.35);   /* down-left, with sparkle scatter */
+    var dy =  dist * (0.55 + Math.random()*0.35);
     s.animate([
       { transform:'translate(-50%,-50%) scale(0)', opacity:0 },
       { transform:'translate(calc(-50% + '+(dx*0.4)+'px), calc(-50% + '+(dy*0.4)+'px)) scale(1)', opacity:1, offset:.3 },
@@ -2076,10 +2355,10 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
 
   function loop(t){
     if(!running) return;
-    if(t - last > 90){
+    if(t - last > 65){                 /* steady, even cadence */
       last = t;
       spawnSmoke();
-      if(Math.random() > .35) spawnGlitter();
+      if(Math.random() > .45) spawnGlitter();
     }
     raf = requestAnimationFrame(loop);
   }
@@ -2101,25 +2380,157 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
 /* ─────────────────────────────
    HERO PARALLAX ON SCROLL
 ───────────────────────────── */
-gsap.to('#heroImg',{
-  scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:1.5 },
-  y:80, ease:'none'
-});
+gsap.fromTo('#heroImg',
+  { y:0 },
+  {
+    y:80, ease:'none', immediateRender:false,
+    scrollTrigger:{ trigger:'.hero', start:'top top', end:'bottom top', scrub:1.5 }
+  });
 
 /* ─────────────────────────────
-   GALLERY — lazy load + remove shimmer once loaded
+   GALLERY — each row is INDEPENDENT
+   • Top row  (row1): auto right → left
+   • Bottom row(row2): auto left  → right
+   Hover a row → only that row stops (and its photo zooms).
+   Grab a row → drag it left/right (only that row); release → fling.
+   Cursor leaves that row → it resumes its OWN original direction.
 ───────────────────────────── */
 (function(){
-  var imgs = document.querySelectorAll('.gallery-row img');
-  imgs.forEach(function(img){
+  /* shimmer removal once each image loads */
+  document.querySelectorAll('.gallery-row img').forEach(function(img){
     img.setAttribute('decoding','async');
-    if(img.complete && img.naturalWidth > 0){
-      img.classList.add('loaded');
-    }else{
-      img.addEventListener('load', function(){ img.classList.add('loaded'); });
+    img.setAttribute('draggable','false');
+    if(img.complete && img.naturalWidth > 0){ img.classList.add('loaded'); }
+    else{
+      img.addEventListener('load',  function(){ img.classList.add('loaded'); });
       img.addEventListener('error', function(){ img.classList.add('loaded'); });
     }
   });
+
+  /* "make way" — hovering a photo nudges its immediate neighbours aside */
+  document.querySelectorAll('#gallery .gallery-card').forEach(function(card){
+    card.addEventListener('mouseenter', function(){
+      var prev = card.previousElementSibling;
+      var next = card.nextElementSibling;
+      if(prev && prev.classList.contains('gallery-card')) prev.style.transform = 'translateX(-26px)';
+      if(next && next.classList.contains('gallery-card')) next.style.transform = 'translateX(26px)';
+    });
+    card.addEventListener('mouseleave', function(){
+      var prev = card.previousElementSibling;
+      var next = card.nextElementSibling;
+      if(prev && prev.classList.contains('gallery-card')) prev.style.transform = '';
+      if(next && next.classList.contains('gallery-card')) next.style.transform = '';
+    });
+  });
+
+  var wrap = document.querySelector('#gallery .gallery-wrap');
+  if(!wrap) return;
+  var rows = wrap.querySelectorAll('.gallery-row');
+  if(!rows.length) return;
+
+  var autoSpeed  = 0.5;     /* px per frame */
+  var activeDrag = null;    /* the single row currently being dragged */
+  var states     = [];
+
+  rows.forEach(function(row, i){
+    row.style.animation  = 'none';
+    row.style.willChange = 'transform';
+
+    var s = {
+      el: row,
+      offset: 0,
+      half: 0,
+      dir: (i % 2 === 0) ? -1 : 1,   /* row1 → right-to-left, row2 → left-to-right */
+      vel: 0,
+      hovering: false,
+      dragging: false,
+      startX: 0,
+      lastX: 0,
+      startOffset: 0
+    };
+    states.push(s);
+
+    /* hover pauses ONLY this row */
+    row.addEventListener('mouseenter', function(){ s.hovering = true;  });
+    row.addEventListener('mouseleave', function(){ s.hovering = false; });
+
+    /* drag start (mouse) — only this row */
+    row.addEventListener('mousedown', function(e){
+      e.preventDefault();
+      s.dragging = true; s.vel = 0;
+      s.startX = e.clientX; s.lastX = e.clientX; s.startOffset = s.offset;
+      activeDrag = s;
+      row.classList.add('dragging');
+    });
+
+    /* drag (touch) — only this row */
+    row.addEventListener('touchstart', function(e){
+      var x = e.touches[0].clientX;
+      s.hovering = true;            /* touch = hold/pause this row */
+      s.dragging = true; s.vel = 0;
+      s.startX = x; s.lastX = x; s.startOffset = s.offset;
+      activeDrag = s;
+      row.classList.add('dragging');
+    }, {passive:true});
+    row.addEventListener('touchmove', function(e){
+      if(!s.dragging) return;
+      moveDrag(s, e.touches[0].clientX);
+    }, {passive:true});
+    row.addEventListener('touchend',    function(){ s.hovering = false; endDrag(s); });
+    row.addEventListener('touchcancel', function(){ s.hovering = false; endDrag(s); });
+  });
+
+  function moveDrag(s, x){
+    s.offset = s.startOffset + (x - s.startX);
+    s.vel    = x - s.lastX;
+    s.lastX  = x;
+  }
+  function endDrag(s){
+    if(!s.dragging) return;
+    s.dragging = false;
+    if(activeDrag === s) activeDrag = null;
+    s.el.classList.remove('dragging');
+    /* vel carries into momentum, then this row resumes its own direction */
+  }
+
+  /* global mouse move/up so a drag keeps going outside the row's bounds */
+  window.addEventListener('mousemove', function(e){ if(activeDrag) moveDrag(activeDrag, e.clientX); });
+  window.addEventListener('mouseup',   function(){ if(activeDrag) endDrag(activeDrag); });
+
+  function measure(){ states.forEach(function(s){ s.half = s.el.scrollWidth / 2; }); }
+  measure();
+  window.addEventListener('resize', measure);
+  window.addEventListener('load', measure);
+  wrap.querySelectorAll('img').forEach(function(img){
+    if(!(img.complete && img.naturalWidth > 0)){
+      img.addEventListener('load', measure);
+      img.addEventListener('error', measure);
+    }
+  });
+
+  function wrapOffset(s){
+    if(s.half <= 0) return;
+    while(s.offset <= -s.half) s.offset += s.half;
+    while(s.offset > 0)        s.offset -= s.half;
+  }
+
+  function frame(){
+    states.forEach(function(s){
+      if(s.dragging){
+        /* offset driven by the move handlers */
+      } else if(Math.abs(s.vel) > 0.05){
+        s.offset += s.vel;        /* momentum fling after release */
+        s.vel *= 0.92;
+      } else {
+        s.vel = 0;
+        if(!s.hovering) s.offset += s.dir * autoSpeed;   /* resume this row's own auto */
+      }
+      wrapOffset(s);
+      s.el.style.transform = 'translateX(' + s.offset + 'px)';
+    });
+    requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
 })();
 
 /* ─────────────────────────────
@@ -2129,6 +2540,20 @@ gsap.to('#heroImg',{
   var wrap  = document.querySelector('.logos-wrap');
   var track = document.querySelector('.logos-track');
   if(!wrap || !track) return;
+
+  /* add a hover name label to each logo (read from its alt / fallback text) */
+  track.querySelectorAll('.logo-item').forEach(function(item){
+    if(item.querySelector('.logo-name')) return;
+    var img = item.querySelector('img');
+    var fb  = item.querySelector('.logo-fallback');
+    var name = (img && img.getAttribute('alt')) || (fb && fb.textContent) || '';
+    name = name.trim();
+    if(!name) return;
+    var label = document.createElement('span');
+    label.className = 'logo-name';
+    label.textContent = name;
+    item.appendChild(label);
+  });
 
   /* Take over from the CSS animation so JS can drive translateX */
   track.style.animation = 'none';
@@ -2209,6 +2634,31 @@ gsap.to('#heroImg',{
   wrap.addEventListener('touchmove',  function(e){ move(e.touches[0].clientX); }, {passive:true});
   wrap.addEventListener('touchend', up);
   wrap.addEventListener('touchcancel', up);
+})();
+</script>
+<script>
+/* Strengths — experience figures: ultra-smooth count (decimal interpolation, snaps to N+) */
+(function(){
+  if(typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  document.querySelectorAll('#strengths .xp-fig').forEach(function(fig){
+    var el = fig.querySelector('.xp-val');
+    if(!el) return;
+    var end = parseInt(fig.dataset.count, 10) || 0;
+    var suf = fig.dataset.suffix || '';
+    var done = false;
+    function render(v){ el.textContent = (v >= end) ? (end + suf) : v.toFixed(1); }
+    el.textContent = '0';
+    ScrollTrigger.create({
+      trigger: fig, start: 'top 85%',
+      onEnter: function(){
+        if(done) return; done = true;
+        var o = { v:0 };
+        gsap.to(o, { v:end, duration:1.7, delay:0.2, ease:'power2.out',
+          onUpdate:function(){ render(o.v); },
+          onComplete:function(){ el.textContent = end + suf; } });
+      }
+    });
+  });
 })();
 </script>
 </body>

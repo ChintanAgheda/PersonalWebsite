@@ -932,14 +932,29 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   padding:190px 80px;
   overflow:hidden;
 }
-.distraction-wrap{ max-width:1400px; margin:auto; }
+.distraction-wrap{ max-width:1400px; margin:auto; position:relative; }
 .distraction-word{
   font-family:'Manrope',sans-serif;
   font-weight:800; letter-spacing:-.07em; line-height:1;
   font-size:clamp(2.3rem,7vw,7rem);
   display:inline-flex; align-items:baseline; flex-wrap:nowrap;
   white-space:nowrap;
+  will-change:opacity, transform, filter;
 }
+/* first letter of "action" — capitalises on its own */
+.ac-first{ display:inline-block; }
+/* Ninja appears at the end of "action" (space reserved; it pops in from behind) */
+.ninja-inline{
+  display:inline-flex; align-self:center; position:relative;
+  vertical-align:middle; cursor:pointer; transform-origin:center center;
+}
+.ninja-inline img{
+  height:1.15em; width:auto; display:block; margin-left:.16em;
+  -webkit-user-drag:none; user-select:none;
+}
+.ninja-open{ opacity:0; transform:scale(.2); transform-origin:center center; }
+/* eyes-closed frame */
+.ninja-blink{ position:absolute; left:0; top:0; opacity:0; }
 .distr-group{ position:relative; display:inline-block; }
 .distr-text{
   display:inline-block; color:#fff;
@@ -947,8 +962,26 @@ a.company-logo:hover{ box-shadow:0 8px 24px rgba(0,0,0,.45); }
   transition:opacity .4s ease;
 }
 .action-text{
-  display:inline-block; color:rgba(255,255,255,.9);
-  transition:color .45s ease, text-shadow .45s ease;
+  display:inline-block; color:rgba(255,255,255,.9); position:relative;
+  transition:transform .4s cubic-bezier(.34,1.56,.64,1), color .45s ease, text-shadow .45s ease;
+}
+/* "Action" gets the same shine-sweep + glow as the company names (Noon, Zepto…) on hover */
+.action-text:hover{
+  transform:scale(1.06);
+  background:linear-gradient(100deg,
+    var(--gold) 0%, var(--gold) 30%, #ffffff 50%, var(--gold) 70%, var(--gold) 100%);
+  background-size:240% 100%;
+  -webkit-background-clip:text; background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-shadow:0 0 20px rgba(236,211,160,.95), 0 0 46px rgba(216,184,127,.6), 0 0 92px rgba(216,184,127,.4);
+  animation:actionSweep 2.6s linear infinite;
+}
+/* while the capitalise animation runs, the "A" is a transform-box and can't take the text-clip,
+   so paint it solid gold (crisp, matches the word) instead of see-through → no blurry letter on hover */
+.action-text:hover .ac-first.ac-solid{ -webkit-text-fill-color:var(--gold); }
+@keyframes actionSweep{
+  0%{ background-position:240% 0; }
+  100%{ background-position:0% 0; }
 }
 /* The orange strike line over "Distr" */
 .distr-strike{
@@ -1204,6 +1237,152 @@ footer{
   .xp-row:nth-child(12){ border-bottom:1px solid rgba(255,255,255,.08); }
   .xp-band{ gap:26px; }
   .xp-note{ width:100%; margin-left:0; text-align:left; }
+}
+
+/* ════════════════════════════════════════════════════════════
+   MOBILE LAYER  ·  added last so desktop (>768px) is untouched.
+   Everything here lives inside max-width media queries only.
+   ════════════════════════════════════════════════════════════ */
+
+/* — Soften edge-fade overlays on narrow screens (gallery + logo strip).
+     Helps phones and tablet-portrait without changing desktop. — */
+@media (max-width:768px){
+  .gallery-wrap::before,.gallery-wrap::after{ width:64px; }
+  .logos-wrap::before,.logos-wrap::after{ width:72px; }
+}
+
+/* ─────────────  PHONES  (≤600px)  ───────────── */
+@media (max-width:600px){
+
+  /* kill any chance of sideways scroll from oversized headings/marquees */
+  html,body{ max-width:100%; overflow-x:hidden; }
+
+  /* ── LOADER ── keep the title on one tidy line, then it still flies up to the nav */
+  .loader-title{ font-size:clamp(1.3rem,7vw,2.4rem); letter-spacing:.14em; }
+  .loader-label{ letter-spacing:.26em; margin-bottom:22px; }
+  .loader-sub{ letter-spacing:.3em; margin-bottom:38px; }
+  .loader-line{ width:min(280px,80vw); }
+  .loader-bottom{ font-size:9px; }
+
+  /* ── NAV ── */
+  nav{ padding:18px 22px; }
+  .nav-name{ font-size:15px; letter-spacing:.24em; }
+
+  /* ── HERO ── */
+  .hero{ min-height:auto; padding:118px 20px 64px; }
+  .hero-grid{ gap:36px; }
+  .hero h1{ font-size:clamp(2.6rem,13vw,3.7rem); letter-spacing:-.05em; margin-bottom:22px; }
+  .rolling-line{ font-size:12px; letter-spacing:.16em; margin-bottom:18px; }
+  .hero p{ font-size:15.5px; line-height:1.75; margin-bottom:32px; }
+
+  .hero-actions{ width:100%; gap:14px; }
+  .hero-actions .btn{ width:100%; justify-content:center; }
+  .btn{ padding:16px 28px; font-size:14px; }
+
+  /* Image + floating card stack cleanly instead of overlapping the edge */
+  .image-wrap{ border-radius:24px; }
+  .floating-card{
+    position:static; min-width:0; width:100%; margin-top:14px;
+    padding:18px 22px; border-radius:18px;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .floating-label{ margin-bottom:0; }
+  .floating-value{ font-size:19px; }
+
+  /* ── MARQUEE ── */
+  .marquee-strip{ padding:18px 0; }
+  .marquee-item{ font-size:12.5px; }
+  .marquee-item .sep{ margin:0 20px; }
+
+  /* ── GENERIC SECTION RHYTHM ── */
+  .section{ padding:78px 20px; }
+  #strengths{ padding-top:64px; padding-bottom:64px; }
+  #education{ padding-top:8px; }
+  .section-head{ margin-bottom:24px; }
+  .section-title{ font-size:clamp(2.1rem,9vw,3rem); letter-spacing:-.04em; line-height:1.16; }
+
+  /* ── INTRO STATEMENT ── */
+  .intro-statement{ padding:74px 20px 8px; }
+  .intro-line{ font-size:clamp(1.9rem,8.4vw,2.7rem); }
+
+  /* ── STRENGTHS ── */
+  .xp-band{ gap:18px 24px; padding:24px 2px; }
+  .xp-fig{ gap:18px; }
+  .xp-val{ font-size:clamp(40px,13vw,58px); min-width:1.7em; }
+  .xp-cap{ font-size:11px; max-width:130px; }
+  .xp-rule{ height:46px; }
+  .xp-label{ font-size:14.5px; }
+
+  /* ── RESULTS / STATS ── */
+  .stats{ gap:16px; }
+  .stat{ padding:30px 26px; border-radius:22px; }
+  .stat-number{ font-size:46px; }
+  .stat-label{ font-size:13px; }
+
+  /* ── LOGO STRIP ── */
+  .logos-section{ padding:52px 0; }
+  .logos-head{ font-size:13px; letter-spacing:.18em; margin-bottom:32px; padding:0 20px; }
+  .logos-track{ gap:50px; }
+  .logo-item{ height:56px; }
+  .logo-item img{ max-width:150px; }
+
+  /* ── PHILOSOPHY ── */
+  .philo-grid{ gap:16px; }
+  .philo{ padding:30px 26px; border-radius:22px; }
+  .philo-title{ font-size:20px; }
+  .philo-desc{ font-size:13.5px; }
+
+  /* ── EXPERIENCE TIMELINE ── */
+  .timeline-item{ padding:24px 22px; border-radius:20px; margin-bottom:30px; }
+  .timeline-item:hover{ padding-left:36px; }
+  .timeline h3{ font-size:24px; }
+  .now-tag{ margin-left:8px; }
+  .company-header{ gap:14px; margin-bottom:18px; }
+  .exp-logo{ width:74px; height:42px; }
+  .role-title{ font-size:15px; }
+  .role-period-row{ gap:6px; margin-bottom:12px; }
+  .tl-chip{ font-size:9.5px; }
+  .timeline-bullets li{ font-size:13px; }
+  .timeline-sub-role{ font-size:12px; }
+
+  /* ── EDUCATION ── */
+  .edu-inst{ font-size:clamp(17px,5.4vw,21px); }
+  .edu-logo{ width:60px; height:60px; border-radius:14px; }
+  .edu-field{ font-size:12.5px; margin-top:7px; }
+
+  /* ── GALLERY ── lighter, sees more context per swipe ── */
+  .gallery-wrap{ margin-top:50px; }
+  .gallery-wrap::before,.gallery-wrap::after{ width:42px; }
+  .gallery-row{ gap:14px; margin-bottom:14px; }
+  .gallery-row img{ width:262px; height:176px; border-radius:20px; }
+  .gallery-cap{ font-size:9px; padding:5px 10px; left:10px; bottom:10px; }
+
+  /* ── DISTRACTION → ACTION ── */
+  .distraction-section{ padding:100px 20px; }
+  .distraction-word{ font-size:clamp(2rem,11.5vw,3.3rem); }
+
+  /* ── CONTACT ── */
+  .contact-box{ padding:38px 22px; border-radius:28px; }
+  .contact-box h2{ font-size:clamp(2rem,8.6vw,2.9rem); }
+  .contact-cta{ font-size:clamp(18px,5.2vw,22px) !important; margin-bottom:30px !important; }
+  .contact-links{ display:flex; flex-direction:column; gap:14px; }
+  .contact-links .btn{ width:100%; justify-content:center; }
+  .contact-end{ height:140px; }
+
+  /* ── FOOTER ── */
+  .footer-main{ padding:64px 20px 36px; gap:40px; }
+  .footer-name{ font-size:clamp(2.6rem,14vw,3.7rem); }
+  .footer-list a{ font-size:14px; }
+  .footer-meta{ font-size:9.5px; }
+}
+
+/* ─────────────  SMALL PHONES  (≤380px)  ───────────── */
+@media (max-width:380px){
+  .hero h1{ font-size:clamp(2.3rem,14vw,3rem); }
+  .section-title{ font-size:clamp(1.85rem,9.5vw,2.5rem); }
+  .stat-number{ font-size:42px; }
+  .gallery-row img{ width:230px; height:156px; }
+  .loader-title{ font-size:clamp(1.15rem,7.4vw,2rem); letter-spacing:.1em; }
 }
 </style>
 </head>
@@ -1792,10 +1971,10 @@ Building Businesses Globally.✈️
 <section class="distraction-section" id="focus">
   <div class="distraction-wrap">
     <h2 class="distraction-word" id="distractionWord">
-      <span class="distr-group">
+      <span class="distr-group" id="distrGroup">
         <span class="distr-text">Distr</span>
         <span class="distr-strike" id="distrStrike" aria-hidden="true"></span>
-      </span><span class="action-text">action</span>
+      </span><span class="action-text" id="actionText"><span class="ac-first" id="acFirst">a</span>ction</span><span class="ninja-inline" id="ninjaReveal" aria-hidden="true"><img class="ninja-open" src="assets/img/ninja-open.png" alt="" decoding="async"><img class="ninja-blink" src="assets/img/ninja-closed.png" alt="" decoding="async"></span>
     </h2>
   </div>
 </section>
@@ -2269,28 +2448,146 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
 });
 
 /* ─────────────────────────────
-   DISTRACTION → ACTION (scroll-driven orange cut)
+   DISTRACTION → ACTION
+   cut "Distr" → glow "action" → glide to centre → ninja pops in
+   (timed timeline = smooth regardless of scroll speed)
 ───────────────────────────── */
 (function(){
-  var sec    = document.querySelector('.distraction-section');
   var word   = document.getElementById('distractionWord');
   var strike = document.getElementById('distrStrike');
-  if(!sec || !word || !strike) return;
+  var group  = document.getElementById('distrGroup');
+  var action = document.getElementById('actionText');
+  var acFirst= document.getElementById('acFirst');
+  /* animating = inline-block (transform box) + solid-gold fill on hover; settled = inline + seamless clip */
+  function setAcMode(animating){
+    if(!acFirst) return;
+    acFirst.style.display = animating ? 'inline-block' : 'inline';
+    acFirst.classList.toggle('ac-solid', animating);
+  }
+  var ninja  = document.getElementById('ninjaReveal');
+  if(!word || !strike || !group || !action) return;
+  var ninjaImg = ninja ? ninja.querySelector('.ninja-open') : null;
+  var blinkImg = ninja ? ninja.querySelector('.ninja-blink') : null;
+
+  /* ── eye blink ──
+     • auto cadence: eyes open 2.5s, then a smooth 0.5s blink (white glow flashes with it)
+     • on hover: blink immediately + zoom in; on leave: resume the auto cadence ── */
+  var inView = false, ninjaReady = false, hovering = false, blinkStarted = false, blinkTO = null;
+
+  function playBlink(){
+    return gsap.timeline()
+      .to(blinkImg, { opacity:1, duration:0.30, ease:'sine.inOut' })   /* close */
+      .to(blinkImg, { opacity:0, duration:0.50, ease:'sine.inOut' });  /* open  */
+  }
+  function blinkCycle(){
+    if(!blinkImg) return;
+    if(inView && ninjaReady && !hovering){
+      playBlink().eventCallback('onComplete', function(){ blinkTO = setTimeout(blinkCycle, 2500); });
+    } else {
+      if(!hovering && blinkImg) gsap.set(blinkImg, { opacity:0 });   /* eyes open unless hovered */
+      blinkTO = setTimeout(blinkCycle, 600);
+    }
+  }
+  function startBlink(){
+    if(blinkStarted) return; blinkStarted = true;
+    blinkTO = setTimeout(blinkCycle, 2500);    /* first auto-blink 2.5s after the ninja lands */
+  }
+
+  /* hover: zoom in + eyes CLOSE and hold; leaving opens them and resumes the auto cadence */
+  if(ninja){
+    ninja.addEventListener('mouseenter', function(){
+      if(!ninjaReady) return;
+      hovering = true;
+      clearTimeout(blinkTO);
+      gsap.to(ninja,     { scale:1.14, duration:0.35, ease:'power3.out' });
+      gsap.to(blinkImg,  { opacity:1,  duration:0.30, ease:'sine.inOut' });   /* eyes close */
+    });
+    ninja.addEventListener('mouseleave', function(){
+      hovering = false;
+      gsap.to(ninja,     { scale:1, duration:0.5,  ease:'power3.out' });
+      gsap.to(blinkImg,  { opacity:0, duration:0.35, ease:'sine.inOut' });    /* eyes open */
+      clearTimeout(blinkTO);
+      blinkTO = setTimeout(blinkCycle, 2500);   /* eyes open 2.5s, then auto-blink resumes */
+    });
+  }
+
+  var tl = null;
+
+  function build(){
+    /* measure "Distr" width so the collapse lands precisely */
+    var groupW = group.offsetWidth;
+
+    gsap.set(group, { width:groupW, minWidth:0, overflow:'hidden' });
+    if(ninjaImg){ gsap.set(ninjaImg, { scale:0.2, opacity:0, transformOrigin:'center center' }); }
+    if(acFirst){ gsap.set(acFirst, { transformOrigin:'left bottom' }); acFirst.textContent='a'; }
+
+    var t = gsap.timeline({ paused:true,
+      onComplete:function(){ ninjaReady = true; setAcMode(false); startBlink(); },
+      onReverseComplete:function(){ setAcMode(false); }
+    });
+
+    /* 1) orange line cuts across "Distr"; glow fires the instant it reaches the R */
+    t.fromTo(strike,
+      { scaleX:0, yPercent:-50 },
+      { scaleX:1, yPercent:-50, transformOrigin:'left center', duration:0.6, ease:'power2.out',
+        onComplete:       function(){ word.classList.add('cut'); },
+        onReverseComplete:function(){ word.classList.remove('cut'); } });
+
+    /* hold the glow a beat */
+    t.to({}, { duration:0.5 });
+
+    /* 2) "Distr" collapses away → "action" glides to its spot (slow + smooth).
+          a soft right-edge fade hides the clip boundary so no hard box edge shows next to "a" */
+    t.to(group, { width:0, opacity:0, duration:1.25, ease:'power2.inOut',
+          onStart:function(){
+            group.style.webkitMaskImage = 'linear-gradient(to right,#000 calc(100% - 20px), transparent)';
+            group.style.maskImage       = 'linear-gradient(to right,#000 calc(100% - 20px), transparent)';
+          },
+          onReverseComplete:function(){
+            group.style.webkitMaskImage = ''; group.style.maskImage = '';
+          } }, 'recenter');
+
+    /* 3) once "action" is alone, the "a" capitalises to "A" */
+    if(acFirst){
+      t.to(acFirst, { scaleY:0, duration:0.22, ease:'power2.in',
+            onComplete:function(){ acFirst.textContent='A'; } }, 'recenter+=0.95');
+      t.to(acFirst, { scaleY:1, duration:0.5, ease:'back.out(1.7)',
+            onReverseComplete:function(){ acFirst.textContent='a'; } }, '>');
+    }
+
+    /* 4) ninja pops in suddenly from behind (scales up in place — no sliding) */
+    if(ninjaImg){
+      t.to(ninjaImg, { scale:1, opacity:1, duration:0.5, ease:'back.out(1.9)' }, '>-0.05');
+    }
+    return t;
+  }
+  function ensure(){ if(!tl) tl = build(); return tl; }
 
   ScrollTrigger.create({
-    trigger: sec,
-    start: 'top 72%',
-    end: 'center 48%',
-    scrub: 0.6,
-    onUpdate: function(self){
-      var p = self.progress;
-      /* line draws to FULL by p=0.6, then holds complete */
-      var lineP = Math.min(p / 0.6, 1);
-      strike.style.transform = 'translateY(-50%) scaleX(' + lineP + ')';
-      /* glow ONLY after the line has fully struck Distr (small buffer past completion) */
-      if(p >= 0.66){ word.classList.add('cut'); }
-      else { word.classList.remove('cut'); }
-    }
+    trigger: word,
+    start: 'top 80%',
+    end:   'bottom 20%',
+    onEnter:     function(){ inView = true;  var t=ensure(); setAcMode(t.progress()<1); t.play(); },
+    onEnterBack: function(){ inView = true;  var t=ensure(); setAcMode(t.progress()<1); t.play(); },
+    onLeave:     function(){ inView = false; },
+    onLeaveBack: function(){ inView = false; ninjaReady = false; setAcMode(true); ensure().reverse(); }
+  });
+
+  /* rebuild measurements if the viewport size changes */
+  var rz;
+  window.addEventListener('resize', function(){
+    clearTimeout(rz);
+    rz = setTimeout(function(){
+      if(tl){
+        tl.kill(); tl = null; ninjaReady = false;
+        word.classList.remove('cut');
+        if(acFirst) acFirst.textContent='a';
+        if(blinkImg) gsap.set(blinkImg, { opacity:0 });
+        if(ninja) gsap.set(ninja, { clearProps:'transform' });
+        if(group){ group.style.webkitMaskImage=''; group.style.maskImage=''; }
+        gsap.set([group, ninjaImg, acFirst, strike].filter(Boolean), { clearProps:'all' });
+      }
+    }, 200);
   });
 })();
 
