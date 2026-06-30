@@ -94,7 +94,7 @@ body{
   text-transform:uppercase; white-space:nowrap;
   overflow:hidden; margin-bottom:30px;
 }
-.loader-title .lt-line{ display:inline-block; transform:translateY(120%); }
+.loader-title .lt-line{ display:inline-block; transform:translateY(120%); will-change:transform; backface-visibility:hidden; }
 .loader-sub{
   font-family:'Manrope',sans-serif; font-size:11px;
   letter-spacing:.4em; text-transform:uppercase;
@@ -2162,7 +2162,7 @@ gsap.registerPlugin(ScrollTrigger);
   var title   = document.querySelector('.loader-title');
   var prog    = { v:0 };
 
-  var tl = gsap.timeline();
+  var tl = gsap.timeline({ paused:true });
 
   tl.to('.loader-title .lt-line',{ y:0, duration:1.05, ease:'expo.out' })
     .to('.loader-label',{ opacity:1, duration:.5 },'-=.7')
@@ -2183,6 +2183,21 @@ gsap.registerPlugin(ScrollTrigger);
 
     /* MAGIC MOVE — the loader title flies up and merges into the nav name */
     .add(magicMerge);
+
+  /* Hold the whole intro until Manrope is loaded — otherwise the centred title
+     reflows when the web font swaps in mid-animation and looks like a shake.
+     A safety timeout guarantees the loader never hangs if the font is slow. */
+  var __started = false;
+  function startLoaderTL(){ if(__started) return; __started = true; tl.play(); }
+  try{
+    if(document.fonts && document.fonts.load){
+      Promise.all([
+        document.fonts.load('800 1rem Manrope'),
+        document.fonts.load('700 1rem Manrope')
+      ]).then(startLoaderTL, startLoaderTL);
+    }
+  }catch(e){}
+  setTimeout(startLoaderTL, 1500);
 
   function magicMerge(){
     /* everything in the loader except the title fades away */
