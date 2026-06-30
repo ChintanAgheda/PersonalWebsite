@@ -2578,7 +2578,7 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
   }
   function ensure(){ if(!tl) tl = build(); return tl; }
 
-  ScrollTrigger.create({
+  var st = ScrollTrigger.create({
     trigger: word,
     start: 'top 80%',
     end:   'bottom 20%',
@@ -2588,19 +2588,27 @@ gsap.utils.toArray('.edu-item').forEach(function(item){
     onLeaveBack: function(){ inView = false; ninjaReady = false; setAcMode(true); ensure().reverse(); }
   });
 
-  /* rebuild measurements if the viewport size changes */
-  var rz;
+  /* Rebuild measurements ONLY on a real width change (orientation flip / window resize).
+     Mobile address-bar show/hide fires resize with a changed HEIGHT but same WIDTH — ignoring
+     those stops the timeline being killed mid-scroll (which made the morph never play on phones). */
+  var rz, lastW = window.innerWidth;
   window.addEventListener('resize', function(){
+    if(window.innerWidth === lastW) return;   /* height-only change (address bar) → ignore */
+    lastW = window.innerWidth;
     clearTimeout(rz);
     rz = setTimeout(function(){
       if(tl){
-        tl.kill(); tl = null; ninjaReady = false;
+        clearTimeout(blinkTO);
+        tl.kill(); tl = null; ninjaReady = false; blinkStarted = false; hovering = false;
         word.classList.remove('cut');
         if(acFirst) acFirst.textContent='a';
+        setAcMode(false);
         if(blinkImg) gsap.set(blinkImg, { opacity:0 });
         if(ninja) gsap.set(ninja, { clearProps:'transform' });
         if(group){ group.style.webkitMaskImage=''; group.style.maskImage=''; }
         gsap.set([group, ninjaImg, acFirst, strike].filter(Boolean), { clearProps:'all' });
+        /* if the section is on screen after the resize, play it fresh so it isn't stuck on "Distraction" */
+        if(st && st.isActive){ var t=ensure(); setAcMode(t.progress()<1); t.play(); }
       }
     }, 200);
   });
