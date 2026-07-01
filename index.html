@@ -309,6 +309,7 @@ nav{
   border-top:1px solid var(--line); border-bottom:1px solid var(--line);
   padding:22px 0; background:rgba(255,255,255,.03);
   overflow:hidden; white-space:nowrap;
+  margin-top:-48px;
 }
 .marquee-track{ display:inline-flex; animation:marqueeScroll 24s linear infinite; }
 .marquee-item{ display:inline-flex; align-items:center; font-family:'Manrope',sans-serif; font-size:14px; font-weight:600; letter-spacing:.12em; text-transform:uppercase; color:#fff; padding:0; }
@@ -1439,10 +1440,6 @@ footer{
       </span>
     </div>
     <p id="heroP">Commercial finance leader building scalable systems across India, UAE and KSA. Focused on operational finance, startup infrastructure, automation, due diligence and hypergrowth execution.</p>
-    <div class="hero-actions" id="heroActions">
-      <a href="#results" class="btn btn-primary">View Results</a>
-      <a href="#contact" class="btn btn-secondary">Get In Touch</a>
-    </div>
   </div>
   <div class="hero-image" id="heroImg">
     <div class="image-wrap">
@@ -2260,7 +2257,6 @@ gsap.registerPlugin(ScrollTrigger);
       })
      .to('#rollingLine',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.5')
      .to('#heroP',{ opacity:1, y:0, duration:.8, ease:'power3.out' },'-=.5')
-     .to('#heroActions',{ opacity:1, y:0, duration:.7, ease:'power3.out' },'-=.6')
      .to('#heroImg',{ opacity:1, y:0, duration:1, ease:'power3.out' },'-=.9');
   }
 })();
