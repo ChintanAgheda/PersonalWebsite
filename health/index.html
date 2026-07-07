@@ -1,0 +1,834 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chintan Agheda · Health Summary</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,500;0,9..144,600;1,9..144,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#FAF9F5; --bg2:#FFFFFF; --surface:#FFFFFF; --surface2:#F6F3EC; --raised:#F1ECE2;
+  --line:#E7E1D5; --line2:#D9D1C3;
+  --ink:#231F19; --muted:#6E6353; --faint:#9A8F7C; --dim:#BAB09E;
+  --gold:#9A7420; --gold-soft:#C6A153;
+  --alert:#BC4630; --alert-bg:rgba(188,70,48,.08);
+  --watch:#B07C18; --watch-bg:rgba(191,140,30,.13);
+  --good:#2F8060; --good-bg:rgba(47,128,96,.10);
+  --shadow:0 1px 2px rgba(45,36,18,.05), 0 16px 40px -24px rgba(70,55,25,.22);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  background:var(--bg);color:var(--ink);
+  font-family:'IBM Plex Sans',sans-serif;font-size:15px;line-height:1.55;
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  background-image:radial-gradient(900px 480px at 78% -8%, rgba(196,161,83,.17), transparent 60%);
+  background-attachment:fixed;
+}
+.wrap{max-width:1120px;margin:0 auto;padding:44px 22px 90px}
+.mono{font-family:'IBM Plex Mono',monospace}
+.serif{font-family:'Fraunces',serif}
+
+/* ---------- header ---------- */
+.eyebrow{font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:26px;height:1px;background:var(--gold-soft)}
+h1{font-family:'Fraunces',serif;font-weight:500;font-size:clamp(32px,5.4vw,50px);letter-spacing:-.015em;line-height:1.02;margin:14px 0 8px}
+.lede{color:var(--muted);max-width:58ch;font-size:16px}
+.datebar{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px}
+.dchip{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 13px;display:flex;gap:8px;align-items:center}
+.dchip b{color:var(--ink);font-weight:500}
+.dchip.now{border-color:var(--gold-soft);color:var(--gold)}
+.dchip.now b{color:var(--gold)}
+
+/* ---------- at a glance ribbon ---------- */
+.ribbon{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:16px;overflow:hidden;margin-top:30px}
+.rcell{background:var(--surface);padding:20px 22px}
+.rcell .big{font-family:'Fraunces',serif;font-size:40px;font-weight:500;line-height:1;display:flex;align-items:baseline;gap:8px}
+.rcell .lab{font-size:12.5px;color:var(--muted);margin-top:8px}
+.rcell .big .u{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--faint)}
+.rcell.a .big{color:var(--alert)} .rcell.g .big{color:var(--good)} .rcell.n .big{color:var(--ink)}
+
+/* ---------- section frame ---------- */
+section{margin-top:64px;scroll-margin-top:20px}
+.shead{display:flex;align-items:center;gap:14px;margin-bottom:20px;flex-wrap:wrap}
+.snum{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold);border:1px solid var(--gold-soft);border-radius:6px;padding:2px 8px}
+.shead h2{font-family:'Fraunces',serif;font-weight:500;font-size:26px;letter-spacing:-.01em}
+.pill{font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.13em;text-transform:uppercase;padding:4px 10px;border-radius:999px}
+.pill.alert{color:var(--alert);border:1px solid rgba(188,70,48,.42);background:var(--alert-bg)}
+.pill.watch{color:var(--watch);border:1px solid rgba(191,140,30,.42);background:var(--watch-bg)}
+.pill.good{color:var(--good);border:1px solid rgba(47,128,96,.42);background:var(--good-bg)}
+.sdesc{color:var(--muted);max-width:70ch;margin:-6px 0 18px;font-size:14.5px}
+
+/* ---------- hero glucose ---------- */
+.hero{background:linear-gradient(180deg,var(--surface),var(--bg2));border:1px solid var(--line);border-radius:20px;padding:28px 26px 22px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.hero::after{content:"";position:absolute;inset:0;background:radial-gradient(500px 220px at 20% -30%,rgba(188,70,48,.06),transparent 62%);pointer-events:none}
+.hero .thesis{font-family:'Fraunces',serif;font-size:clamp(20px,3vw,27px);font-weight:500;line-height:1.28;max-width:30ch;position:relative}
+.hero .thesis em{font-style:italic;color:var(--alert)}
+.hero .thesis .gd{color:var(--gold)}
+.hnote{color:var(--muted);font-size:14px;margin-top:12px;max-width:64ch;position:relative}
+.charts2{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:24px;position:relative}
+.chartcard{background:var(--surface2);border:1px solid var(--line);border-radius:14px;padding:14px 14px 8px}
+.chartcard .ctitle{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.chartcard .ctitle .cn{font-size:12.5px;color:var(--muted)}
+.chartcard .ctitle .cv{font-family:'Fraunces',serif;font-size:24px;font-weight:500}
+.chartcard .ctitle .cv small{font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--faint);margin-left:3px}
+svg text{font-family:'IBM Plex Mono',monospace}
+.chart-line{fill:none;stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.cpt{cursor:pointer}
+.ctx-card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px 18px;margin-top:18px;display:flex;gap:16px;align-items:center;position:relative}
+.ctx-card .cv2{font-family:'Fraunces',serif;font-size:30px;font-weight:500;color:var(--good);line-height:1}
+.ctx-card .ct2{font-size:13px;color:var(--muted)}
+.ctx-card .ct2 b{color:var(--ink);font-weight:500}
+
+/* ---------- cards grid ---------- */
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:14px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:5px;transition:transform .25s ease,border-color .25s ease}
+.card:hover{transform:translateY(-3px);border-color:var(--line2)}
+.card .cname{font-size:12.5px;color:var(--muted);display:flex;align-items:center;gap:7px}
+.dot{width:8px;height:8px;border-radius:50%;flex:none}
+.dot.a{background:var(--alert)} .dot.w{background:var(--watch)} .dot.g{background:var(--good)}
+.card .cval{font-family:'Fraunces',serif;font-size:31px;font-weight:500;letter-spacing:-.01em;display:flex;align-items:baseline;gap:6px}
+.card .cval small{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--faint)}
+.card .cref{font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--faint)}
+.card .ctrend{font-family:'IBM Plex Mono',monospace;font-size:11.5px;margin-top:2px}
+.up{color:var(--alert)} .down{color:var(--good)} .flat{color:var(--muted)}
+.spark{margin-top:6px;overflow:visible}
+
+/* wins */
+.wins{display:grid;grid-template-columns:repeat(auto-fill,minmax(236px,1fr));gap:14px;margin-bottom:16px}
+.win{border:1px solid rgba(47,128,96,.3);background:linear-gradient(180deg,rgba(47,128,96,.08),transparent 80%);border-radius:16px;padding:18px}
+.win .warrow{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--good);letter-spacing:.02em}
+.win .wval{font-family:'Fraunces',serif;font-size:28px;color:var(--good);font-weight:500;margin-top:3px}
+.win .wname{font-size:12.5px;color:var(--muted);margin-top:2px}
+.win .wnote{font-size:12.5px;color:var(--muted);margin-top:10px;border-top:1px solid rgba(47,128,96,.16);padding-top:10px}
+
+/* all clear chips */
+.okwrap{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:20px}
+.okwrap .okh{font-size:12.5px;color:var(--muted);margin-bottom:12px}
+.oklist{display:flex;flex-wrap:wrap;gap:8px}
+.ok{font-size:12.5px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:6px 13px;transition:border-color .2s}
+.ok:hover{border-color:var(--good)}
+.ok::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--good);margin-right:8px;position:relative;top:-1px}
+
+/* ---------- reference panel (signature) ---------- */
+.refpanel{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:8px 24px 20px;box-shadow:var(--shadow)}
+.refhead{display:grid;grid-template-columns:170px 1fr 132px;gap:16px;padding:16px 0 12px;border-bottom:1px solid var(--line);font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+.refhead .rt-right{text-align:right}
+.refrow{display:grid;grid-template-columns:170px 1fr 132px;gap:16px;align-items:center;padding:14px 0;border-bottom:1px solid var(--line);cursor:default}
+.refrow:last-child{border-bottom:none}
+.refrow .rlabel{font-size:13.5px}
+.refrow .rlabel .rsys{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--faint);margin-top:2px;letter-spacing:.04em}
+.track{position:relative;height:34px}
+.track .axis{position:absolute;left:0;right:0;top:50%;height:1px;background:var(--line2)}
+.track .band{position:absolute;top:calc(50% - 9px);height:18px;border-radius:5px;background:rgba(47,128,96,.13);border:1px solid rgba(47,128,96,.22)}
+.track .bandlab{position:absolute;top:2px;font-family:'IBM Plex Mono',monospace;font-size:9px;color:var(--good);opacity:.85}
+.track .prevm{position:absolute;top:calc(50% - 5px);width:10px;height:10px;border-radius:50%;background:transparent;border:1.5px solid var(--faint);transform:translateX(-50%);transition:left 1s cubic-bezier(.22,1,.36,1)}
+.track .curm{position:absolute;top:calc(50% - 8px);width:16px;height:16px;border-radius:50%;transform:translateX(-50%);box-shadow:0 0 0 4px var(--surface);transition:left 1s cubic-bezier(.22,1,.36,1);z-index:2}
+.track .curm.mA{background:var(--alert)} .track .curm.mW{background:var(--watch)} .track .curm.mG{background:var(--good)} .track .curm.mN{background:#4E846A}
+.track .link{position:absolute;top:50%;height:2px;transform:translateY(-50%);opacity:.5;transition:width 1s cubic-bezier(.22,1,.36,1),left 1s cubic-bezier(.22,1,.36,1)}
+.refrow .rnums{font-family:'IBM Plex Mono',monospace;font-size:12px;text-align:right}
+.refrow .rnums .rcur{font-weight:600;font-size:14px;display:block}
+.refrow .rnums .rcur.cA{color:var(--alert)} .rnums .rcur.cW{color:var(--watch)} .rnums .rcur.cG{color:var(--good)} .rnums .rcur.cN{color:var(--ink)}
+.refrow .rnums .rprev{color:var(--faint)}
+.reflegend{display:flex;gap:22px;flex-wrap:wrap;margin-top:16px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;color:var(--faint)}
+.reflegend span{display:flex;align-items:center;gap:7px}
+.reflegend .lg-band{width:22px;height:11px;border-radius:3px;background:rgba(47,128,96,.16);border:1px solid rgba(47,128,96,.3)}
+.reflegend .lg-prev{width:10px;height:10px;border-radius:50%;border:1.5px solid var(--faint)}
+.reflegend .lg-cur{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+
+/* ---------- actions ---------- */
+.actions{display:flex;flex-direction:column;gap:14px}
+.act{background:var(--surface);border:1px solid var(--line);border-radius:16px;overflow:hidden;display:grid;grid-template-columns:64px 1fr}
+.act .abadge{padding:20px 0;text-align:center;font-family:'Fraunces',serif;font-size:26px;font-weight:500;border-right:1px solid var(--line)}
+.act.p1 .abadge{color:var(--alert);background:var(--alert-bg)}
+.act.p2 .abadge{color:var(--watch);background:var(--watch-bg)}
+.act.p3 .abadge{color:var(--gold);background:rgba(196,161,83,.07)}
+.act .abody{padding:18px 22px}
+.act .atitle{font-family:'Fraunces',serif;font-size:19px;font-weight:500;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.act .aurg{font-family:'IBM Plex Mono',monospace;font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;padding:3px 8px;border-radius:5px}
+.act.p1 .aurg{color:var(--alert);border:1px solid rgba(188,70,48,.4)}
+.act.p2 .aurg{color:var(--watch);border:1px solid rgba(191,140,30,.4)}
+.act.p3 .aurg{color:var(--gold);border:1px solid var(--gold-soft)}
+.act .awhy{color:var(--muted);font-size:13.5px;margin-top:6px}
+.act .asol{margin-top:14px;background:var(--bg2);border:1px solid var(--line);border-radius:11px;padding:13px 15px}
+.act .asol .slab{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);margin-bottom:8px}
+.act .asol ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.act .asol li{font-size:13.5px;color:var(--ink);display:flex;gap:10px;line-height:1.45}
+.act .asol li::before{content:"→";color:var(--gold-soft);flex:none}
+.act .asol li b{color:var(--ink);font-weight:600}
+
+/* ---------- explorer table ---------- */
+.explorer{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px 20px 8px;box-shadow:var(--shadow)}
+.controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:16px}
+.chips{display:flex;gap:7px;flex-wrap:wrap}
+.chip{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--muted);background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:6px 13px;cursor:pointer;transition:all .18s;user-select:none}
+.chip:hover{border-color:var(--line2);color:var(--ink)}
+.chip.on{background:var(--gold);color:#FFFFFF;border-color:var(--gold);font-weight:500}
+.search{margin-left:auto;position:relative}
+.search input{font-family:'IBM Plex Mono',monospace;font-size:12.5px;background:var(--surface2);border:1px solid var(--line);border-radius:999px;padding:8px 14px 8px 32px;color:var(--ink);width:190px;outline:none;transition:border-color .2s,width .2s}
+.search input:focus{border-color:var(--gold-soft);width:220px}
+.search::before{content:"⌕";position:absolute;left:13px;top:50%;transform:translateY(-50%);color:var(--faint);font-size:14px}
+.tbl{width:100%;border-collapse:collapse}
+.tbl thead th{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint);text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);font-weight:500;position:sticky;top:0;background:var(--surface);cursor:pointer;white-space:nowrap}
+.tbl thead th .sar{opacity:.4;margin-left:3px}
+.tbl thead th.num,.tbl tbody td.num{text-align:right}
+.tbl tbody td{padding:11px 10px;border-bottom:1px solid rgba(51,44,37,.55);font-size:13.5px;vertical-align:middle}
+.tbl tbody tr:hover td{background:rgba(38,34,29,.5)}
+.tbl tbody tr:last-child td{border-bottom:none}
+.tmarker{font-weight:500}
+.tmarker .tsys{display:block;font-family:'IBM Plex Mono',monospace;font-size:10px;color:var(--faint);margin-top:1px}
+td.num{font-family:'IBM Plex Mono',monospace;font-size:12.5px;color:var(--muted)}
+td.num.latest{color:var(--ink);font-weight:600;font-size:13px}
+.badge{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase;padding:3px 8px;border-radius:5px;white-space:nowrap}
+.badge.a{color:var(--alert);background:var(--alert-bg);border:1px solid rgba(188,70,48,.3)}
+.badge.w{color:var(--watch);background:var(--watch-bg);border:1px solid rgba(191,140,30,.3)}
+.badge.g{color:var(--good);background:var(--good-bg);border:1px solid rgba(47,128,96,.3)}
+.badge.n{color:var(--faint);border:1px solid var(--line)}
+.tref{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--faint)}
+.tarrow{font-family:'IBM Plex Mono',monospace;font-size:12px}
+.emptyrow td{text-align:center;color:var(--faint);padding:26px;font-size:13px}
+
+/* tooltip */
+#tt{position:fixed;z-index:999;pointer-events:none;background:#FFFFFF;border:1px solid var(--line2);border-radius:9px;padding:9px 12px;font-size:12px;color:var(--ink);box-shadow:0 10px 30px -10px rgba(60,48,25,.28);opacity:0;transform:translateY(4px);transition:opacity .12s;max-width:240px}
+#tt.show{opacity:1;transform:translateY(0)}
+#tt .ttt{font-family:'IBM Plex Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--gold);margin-bottom:4px}
+#tt b{color:var(--ink)}
+#tt .ttr{color:var(--faint);font-size:11px;margin-top:3px}
+
+.foot{margin-top:40px;border-top:1px solid var(--line);padding-top:18px;font-size:12px;color:var(--faint);max-width:74ch}
+.foot b{color:var(--muted);font-weight:500}
+
+/* reveal animation */
+.reveal{opacity:0;transform:translateY(16px)}
+.reveal.in{opacity:1;transform:none;transition:opacity .7s ease,transform .7s cubic-bezier(.22,1,.36,1)}
+
+@media (max-width:820px){
+  .charts2{grid-template-columns:1fr}
+  .refhead,.refrow{grid-template-columns:118px 1fr 92px;gap:10px}
+  .ribbon{grid-template-columns:1fr}
+  .tref{display:none}
+}
+@media (max-width:560px){
+  .act{grid-template-columns:1fr}
+  .act .abadge{border-right:none;border-bottom:1px solid var(--line);padding:12px}
+  .search{margin-left:0;width:100%}
+  .search input{width:100%}
+  .search input:focus{width:100%}
+  .tbl .col-nov,.tbl .col-apr{display:none}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition:none!important;animation:none!important}
+  .reveal{opacity:1;transform:none}
+}
+@media print{
+  body{background:#fff;color:#111}
+  .wrap{max-width:100%}
+  .reveal{opacity:1;transform:none}
+  .search,.chips{display:none}
+}
+.card{box-shadow:0 1px 2px rgba(45,36,18,.045)}.card:hover{box-shadow:var(--shadow)}.okwrap,.act,.chartcard,.ctx-card,.ribbon{box-shadow:0 1px 2px rgba(45,36,18,.045)}
+</style>
+</head>
+<body>
+<div id="tt"></div>
+<div class="wrap">
+
+  <!-- HEADER -->
+  <header class="reveal">
+    <div class="eyebrow">Pathkind Labs · 3 full-body panels · Nov 2025 – Jul 2026</div>
+    <h1>Chintan Agheda Health Summary</h1>
+    <p class="lede">Every marker from your last three full-body panels, tracked over eight months — sorted into what's working, what isn't, and exactly what to do about it.</p>
+    <div class="datebar">
+      <div class="dchip"><b>01 Nov 2025</b> Healthkind Complete</div>
+      <div class="dchip"><b>09 Apr 2026</b> Super · preliminary</div>
+      <div class="dchip now"><b>01 Jul 2026</b> Super · latest</div>
+    </div>
+  </header>
+
+  <!-- RIBBON -->
+  <div class="ribbon reveal">
+    <div class="rcell a"><div class="big">4</div><div class="lab">areas needing action — glucose, lipids, liver &amp; inflammation</div></div>
+    <div class="rcell g"><div class="big">4</div><div class="lab">markers clearly improved — Vitamin D, B12, triglycerides, lymphocytes</div></div>
+    <div class="rcell n"><div class="big">6</div><div class="lab">systems fully clear — thyroid, kidney, blood counts, minerals, iron, infections</div></div>
+  </div>
+
+  <!-- 01 HEADLINE / GLUCOSE -->
+  <section id="glucose" class="reveal">
+    <div class="shead"><span class="snum">01</span><h2>The headline: blood sugar</h2><span class="pill alert">Act on this first</span></div>
+    <div class="hero">
+      <div class="thesis">HbA1c fell to <span class="gd">6.1</span> in April, then climbed back to <em>6.7 — inside the diabetic range</em> (≥ 6.5).</div>
+      <p class="hnote">Fasting glucose traced the same arc: 113 → 97 → 122 mg/dL, now its highest of the three. Two diabetic-range HbA1c readings (November and July) with a rising fasting glucose is the single most important finding here. April is the good news buried inside it — the numbers <em style="font-style:italic;color:var(--gold)">can</em> move.</p>
+      <div class="charts2">
+        <div class="chartcard">
+          <div class="ctitle"><span class="cn">HbA1c · 3-month glucose average</span><span class="cv">6.7<small>%</small></span></div>
+          <div id="chart-hba1c"></div>
+        </div>
+        <div class="chartcard">
+          <div class="ctitle"><span class="cn">Fasting Plasma Glucose</span><span class="cv">122<small>mg/dL</small></span></div>
+          <div id="chart-fpg"></div>
+        </div>
+      </div>
+      <div class="ctx-card has-tip" data-tip="<div class='ttt'>Why it matters</div>C-peptide reflects your body's own insulin output. A normal level means the pancreas is working — the issue is the body responding to insulin, not making it.">
+        <div class="cv2">3.74</div>
+        <div class="ct2"><b>C-peptide is normal</b> (ref 1.10–4.40, tested April). Your pancreas is producing insulin fine — the pattern points to insulin <b>resistance</b>, not type-1 diabetes. That's the kind that responds strongly to lifestyle change.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 02 WHAT'S GOOD -->
+  <section id="good" class="reveal">
+    <div class="shead"><span class="snum">02</span><h2>What's good</h2><span class="pill good">Wins &amp; all-clear</span></div>
+    <p class="sdesc">Real progress since November — worth protecting, because a couple of these show your habits already work.</p>
+    <div class="wins">
+      <div class="win has-tip" data-tip="<div class='ttt'>Vitamin D · ng/mL</div>Nov <b>23.8</b> (insufficient) → Jul <b>51.3</b> (sufficient)<div class='ttr'>Sufficiency band: 30–100</div>">
+        <div class="warrow">▲ 23.8 → 51.3 ng/mL</div>
+        <div class="wval">Vitamin D restored</div>
+        <div class="wname">Insufficient → solidly sufficient</div>
+        <div class="wnote">A clear, meaningful jump. Whatever you changed — sun, supplement, diet — it worked. Keep it going.</div>
+      </div>
+      <div class="win has-tip" data-tip="<div class='ttt'>Vitamin B12 · pg/mL</div>Nov <b>234</b> → Jul <b>338</b><div class='ttr'>Range: 191–663</div>">
+        <div class="warrow">▲ 234 → 338 pg/mL</div>
+        <div class="wval">B12 into comfort</div>
+        <div class="wname">From bottom of range to mid-range</div>
+        <div class="wnote">Off the floor and into a healthy buffer — good for energy and nerve function.</div>
+      </div>
+      <div class="win has-tip" data-tip="<div class='ttt'>Triglycerides · mg/dL</div>Nov <b>114</b> → Jul <b>82.8</b><div class='ttr'>Desirable: under 150</div>">
+        <div class="warrow">▼ 114 → 82.8 mg/dL</div>
+        <div class="wval">Triglycerides down 27%</div>
+        <div class="wname">Well inside the desirable range</div>
+        <div class="wnote">Highly diet-responsive — this drop reflects a genuine change, and it's the proof your levers work.</div>
+      </div>
+      <div class="win has-tip" data-tip="<div class='ttt'>TSH · µIU/mL</div>Nov <b>2.58</b> → Jul <b>1.12</b><div class='ttr'>Range: 0.27–4.20 · T3 &amp; T4 normal too</div>">
+        <div class="warrow">▬ TSH 2.58 → 1.12</div>
+        <div class="wval">Thyroid solid</div>
+        <div class="wname">All three thyroid values normal</div>
+        <div class="wnote">TSH, T3 and T4 all in range across every test — no thyroid concern.</div>
+      </div>
+    </div>
+    <div class="okwrap">
+      <div class="okh">And everything below reads clean:</div>
+      <div class="oklist">
+        <span class="ok">Kidney — eGFR 128 (excellent)</span>
+        <span class="ok">Haemoglobin 15.4</span>
+        <span class="ok">WBC &amp; differentials</span>
+        <span class="ok">Platelets 304</span>
+        <span class="ok">Sodium · Potassium · Chloride</span>
+        <span class="ok">Calcium 9.56</span>
+        <span class="ok">Phosphorus</span>
+        <span class="ok">Uric acid 6.17</span>
+        <span class="ok">ALP · GGT</span>
+        <span class="ok">Iron studies (Nov)</span>
+        <span class="ok">Urine routine (Nov)</span>
+        <span class="ok">HBsAg — non-reactive</span>
+        <span class="ok">HIV — non-reactive</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 03 WHAT'S CONCERNING -->
+  <section id="concerning" class="reveal">
+    <div class="shead"><span class="snum">03</span><h2>What's concerning</h2><span class="pill alert">Track closely</span></div>
+    <p class="sdesc">Four connected threads — and they're connected on purpose. High sugar, high LDL, low HDL and creeping liver enzymes are the same underlying metabolic story, which is why the same fixes tend to move all of them.</p>
+    <div class="grid">
+      <div class="card">
+        <div class="cname"><span class="dot a"></span>LDL Cholesterol</div>
+        <div class="cval">136.8 <small>mg/dL</small></div>
+        <div class="cref">target &lt; 100 · rose ~16 pts</div>
+        <div class="ctrend up">▲ 121.1 → 136.8</div>
+        <svg class="spark" viewBox="0 0 180 34" width="100%" data-spark></svg>
+      </div>
+      <div class="card">
+        <div class="cname"><span class="dot w"></span>HDL Cholesterol</div>
+        <div class="cval">35.6 <small>mg/dL</small></div>
+        <div class="cref">optimal ≥ 40 · protective, too low</div>
+        <div class="ctrend flat">▬ 35.1 → 35.6</div>
+        <svg class="spark" viewBox="0 0 180 34" width="100%" data-spark></svg>
+      </div>
+      <div class="card">
+        <div class="cname"><span class="dot a"></span>SGPT / ALT · liver</div>
+        <div class="cval">55.8 <small>U/L</small></div>
+        <div class="cref">ref 0–41 · high &amp; rising</div>
+        <div class="ctrend up">▲ 49.4 → 55.8</div>
+        <svg class="spark" viewBox="0 0 180 34" width="100%" data-spark></svg>
+      </div>
+      <div class="card">
+        <div class="cname"><span class="dot w"></span>SGOT / AST · liver</div>
+        <div class="cval">40.2 <small>U/L</small></div>
+        <div class="cref">ref 0–40 · just crossed the line</div>
+        <div class="ctrend up">▲ 33.9 → 40.2</div>
+        <svg class="spark" viewBox="0 0 180 34" width="100%" data-spark></svg>
+      </div>
+      <div class="card">
+        <div class="cname"><span class="dot a"></span>Non-HDL Cholesterol</div>
+        <div class="cval">153.4 <small>mg/dL</small></div>
+        <div class="cref">target &lt; 130 · rising</div>
+        <div class="ctrend up">▲ 143.9 → 153.4</div>
+        <svg class="spark" viewBox="0 0 180 34" width="100%" data-spark></svg>
+      </div>
+      <div class="card">
+        <div class="cname"><span class="dot w"></span>ESR · inflammation</div>
+        <div class="cval">24 <small>mm/hr</small></div>
+        <div class="cref">ref 0–10 · high in all 3 tests</div>
+        <div class="ctrend flat">▬ 25 → 24 → 24</div>
+        <svg class="spark" viewBox="0 0 180 34" width="100%" data-spark></svg>
+      </div>
+      <div class="card">
+        <div class="cname"><span class="dot w"></span>Globulin / Total protein</div>
+        <div class="cval">3.83 <small>gm/dL</small></div>
+        <div class="cref">ref ≤ 3.70 · new, mild</div>
+        <div class="ctrend up">▲ 3.55 → 3.83</div>
+      </div>
+      <div class="card">
+        <div class="cname"><span class="dot w"></span>MPV · platelet size</div>
+        <div class="cval">11.3 <small>fL</small></div>
+        <div class="cref">ref 6.8–10.9 · marginal</div>
+        <div class="ctrend up">▲ 10.4 → 10.7 → 11.3</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 04 REFERENCE PANEL (signature) -->
+  <section id="panel" class="reveal">
+    <div class="shead"><span class="snum">04</span><h2>Where every key marker sits</h2></div>
+    <p class="sdesc">Each track is one marker's own healthy zone (green). The hollow ring is where you were in November; the solid dot is now. Watch how much of your metabolic cluster sits to the right of the green.</p>
+    <div class="refpanel">
+      <div class="refhead">
+        <div>Marker</div><div>Position within healthy range →</div><div class="rt-right">Now · was</div>
+      </div>
+      <div id="refrows"></div>
+      <div class="reflegend">
+        <span><span class="lg-band"></span> healthy zone</span>
+        <span><span class="lg-prev"></span> Nov 2025</span>
+        <span><span class="lg-cur"></span> latest (Jul 2026)</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- 05 IMMEDIATE ACTIONS -->
+  <section id="actions" class="reveal">
+    <div class="shead"><span class="snum">05</span><h2>Immediate actions &amp; solutions</h2><span class="pill alert">Do these</span></div>
+    <p class="sdesc">Ordered by priority. The first two are appointments to book; the rest are things you can start now and confirm with your doctor.</p>
+    <div class="actions">
+
+      <div class="act p1">
+        <div class="abadge">1</div>
+        <div class="abody">
+          <div class="atitle">Book a diabetes evaluation <span class="aurg">This week</span></div>
+          <div class="awhy">Two HbA1c readings at 6.7 (Nov &amp; Jul), both in the diabetic range, plus fasting glucose at 122 — this meets the threshold for a formal work-up rather than watchful waiting.</div>
+          <div class="asol">
+            <div class="slab">Solution</div>
+            <ul>
+              <li>See a <b>physician or endocrinologist</b> and bring all three reports so they can see the full trend.</li>
+              <li>Expect a <b>confirmatory repeat HbA1c + fasting glucose</b>; the diagnosis is made on repeat testing.</li>
+              <li>Ask specifically whether you're <b>pre-diabetic or diabetic</b>, and whether lifestyle alone is enough or medication (e.g. metformin) is worth discussing — that's a doctor's call, not a self-decision.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="act p2">
+        <div class="abadge">2</div>
+        <div class="abody">
+          <div class="atitle">Get an abdominal ultrasound <span class="aurg">Soon</span></div>
+          <div class="awhy">ALT (55.8) and AST (40.2) are both above range and rising, alongside high sugar and cholesterol — the classic fingerprint of non-alcoholic fatty liver.</div>
+          <div class="asol">
+            <div class="slab">Solution</div>
+            <ul>
+              <li>Ask your doctor to order a simple, non-invasive <b>liver ultrasound</b> to check for fatty change.</li>
+              <li>Mention the <b>rising enzyme trend</b> and the mildly high direct bilirubin so they have the context.</li>
+              <li>The good news: early fatty liver is <b>reversible</b> with the same weight, diet and glucose steps below.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="act p3">
+        <div class="abadge">3</div>
+        <div class="abody">
+          <div class="atitle">Start the metabolic lifestyle plan <span class="aurg">Start now</span></div>
+          <div class="awhy">Glucose, LDL, HDL and liver enzymes share one root — insulin resistance. The same levers move all four at once, and your April numbers prove they respond in your body.</div>
+          <div class="asol">
+            <div class="slab">Solution — evidence-based basics to confirm with your doctor</div>
+            <ul>
+              <li><b>Cut refined carbs &amp; added sugar</b> (white rice, sweets, sugary drinks, refined flour) — the biggest lever on both HbA1c and triglycerides.</li>
+              <li><b>Move ~150 min/week</b> — brisk walking counts; a 10–15 min walk after meals blunts glucose spikes noticeably.</li>
+              <li><b>Strength train 2×/week</b> — building muscle directly improves how your body handles insulin.</li>
+              <li><b>More fibre, less saturated fat</b> — vegetables, whole grains, legumes for glucose &amp; LDL; swap fried/processed fats.</li>
+              <li>Aim for gradual, steady change rather than crash dieting — sustainable habits are what held in April.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div class="act p3">
+        <div class="abadge">4</div>
+        <div class="abody">
+          <div class="atitle">Raise the lipids &amp; ESR at that same visit <span class="aurg">Discuss</span></div>
+          <div class="awhy">LDL 136.8 with HDL at 35.6 compounds cardiovascular risk on top of the glucose picture; ESR has stayed elevated (24–25) across all three tests without ever normalising.</div>
+          <div class="asol">
+            <div class="slab">Solution</div>
+            <ul>
+              <li><b>Discuss LDL management</b> — whether the lifestyle plan is sufficient or a statin is warranted given your combined risk profile.</li>
+              <li>Ask about adding a <b>CRP test</b> to help interpret the persistent ESR — it's non-specific on its own and worth a closer look.</li>
+              <li><b>Re-test the full panel in ~3 months</b> to confirm the plan is working, matching your existing testing rhythm.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- 06 EXPLORER -->
+  <section id="explorer" class="reveal">
+    <div class="shead"><span class="snum">06</span><h2>Every marker, explorable</h2></div>
+    <p class="sdesc">The full record across all three dates. Filter by status or system, search a marker, or sort any column.</p>
+    <div class="explorer">
+      <div class="controls">
+        <div class="chips" id="filterchips">
+          <span class="chip on" data-filter="all">All</span>
+          <span class="chip" data-filter="alert">Needs attention</span>
+          <span class="chip" data-filter="good">Improved / good</span>
+          <span class="chip" data-filter="normal">In range</span>
+          <span class="chip" data-filter="Glucose">Glucose</span>
+          <span class="chip" data-filter="Lipids">Lipids</span>
+          <span class="chip" data-filter="Liver">Liver</span>
+          <span class="chip" data-filter="Kidney">Kidney</span>
+          <span class="chip" data-filter="Blood">Blood</span>
+        </div>
+        <div class="search"><input id="searchbox" type="text" placeholder="Search marker…" aria-label="Search markers"></div>
+      </div>
+      <table class="tbl">
+        <thead>
+          <tr>
+            <th data-sort="name">Marker <span class="sar">↕</span></th>
+            <th class="num col-nov" data-sort="nov">Nov '25 <span class="sar">↕</span></th>
+            <th class="num col-apr" data-sort="apr">Apr '26 <span class="sar">↕</span></th>
+            <th class="num" data-sort="jul">Jul '26 <span class="sar">↕</span></th>
+            <th data-sort="trend">Trend</th>
+            <th class="tref-h">Reference</th>
+            <th data-sort="status">Status <span class="sar">↕</span></th>
+          </tr>
+        </thead>
+        <tbody id="tbody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <p class="foot">
+    <b>About this dashboard.</b> Built entirely from your Pathkind Labs reports dated 01 Nov 2025, 09 Apr 2026 (marked preliminary) and 01 Jul 2026 (final). It organises and visualises your own results — it is <b>not a diagnosis, and not a substitute for medical advice</b>. The glucose finding in particular is worth a doctor's appointment rather than sitting on. Please review everything here with a qualified physician before acting on it.
+  </p>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var C = {alert:'#BC4630', watch:'#C0871C', good:'#2F8060', normal:'#4E846A', gold:'#9A7420', muted:'#6E6353', faint:'#9A8F7C', line:'#E7E1D5', line2:'#D9D1C3', ink:'#231F19'};
+
+  /* ---------------- MASTER DATA ---------------- */
+  // s: status a=alert w=watch g=good n=normal ; better: 'lower' | 'higher'
+  var M = [
+    {name:'HbA1c', sys:'Glucose', u:'%', ref:'< 5.7', nov:6.7, apr:6.1, jul:6.7, s:'a', better:'lower'},
+    {name:'Mean Plasma Glucose', sys:'Glucose', u:'mg/dL', ref:'< 116', nov:145.59, apr:128.37, jul:145.59, s:'a', better:'lower'},
+    {name:'Fasting Glucose', sys:'Glucose', u:'mg/dL', ref:'74 – 99', nov:113, apr:97, jul:122, s:'a', better:'lower'},
+    {name:'C-Peptide (fasting)', sys:'Glucose', u:'ng/mL', ref:'1.10 – 4.40', nov:null, apr:3.74, jul:null, s:'g', better:'higher'},
+    {name:'Total Cholesterol', sys:'Lipids', u:'mg/dL', ref:'< 200', nov:179, apr:null, jul:189, s:'n', better:'lower'},
+    {name:'Triglycerides', sys:'Lipids', u:'mg/dL', ref:'< 150', nov:114, apr:null, jul:82.8, s:'g', better:'lower'},
+    {name:'LDL Cholesterol', sys:'Lipids', u:'mg/dL', ref:'< 100', nov:121.1, apr:null, jul:136.84, s:'a', better:'lower'},
+    {name:'HDL Cholesterol', sys:'Lipids', u:'mg/dL', ref:'≥ 40', nov:35.1, apr:null, jul:35.6, s:'w', better:'higher'},
+    {name:'VLDL Cholesterol', sys:'Lipids', u:'mg/dL', ref:'10 – 35', nov:22.8, apr:null, jul:16.56, s:'n', better:'lower'},
+    {name:'Non-HDL Cholesterol', sys:'Lipids', u:'mg/dL', ref:'< 130', nov:143.9, apr:null, jul:153.4, s:'a', better:'lower'},
+    {name:'Total Chol / HDL Ratio', sys:'Lipids', u:'', ref:'3.3 – 4.4', nov:5.10, apr:null, jul:5.31, s:'w', better:'lower'},
+    {name:'LDL / HDL Ratio', sys:'Lipids', u:'', ref:'0.5 – 3.0', nov:3.45, apr:null, jul:3.84, s:'w', better:'lower'},
+    {name:'Total Bilirubin', sys:'Liver', u:'mg/dL', ref:'0 – 1.20', nov:0.50, apr:null, jul:0.63, s:'n', better:'lower'},
+    {name:'Direct Bilirubin', sys:'Liver', u:'mg/dL', ref:'0 – 0.20', nov:0.24, apr:null, jul:0.30, s:'w', better:'lower'},
+    {name:'SGOT / AST', sys:'Liver', u:'U/L', ref:'0 – 40', nov:33.9, apr:null, jul:40.2, s:'w', better:'lower'},
+    {name:'SGPT / ALT', sys:'Liver', u:'U/L', ref:'0 – 41', nov:49.4, apr:null, jul:55.8, s:'a', better:'lower'},
+    {name:'Alkaline Phosphatase', sys:'Liver', u:'U/L', ref:'40 – 129', nov:80, apr:null, jul:86.2, s:'n', better:'lower'},
+    {name:'Total Protein', sys:'Liver', u:'gm/dL', ref:'6.40 – 8.30', nov:8.23, apr:null, jul:8.54, s:'w', better:'lower'},
+    {name:'Albumin', sys:'Liver', u:'gm/dL', ref:'3.97 – 4.94', nov:4.68, apr:null, jul:4.71, s:'n', better:'higher'},
+    {name:'Globulin', sys:'Liver', u:'gm/dL', ref:'1.90 – 3.70', nov:3.55, apr:null, jul:3.83, s:'w', better:'lower'},
+    {name:'GGT', sys:'Liver', u:'U/L', ref:'10 – 71', nov:11.7, apr:null, jul:11.4, s:'n', better:'lower'},
+    {name:'Blood Urea', sys:'Kidney', u:'mg/dL', ref:'19 – 44', nov:11.4, apr:null, jul:12.2, s:'n', better:'higher'},
+    {name:'Creatinine', sys:'Kidney', u:'mg/dL', ref:'0.70 – 1.30', nov:0.67, apr:null, jul:0.67, s:'n', better:'higher'},
+    {name:'BUN / Creatinine', sys:'Kidney', u:'', ref:'10 – 20', nov:7.90, apr:null, jul:8.53, s:'n', better:'higher'},
+    {name:'Uric Acid', sys:'Kidney', u:'mg/dL', ref:'3.40 – 7.00', nov:6.17, apr:null, jul:6.17, s:'n', better:'lower'},
+    {name:'eGFR', sys:'Kidney', u:'mL/min', ref:'> 90', nov:146.05, apr:null, jul:128.13, s:'g', better:'higher'},
+    {name:'Haemoglobin', sys:'Blood', u:'gm/dL', ref:'13.0 – 17.0', nov:15.7, apr:15.9, jul:15.4, s:'n', better:'higher'},
+    {name:'Total WBC (TLC)', sys:'Blood', u:'thou/µL', ref:'4.0 – 10.0', nov:8.61, apr:8.03, jul:7.71, s:'n', better:'higher'},
+    {name:'Lymphocytes', sys:'Blood', u:'%', ref:'20 – 40', nov:41, apr:31, jul:30, s:'g', better:'lower'},
+    {name:'Platelet Count', sys:'Blood', u:'thou/µL', ref:'150 – 410', nov:321, apr:308, jul:304, s:'n', better:'higher'},
+    {name:'MPV', sys:'Blood', u:'fL', ref:'6.8 – 10.9', nov:10.4, apr:10.7, jul:11.3, s:'w', better:'lower'},
+    {name:'TSH', sys:'Thyroid', u:'µIU/mL', ref:'0.27 – 4.20', nov:2.58, apr:null, jul:1.12, s:'g', better:'lower'},
+    {name:'Total T4', sys:'Thyroid', u:'µg/dL', ref:'5.10 – 14.10', nov:9.56, apr:null, jul:10.2, s:'n', better:'higher'},
+    {name:'Vitamin D', sys:'Vitamins', u:'ng/mL', ref:'30 – 100', nov:23.8, apr:null, jul:51.3, s:'g', better:'higher'},
+    {name:'Vitamin B12', sys:'Vitamins', u:'pg/mL', ref:'191 – 663', nov:234, apr:null, jul:338, s:'g', better:'higher'},
+    {name:'ESR', sys:'Inflammation', u:'mm/hr', ref:'0 – 10', nov:25, apr:24, jul:24, s:'w', better:'lower'}
+  ];
+
+  var TT = document.getElementById('tt');
+  function showTip(html, e){ TT.innerHTML = html; TT.classList.add('show'); moveTip(e); }
+  function moveTip(e){
+    var x = e.clientX + 14, y = e.clientY + 14;
+    var r = TT.getBoundingClientRect();
+    if(x + r.width > window.innerWidth - 10) x = e.clientX - r.width - 14;
+    if(y + r.height > window.innerHeight - 10) y = e.clientY - r.height - 14;
+    TT.style.left = x + 'px'; TT.style.top = y + 'px';
+  }
+  function hideTip(){ TT.classList.remove('show'); }
+  function wireTips(scope){
+    (scope||document).querySelectorAll('.has-tip').forEach(function(el){
+      el.addEventListener('mouseenter', function(e){ showTip(el.getAttribute('data-tip'), e); });
+      el.addEventListener('mousemove', moveTip);
+      el.addEventListener('mouseleave', hideTip);
+    });
+  }
+
+  /* ---------------- line charts (hero) ---------------- */
+  function lineChart(elId, cfg){
+    var W=700,H=260, pl=52,pr=24,pt=24,pb=40;
+    var pw=W-pl-pr, ph=H-pt-pb;
+    function y(v){ return pt + (cfg.yMax - v)/(cfg.yMax - cfg.yMin) * ph; }
+    function x(i){ return pl + (cfg.pts.length===1?0.5:i/(cfg.pts.length-1)) * pw; }
+    var s = '<svg viewBox="0 0 '+W+' '+H+'" width="100%" preserveAspectRatio="xMidYMid meet">';
+    // zones
+    cfg.zones.forEach(function(z){
+      var y1=y(Math.min(z.to,cfg.yMax)), y2=y(Math.max(z.from,cfg.yMin));
+      s += '<rect x="'+pl+'" y="'+y1.toFixed(1)+'" width="'+pw+'" height="'+(y2-y1).toFixed(1)+'" fill="'+z.fill+'"/>';
+      if(z.lab) s += '<text x="'+(W-pr-4)+'" y="'+(y1+13).toFixed(1)+'" fill="'+z.col+'" font-size="9.5" text-anchor="end" opacity="0.9">'+z.lab+'</text>';
+    });
+    // ceiling line
+    if(cfg.ceiling!=null){
+      s += '<line x1="'+pl+'" y1="'+y(cfg.ceiling).toFixed(1)+'" x2="'+(W-pr)+'" y2="'+y(cfg.ceiling).toFixed(1)+'" stroke="'+C.alert+'" stroke-width="1" stroke-dasharray="5 5" opacity="0.55"/>';
+    }
+    // y ticks
+    (cfg.ticks||[]).forEach(function(t){
+      s += '<text x="'+(pl-8)+'" y="'+(y(t)+3).toFixed(1)+'" fill="'+C.faint+'" font-size="10" text-anchor="end">'+t+'</text>';
+    });
+    // path
+    var d = cfg.pts.map(function(p,i){ return (i?'L':'M')+x(i).toFixed(1)+' '+y(p.v).toFixed(1); }).join(' ');
+    s += '<path class="chart-line" d="'+d+'" stroke="'+cfg.line+'"/>';
+    // points + labels
+    cfg.pts.forEach(function(p,i){
+      var px=x(i), py=y(p.v);
+      var col = p.col || cfg.line;
+      s += '<circle class="cpt" cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="'+(p.big?7:6)+'" fill="#F6F3EC" stroke="'+col+'" stroke-width="2.5" '
+         + 'data-v="'+p.v+'" data-l="'+p.l+'" data-r="'+cfg.refLabel+'"/>';
+      s += '<text x="'+px.toFixed(1)+'" y="'+(py-14).toFixed(1)+'" fill="'+(p.big?col:C.ink)+'" font-size="'+(p.big?16:14)+'" text-anchor="middle" font-weight="500">'+p.v+'</text>';
+      s += '<text x="'+px.toFixed(1)+'" y="'+(H-16)+'" fill="'+C.muted+'" font-size="11" text-anchor="middle">'+p.l+'</text>';
+    });
+    s += '</svg>';
+    var host = document.getElementById(elId);
+    host.innerHTML = s;
+    // animate draw
+    var path = host.querySelector('.chart-line');
+    if(path && !reduce){
+      try{ var len=path.getTotalLength(); path.style.strokeDasharray=len; path.style.strokeDashoffset=len;
+        host.__animate=function(){ path.style.transition='stroke-dashoffset 1.1s ease'; path.style.strokeDashoffset=0; }; }
+      catch(e){ host.__animate=null; }
+    }
+    // tips
+    host.querySelectorAll('.cpt').forEach(function(c){
+      c.addEventListener('mouseenter', function(e){
+        showTip('<div class="ttt">'+c.getAttribute('data-l')+'</div><b>'+c.getAttribute('data-v')+' '+cfg.u+'</b><div class="ttr">healthy: '+c.getAttribute('data-r')+'</div>', e);
+      });
+      c.addEventListener('mousemove', moveTip);
+      c.addEventListener('mouseleave', hideTip);
+    });
+  }
+
+  lineChart('chart-hba1c', {
+    yMin:5.2, yMax:7.0, u:'%', refLabel:'under 5.7', ceiling:6.5, line:C.gold,
+    ticks:[6.5,6.0,5.5],
+    zones:[
+      {from:6.5,to:7.0,fill:'rgba(188,70,48,.09)',col:C.alert,lab:'DIABETIC ≥ 6.5'},
+      {from:5.7,to:6.5,fill:'rgba(191,140,30,.08)',col:C.watch,lab:'PRE-DIABETIC'},
+      {from:5.2,to:5.7,fill:'rgba(47,128,96,.08)',col:C.good,lab:'NORMAL'}
+    ],
+    pts:[{v:6.7,l:"NOV '25",col:C.alert},{v:6.1,l:"APR '26",col:C.watch},{v:6.7,l:"JUL '26",col:C.alert,big:true}]
+  });
+
+  lineChart('chart-fpg', {
+    yMin:70, yMax:130, u:'mg/dL', refLabel:'74 – 99', ceiling:100, line:C.gold,
+    ticks:[126,110,90,74],
+    zones:[
+      {from:126,to:130,fill:'rgba(188,70,48,.10)',col:C.alert,lab:'DIABETES'},
+      {from:100,to:126,fill:'rgba(191,140,30,.08)',col:C.watch,lab:'IMPAIRED'},
+      {from:70,to:100,fill:'rgba(47,128,96,.08)',col:C.good,lab:'NORMAL'}
+    ],
+    pts:[{v:113,l:"NOV '25",col:C.watch},{v:97,l:"APR '26",col:C.good},{v:122,l:"JUL '26",col:C.watch,big:true}]
+  });
+
+  /* ---------------- sparklines (concerning cards) ---------------- */
+  var sparkData = [
+    {sel:0, pts:[121.1,136.84], col:C.alert},   // LDL
+    {sel:1, pts:[35.1,35.6], col:C.watch},       // HDL
+    {sel:2, pts:[49.4,55.8], col:C.alert},       // ALT
+    {sel:3, pts:[33.9,40.2], col:C.watch},       // AST
+    {sel:4, pts:[143.9,153.4], col:C.alert},     // Non-HDL
+    {sel:5, pts:[25,24,24], col:C.watch}         // ESR
+  ];
+  var sparks = document.querySelectorAll('[data-spark]');
+  sparkData.forEach(function(sd,i){
+    var svg = sparks[i]; if(!svg) return;
+    var pts=sd.pts, w=180, h=34, pad=6;
+    var mn=Math.min.apply(null,pts), mx=Math.max.apply(null,pts); if(mx===mn)mx=mn+1;
+    function X(k){ return pad + (pts.length===1?0.5:k/(pts.length-1))*(w-2*pad); }
+    function Y(v){ return (h-pad) - (v-mn)/(mx-mn)*(h-2*pad); }
+    var d = pts.map(function(v,k){ return (k?'L':'M')+X(k).toFixed(1)+' '+Y(v).toFixed(1); }).join(' ');
+    var ns='http://www.w3.org/2000/svg';
+    var base=document.createElementNS(ns,'line'); base.setAttribute('x1',0);base.setAttribute('x2',w);base.setAttribute('y1',h-pad);base.setAttribute('y2',h-pad);base.setAttribute('stroke',C.line);
+    svg.appendChild(base);
+    var p=document.createElementNS(ns,'path'); p.setAttribute('d',d); p.setAttribute('fill','none'); p.setAttribute('stroke',sd.col); p.setAttribute('stroke-width','2'); p.setAttribute('stroke-linejoin','round');
+    svg.appendChild(p);
+    var last=document.createElementNS(ns,'circle'); last.setAttribute('cx',X(pts.length-1)); last.setAttribute('cy',Y(pts[pts.length-1])); last.setAttribute('r','3.5'); last.setAttribute('fill',sd.col);
+    svg.appendChild(last);
+  });
+
+  /* ---------------- reference panel (signature) ---------------- */
+  var REF = [
+    {name:'HbA1c', sys:'Glucose', dmin:5.0, dmax:7.5, blo:3.9, bhi:5.6, prev:6.7, cur:6.7, u:'%', s:'a', pdate:'Nov', cdate:'Jul', note:'Diabetic range (≥6.5), unchanged from November.'},
+    {name:'Fasting Glucose', sys:'Glucose', dmin:60, dmax:135, blo:74, bhi:99, prev:113, cur:122, u:'mg/dL', s:'a', pdate:'Nov', cdate:'Jul', note:'Highest of the three tests.'},
+    {name:'LDL Cholesterol', sys:'Lipids', dmin:0, dmax:175, blo:0, bhi:100, prev:121.1, cur:136.84, u:'mg/dL', s:'a', pdate:'Nov', cdate:'Jul', note:'Rose ~16 points; target under 100.'},
+    {name:'Non-HDL Chol.', sys:'Lipids', dmin:0, dmax:180, blo:0, bhi:130, prev:143.9, cur:153.4, u:'mg/dL', s:'a', pdate:'Nov', cdate:'Jul', note:'Above target and climbing.'},
+    {name:'HDL Cholesterol', sys:'Lipids', dmin:0, dmax:70, blo:40, bhi:70, prev:35.1, cur:35.6, u:'mg/dL', s:'w', pdate:'Nov', cdate:'Jul', note:'Protective cholesterol — sits below the healthy floor of 40.'},
+    {name:'SGPT / ALT', sys:'Liver', dmin:0, dmax:75, blo:0, bhi:41, prev:49.4, cur:55.8, u:'U/L', s:'a', pdate:'Nov', cdate:'Jul', note:'High and rising.'},
+    {name:'SGOT / AST', sys:'Liver', dmin:0, dmax:70, blo:0, bhi:40, prev:33.9, cur:40.2, u:'U/L', s:'w', pdate:'Nov', cdate:'Jul', note:'Just crossed the upper limit.'},
+    {name:'ESR', sys:'Inflammation', dmin:0, dmax:40, blo:0, bhi:10, prev:25, cur:24, u:'mm/hr', s:'w', pdate:'Nov', cdate:'Jul', note:'Elevated in all three tests.'},
+    {name:'Triglycerides', sys:'Lipids', dmin:0, dmax:200, blo:0, bhi:150, prev:114, cur:82.8, u:'mg/dL', s:'g', pdate:'Nov', cdate:'Jul', note:'Improved into range — a clear win.'},
+    {name:'Vitamin D', sys:'Vitamins', dmin:0, dmax:100, blo:30, bhi:100, prev:23.8, cur:51.3, u:'ng/mL', s:'g', pdate:'Nov', cdate:'Jul', note:'Moved from insufficient to sufficient.'},
+    {name:'Vitamin B12', sys:'Vitamins', dmin:150, dmax:700, blo:191, bhi:663, prev:234, cur:338, u:'pg/mL', s:'g', pdate:'Nov', cdate:'Jul', note:'Up into comfortable mid-range.'}
+  ];
+  var sClass={a:'mA',w:'mW',g:'mG',n:'mN'};
+  var sCol={a:C.alert,w:C.watch,g:C.good,n:C.normal};
+  var sCur={a:'cA',w:'cW',g:'cG',n:'cN'};
+  function pct(v,mn,mx){ var p=(v-mn)/(mx-mn)*100; return Math.max(2,Math.min(98,p)); }
+  var refHtml='';
+  REF.forEach(function(r){
+    var bl=pct(r.blo,r.dmin,r.dmax), bh=pct(r.bhi,r.dmin,r.dmax);
+    var pp=pct(r.prev,r.dmin,r.dmax), cp=pct(r.cur,r.dmin,r.dmax);
+    var linkL=Math.min(pp,cp), linkW=Math.abs(cp-pp);
+    var improving=(r.better==='higher')?(r.cur>r.prev):(r.cur<r.prev);
+    var linkCol=(r.s==='g')?C.good:(Math.abs(cp-pp)<1?C.faint:C.alert);
+    var tip='<div class="ttt">'+r.name+' · '+r.u+'</div>'+r.cdate+' <b>'+r.cur+'</b> · '+r.pdate+' '+r.prev+'<div class="ttr">healthy: '+r.blo+'–'+r.bhi+' · '+r.note+'</div>';
+    refHtml += '<div class="refrow has-tip" data-tip="'+tip.replace(/"/g,'&quot;')+'">'
+      + '<div class="rlabel">'+r.name+'<span class="rsys">'+r.sys+'</span></div>'
+      + '<div class="track">'
+        + '<div class="axis"></div>'
+        + '<div class="band" style="left:'+bl+'%;width:'+(bh-bl)+'%"></div>'
+        + '<div class="link" data-w="'+linkW+'" style="left:'+linkL+'%;width:0%;background:'+linkCol+'"></div>'
+        + '<div class="prevm" data-x="'+pp+'" style="left:50%"></div>'
+        + '<div class="curm '+sClass[r.s]+'" data-x="'+cp+'" style="left:50%"></div>'
+      + '</div>'
+      + '<div class="rnums"><span class="rcur '+sCur[r.s]+'">'+r.cur+'</span><span class="rprev">was '+r.prev+'</span></div>'
+      + '</div>';
+  });
+  document.getElementById('refrows').innerHTML = refHtml;
+  var refPanelEl = document.querySelector('.refpanel');
+  refPanelEl.__animate = function(){
+    refPanelEl.querySelectorAll('.prevm').forEach(function(m){ m.style.left = m.getAttribute('data-x')+'%'; });
+    refPanelEl.querySelectorAll('.curm').forEach(function(m){ m.style.left = m.getAttribute('data-x')+'%'; });
+    refPanelEl.querySelectorAll('.link').forEach(function(l){ l.style.width = l.getAttribute('data-w')+'%'; });
+  };
+  if(reduce) refPanelEl.__animate();
+
+  /* ---------------- explorer table ---------------- */
+  var tbody = document.getElementById('tbody');
+  var statusName={a:'attention',w:'watch',g:'good',n:'in range'};
+  var statusOrder={a:0,w:1,g:2,n:3};
+  function fmt(v){ return v==null?'—':v; }
+  function trendOf(m){
+    var vals=[m.nov,m.apr,m.jul].filter(function(x){return x!=null;});
+    if(vals.length<2) return {sym:'—',cls:'flat',key:0};
+    var first=vals[0], last=vals[vals.length-1], diff=last-first;
+    if(Math.abs(diff) < 0.001*Math.abs(first||1) || diff===0) return {sym:'▬',cls:'flat',key:0};
+    var up=diff>0;
+    var improving=(m.better==='higher')?up:!up;
+    return {sym:up?'▲':'▼', cls:improving?'down':'up', key:diff};
+  }
+  var curFilter='all', curSearch='', sortKey=null, sortDir=1;
+
+  function passes(m){
+    if(curSearch && m.name.toLowerCase().indexOf(curSearch)===-1) return false;
+    if(curFilter==='all') return true;
+    if(curFilter==='alert') return m.s==='a'||m.s==='w';
+    if(curFilter==='good') return m.s==='g';
+    if(curFilter==='normal') return m.s==='n';
+    return m.sys===curFilter;
+  }
+  function sortVal(m,k){
+    if(k==='name') return m.name.toLowerCase();
+    if(k==='status') return statusOrder[m.s];
+    if(k==='trend') return trendOf(m).key;
+    if(k==='nov'||k==='apr'||k==='jul') return m[k]==null?-1e9:m[k];
+    return 0;
+  }
+  function render(){
+    var rows = M.filter(passes);
+    if(sortKey){
+      rows.sort(function(a,b){ var va=sortVal(a,sortKey), vb=sortVal(b,sortKey);
+        if(va<vb) return -1*sortDir; if(va>vb) return 1*sortDir; return 0; });
+    }
+    if(!rows.length){ tbody.innerHTML='<tr class="emptyrow"><td colspan="7">No markers match this filter.</td></tr>'; return; }
+    var html='';
+    rows.forEach(function(m){
+      var t=trendOf(m);
+      html += '<tr>'
+        + '<td class="tmarker">'+m.name+'<span class="tsys">'+m.sys+'</span></td>'
+        + '<td class="num col-nov">'+fmt(m.nov)+'</td>'
+        + '<td class="num col-apr">'+fmt(m.apr)+'</td>'
+        + '<td class="num latest">'+fmt(m.jul)+'</td>'
+        + '<td><span class="tarrow '+t.cls+'">'+t.sym+'</span></td>'
+        + '<td class="tref">'+m.ref+' '+(m.u||'')+'</td>'
+        + '<td><span class="badge '+m.s+'">'+statusName[m.s]+'</span></td>'
+        + '</tr>';
+    });
+    tbody.innerHTML = html;
+  }
+  render();
+
+  document.getElementById('filterchips').addEventListener('click', function(e){
+    var chip = e.target.closest('.chip'); if(!chip) return;
+    this.querySelectorAll('.chip').forEach(function(c){ c.classList.remove('on'); });
+    chip.classList.add('on'); curFilter = chip.getAttribute('data-filter'); render();
+  });
+  document.getElementById('searchbox').addEventListener('input', function(){ curSearch=this.value.trim().toLowerCase(); render(); });
+  document.querySelectorAll('.tbl thead th[data-sort]').forEach(function(th){
+    th.addEventListener('click', function(){
+      var k=th.getAttribute('data-sort');
+      if(sortKey===k){ sortDir*=-1; } else { sortKey=k; sortDir=1; }
+      document.querySelectorAll('.tbl thead th .sar').forEach(function(s){ s.textContent='↕'; s.style.opacity='0.4'; });
+      var sar=th.querySelector('.sar'); if(sar){ sar.textContent = sortDir>0?'↑':'↓'; sar.style.opacity='1'; }
+      render();
+    });
+  });
+
+  /* ---------------- reveal + chart animation on scroll ---------------- */
+  wireTips(document);
+  if('IntersectionObserver' in window && !reduce){
+    var io = new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(en.isIntersecting){
+          en.target.classList.add('in');
+          // trigger any chart animations inside
+          en.target.querySelectorAll('#chart-hba1c,#chart-fpg').forEach(function(h){ if(h.__animate) h.__animate(); });
+          if(en.target.querySelector('.refpanel')){ var rp=en.target.querySelector('.refpanel'); if(rp.__animate) setTimeout(rp.__animate,120); }
+          io.unobserve(en.target);
+        }
+      });
+    }, {threshold:0.12});
+    document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+  } else {
+    document.querySelectorAll('.reveal').forEach(function(el){ el.classList.add('in'); });
+    var h1=document.getElementById('chart-hba1c'), h2=document.getElementById('chart-fpg');
+    if(h1&&h1.__animate)h1.__animate(); if(h2&&h2.__animate)h2.__animate();
+    refPanelEl.__animate();
+  }
+})();
+</script>
+</body>
+</html>
